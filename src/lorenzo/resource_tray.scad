@@ -1,9 +1,6 @@
 echo(version=version());
 
-// space
-// width 54.5
-// length 187
-// height 33
+include <../../lib/dish.scad>
 
 // Config
 $fn = 50;
@@ -31,25 +28,6 @@ small_dish_length = small_dish_share * total_dish_length;
 large_dish_length = large_dish_share * total_dish_length;
 
 dish_width = tray_width - wall_thickness * 2;
-
-module dish (width, length, height, rounding) {
-  r_width = width - rounding * 2;
-  r_length = length - rounding * 2;
-  r_height = height - rounding * 2;
-  radius = min(r_width,r_length);
-  difference() {
-    translate([rounding,rounding,rounding]) {
-      minkowski() {
-        hull() {
-          translate([0,0,r_height/2]) cube([r_width,r_length,height/2]);
-          translate([r_width/2,r_length/2,height/4]) resize([r_width,r_length,height/2]) sphere(radius);
-        }
-        sphere(rounding);
-      }
-    }     
-    translate([0,0,height]) cube([width+rounding*2,length+rounding*2,rounding*4]);
-  }
-}
 
 difference() {
   // Base tray
