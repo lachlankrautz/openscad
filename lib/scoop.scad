@@ -23,41 +23,43 @@ module cylinder_quarter(height, radius) {
 
 module scoop(width, length, height, radius = 0) {
   min_radius = min(
-    (radius ? radius : (height - $rounding)), 
-    10 / 2
+    radius ? radius : (height - $rounding * 2), 
+    height - $rounding * 2,
+    (width - $rounding * 2) / 3
   );
+
   cube_length = length - $rounding * 2;
-  cube_width = width - min_radius - $rounding * 2;
-  cube_height = height - $rounding * 2;
+  cube_width = width - $rounding * 2;
+  cube_height = height - $rounding + $bleed - $wall_thickness;
 
-  translate([0, 0, $wall_thickness]) {
-    difference() {
-      translate([$rounding, $rounding, $rounding]) {
-        // minkowski() {
-          translate([min_radius, 0, 0]) {
-            hull() {
-              // translate([cube_width - 1, 0, 0]) cube([1, cube_length, cube_height + $bleed]);
-              translate([0, 0, cube_height - 1]) cube([width, cube_length, 1]);
-              translate([0, 0, min_radius]) rotate([-90, 0, 0]) {
-                  cylinder_quarter(cube_length, min_radius);
-              }
-            }
+  difference() {
+    translate([$rounding, $rounding, $rounding + $wall_thickness]) {
+      minkowski() {
+        hull() {
+          translate([cube_width -1, 0, 0]) {
+            cube([1, cube_length, cube_height]);
           }
-          // sphere($rounding);
-        // }
+          translate([0, 0, cube_height - 1]) {
+            cube([cube_width, cube_length, 1]);
+          }
+          translate([min_radius, 0, min_radius]) rotate([-90, 0, 0]) {
+            cylinder_quarter(cube_length, min_radius);
+          }
+        }
+        sphere($rounding);
       }
+    }
 
-      translate([-$bleed, -$bleed, height]) {
-        cube([
-            width + $rounding + $bleed * 2, 
-            length + $rounding + $bleed * 2, 
-            radius + $rounding + $bleed * 2
-        ]);
-      }
+    translate([-$bleed, -$bleed, height + $bleed]) {
+      cube([
+        width + $bleed * 2, 
+        length + $bleed * 2, 
+        $rounding +  $bleed * 2
+      ]);
     }
   }
 }
 
 // debug scoop
-scoop(30, 20, 30, $fn = 20);
 // cylinder_quarter(10, 20);
+// scoop(30, 20, 30, $fn = 20);
