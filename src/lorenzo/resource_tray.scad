@@ -1,58 +1,39 @@
 echo(version=version());
 
 include <../../lib/dish.scad>
+include <../../lib/rounded_cube.scad>
+include <../../lib/cutout_tray.scad>
+include <../../lib/layout.scad>
 
 // Config
 $fn = 50;
 wall_thickness = 2;
-rounding = 3;
-bleed = 1;
 
 // Attributes
-tray_length = 187;
-tray_width = 54.5;
-tray_height = 33;
+length = 187;
+width = 54.5;
+height = 33;
 large_dish_share = 0.4;
+cols = 3;
 
 // Derived attributes
-r_tray_length = tray_length-rounding*2;
-r_tray_width = tray_width-rounding*2;
-r_tray_height = tray_height-rounding*2+rounding+bleed;
-
-r_hollow_offset = rounding+wall_thickness;
-r_hollow_gap = 2*rounding+wall_thickness;
-
 small_dish_share = (1 - large_dish_share) / 2;
-total_dish_length = tray_length-wall_thickness*4;
-small_dish_length = small_dish_share * total_dish_length;
-large_dish_length = large_dish_share * total_dish_length;
+usable_dish_length = usable_size(length, cols);
+small_dish_length = small_dish_share * usable_dish_length;
+large_dish_length = large_dish_share * usable_dish_length;
 
-dish_width = tray_width - wall_thickness * 2;
+cutout_tray(width, length, height) {
+  spread_width(width) {
+    translate([0, wall_thickness, 0]) {
+      dish(item_size(width), small_dish_length, height);
 
-difference() {
-  // Base tray
-  minkowski() {
-    translate([rounding, rounding, rounding]) {
-      cube([r_tray_width, r_tray_length, r_tray_height]);
+      translate([0,wall_thickness+small_dish_length,0]) {
+        dish(item_size(width), small_dish_length, height);
+      }
+
+      translate([0,(wall_thickness+small_dish_length)*2,0]) {
+        dish(item_size(width), large_dish_length, height);
+      }
     }
-    sphere(rounding);
-  }
-
-  // Hollow out tray
-  translate([wall_thickness,wall_thickness,wall_thickness]) {
-    dish(dish_width, small_dish_length, tray_height+bleed, 3);
-  }
-
-  translate([wall_thickness,wall_thickness*2+small_dish_length,wall_thickness]) {
-    dish(dish_width, small_dish_length, tray_height+bleed, 3);
-  }
-
-  translate([wall_thickness,wall_thickness*3+small_dish_length*2,wall_thickness]) {
-    dish(dish_width, large_dish_length, tray_height+bleed, 3);
-  }
-
-  // Slice off top
-  translate([-bleed,-bleed,tray_height]) {
-    cube([tray_width+bleed*2, tray_length+bleed*2, rounding+bleed]);
   }
 }
