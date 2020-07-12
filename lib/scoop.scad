@@ -21,7 +21,11 @@ module cylinder_quarter(height, radius) {
   }
 }
 
-module scoop(width, length, height, radius = 0) {
+module scoop(size, radius = 0) {
+  width = size[0];
+  length = size[1];
+  height = size[2];
+
   min_radius = min(
     radius ? radius : height, 
     height,

@@ -1,6 +1,6 @@
-$wall_thickness = 2;
+include <./util_functions.scad>
 
-function wall_offset(count = 1, i = 0) = (i + 1) * $wall_thickness;
+$wall_thickness = 2;
 
 function total_wall_size(count = 1) = (count + 1) * $wall_thickness;
 
@@ -8,23 +8,18 @@ function usable_size(size, count = 1) = size - total_wall_size(count);
 
 function item_size(size, count = 1, i = 0) = usable_size(size, count) / count;
 
-function item_offset(size, count = 1, i = 0) = wall_offset(count, i) + item_size(size, count, i) * i;
+function axis_offset(v, i) = take_sum(v, i) + $wall_thickness * i;
 
-module spread_width(width) {
-  echo("children: ", $children);
-  for(i=[0 : $children - 1]) {
-    offset = item_offset(width, $children, i);
-    translate([offset, 0, 0]) {
-      children(i);
-    }
-  }
-}
+// Get the offset to place the item at the given grid position
+function grid_offset(grid, pos) = [
+  axis_offset(grid[0], pos[0] ? pos[0] : 0), 
+  axis_offset(grid[1], pos[1] ? pos[1] : 0), 
+  axis_offset(grid[2], pos[2] ? pos[2] : 0), 
+];
 
-module spread_length(length) {
-  for(i=[0 : $children - 1]) {
-    offset = item_offset(length, $children, i);
-    translate([0, offset, 0]) {
-      children(i);
-    }
-  }
-}
+// Get the size of the item at given grid position
+function grid_size(grid, pos) = [
+  grid[0][pos[0] ? pos[0]: 0],
+  grid[1][pos[1] ? pos[1]: 0],
+  grid[2][pos[2] ? pos[2]: 0],
+];
