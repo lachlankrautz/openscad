@@ -23,17 +23,17 @@ module cylinder_quarter(height, radius) {
 
 module scoop(width, length, height, radius = 0) {
   min_radius = min(
-    radius ? radius : (height - $rounding * 2), 
-    height - $rounding * 2,
-    (width - $rounding * 2) / 3
+    radius ? radius : height, 
+    height,
+    width / 3
   );
 
   cube_length = length - $rounding * 2;
   cube_width = width - $rounding * 2;
-  cube_height = height - $rounding + $bleed - $wall_thickness;
+  cube_height = height - $rounding;
 
   difference() {
-    translate([$rounding, $rounding, $rounding + $wall_thickness]) {
+    translate([$rounding, $rounding, $rounding]) {
       minkowski() {
         hull() {
           translate([cube_width -1, 0, 0]) {
@@ -50,7 +50,7 @@ module scoop(width, length, height, radius = 0) {
       }
     }
 
-    translate([-$bleed, -$bleed, height + $bleed]) {
+    translate([-$bleed, -$bleed, height]) {
       cube([
         width + $bleed * 2, 
         length + $bleed * 2, 

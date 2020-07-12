@@ -22,7 +22,7 @@ usable_dish_length = usable_size(length, cols);
 small_dish_length = small_dish_share * usable_dish_length;
 large_dish_length = large_dish_share * usable_dish_length;
 
-cutout_tray(width, length, height) {
+cutout_tray([width, length, height]) {
   spread_width(width) {
     translate([0, wall_thickness, 0]) {
       dish(item_size(width), small_dish_length, height);
