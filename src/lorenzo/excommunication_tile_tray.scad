@@ -1,10 +1,5 @@
 echo(version=version());
 
-// space 
-// length 70
-// width 66
-// support height 36
-
 // Settings
 box_length = 70;
 box_width = 66;
@@ -13,7 +8,6 @@ wall_thickness = 2;
 
 rounding = 3;
 bleed = 1;
-
 
 // Derived attributes
 r_box_length = box_length-rounding*2;

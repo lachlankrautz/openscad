@@ -59,7 +59,3 @@ module scoop(width, length, height, radius = 0) {
     }
   }
 }
-
-// debug scoop
-// cylinder_quarter(10, 20);
-// scoop(30, 20, 30, $fn = 20);
