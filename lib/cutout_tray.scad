@@ -11,15 +11,15 @@ module cutout_tray(size) {
 
   difference() {
     // Base tray
-    rounded_cube(width, length, height+$rounding+$bleed);
+    rounded_cube([width, length, height + $rounding + $bleed]);
 
     // Cutouts
-    translate([0, 0, $wall_thickness]) {
+    translate([$wall_thickness, $wall_thickness, $wall_thickness]) {
       children();
     }
  
     // Slice off top
-    translate([-$bleed,-$bleed,height]) {
+    translate([-$bleed, -$bleed, height]) {
       cube([
         width + $bleed * 2, 
         length + $bleed * 2, 

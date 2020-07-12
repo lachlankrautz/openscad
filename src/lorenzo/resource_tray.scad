@@ -7,7 +7,7 @@ include <../../lib/layout.scad>
 
 // Config
 $fn = 50;
-wall_thickness = 2;
+$wall_thickness = 2;
 
 // Attributes
 length = 187;
@@ -23,17 +23,13 @@ small_dish_length = small_dish_share * usable_dish_length;
 large_dish_length = large_dish_share * usable_dish_length;
 
 cutout_tray([width, length, height]) {
-  spread_width(width) {
-    translate([0, wall_thickness, 0]) {
-      dish(item_size(width), small_dish_length, height);
+  dish([item_size(width), small_dish_length, height]);
 
-      translate([0,wall_thickness+small_dish_length,0]) {
-        dish(item_size(width), small_dish_length, height);
-      }
+  translate([0,$wall_thickness + small_dish_length, 0]) {
+    dish([item_size(width), small_dish_length, height]);
+  }
 
-      translate([0,(wall_thickness+small_dish_length)*2,0]) {
-        dish(item_size(width), large_dish_length, height);
-      }
-    }
+  translate([0,($wall_thickness + small_dish_length) * 2, 0]) {
+    dish([item_size(width), large_dish_length, height]);
   }
 }

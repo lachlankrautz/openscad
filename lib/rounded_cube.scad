@@ -1,14 +1,14 @@
 $bleed = 1;
 $rounding = 3;
 
-module rounded_cube(width, length, height) {
-  r_length = length-$rounding*2;
-  r_width = width-$rounding*2;
-  r_height = height-$rounding*2;
+module rounded_cube(size) {
+  width = size[0] - $rounding * 2;
+  length = size[1] - $rounding * 2;
+  height = size[2] - $rounding * 2;
 
   minkowski() {
     translate([$rounding, $rounding, $rounding]) {
-      cube([r_width, r_length, r_height]);
+      cube([width, length, height]);
     }
     sphere($rounding);
   }
