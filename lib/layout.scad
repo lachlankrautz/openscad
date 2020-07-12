@@ -23,3 +23,7 @@ function grid_size(grid, pos) = [
   grid[1][pos[1] ? pos[1]: 0],
   grid[2][pos[2] ? pos[2]: 0],
 ];
+
+// TODO items that take 100% of an axis wont ever have a value
+// totally unable to handle differing rows / columns
+// revert to lower level functions for manual placements
