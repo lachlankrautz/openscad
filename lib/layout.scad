@@ -24,6 +24,13 @@ function grid_size(grid, pos) = [
   grid[2][pos[2] ? pos[2]: 0],
 ];
 
+// Make an evenly split grid
+function make_even_grid(size, cols, rows) = [
+  [for (i=[0:cols-1]) item_size(size[0], cols)],
+  [for (i=[0:rows-1]) item_size(size[1], rows)],
+  [size[2]],
+];
+
 // TODO items that take 100% of an axis wont ever have a value
 // totally unable to handle differing rows / columns
 // revert to lower level functions for manual placements
