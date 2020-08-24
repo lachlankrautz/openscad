@@ -1,15 +1,15 @@
 echo(version=version());
 
-include <../../lib/rounded_cube.scad>
+include <../../lib/flat_rounded_cube.scad>
 
-// config
+// Config
 $wall_thickness = 4;
 $bleed = 1;
+$fn = 50;
 floor_height = 2;
 cutout_depth = 3;
 
 // Attributes
-
 card_width = 92;
 card_length = 67;
 card_gap = 1;
@@ -19,7 +19,6 @@ resource_width = 40;
 health_height = 25;
 
 // Derived Attributes
-
 height = floor_height + cutout_depth;
 
 player_cutout_size = [
@@ -46,20 +45,40 @@ dashboard_size = [
   height
 ];
 
+hole_size = [
+  player_cutout_size[0] * 0.75,
+  player_cutout_size[1] * 0.75,
+  floor_height + $bleed*2
+];
+
+hole_offset = [
+  (player_cutout_size[0] - hole_size[0]) / 2,
+  (player_cutout_size[1] - hole_size[1]) / 2,
+  -(floor_height+$bleed)
+];
+
 // Model
-
 difference() {
-  cube(dashboard_size);
-
+  // Draw starting dashbaord
+  flat_rounded_cube(dashboard_size);
+  // Inset for outter walls
   translate([$wall_thickness, $wall_thickness, floor_height]) {
-    cube(resource_cutout_size);
+    // Cutout left resource tray
+    flat_rounded_cube(resource_cutout_size);
     translate([resource_cutout_size[0] + $wall_thickness, 0, 0]) {
-      cube(health_cutout_size);
+      // Cutout bottom health tray
+      flat_rounded_cube(health_cutout_size);
       translate([0, health_cutout_size[1] + $wall_thickness, 0]) {
+        // Cutout player card tray
         cube(player_cutout_size);
+        translate(hole_offset) {
+          // Cutout player card hole
+          flat_rounded_cube(hole_size);
+        }
       }
       translate([0, health_cutout_size[1] + player_cutout_size[1] + $wall_thickness*2, 0]) {
-        cube(health_cutout_size);
+        // Cutout top sanity tray
+        flat_rounded_cube(health_cutout_size);
       }
     }
   }
