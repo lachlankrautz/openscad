@@ -1,15 +1,50 @@
 $bleed = 1;
 $rounding = 3;
 
-module rounded_cube(size) {
+// Render a rounded cube
+// flat_top: do not round the top edges
+// flat_bottom: do not round the bottom edges
+// flat: equals flat_top && flat_bottom
+// 
+// Limitations:
+// requires height > $rounding * 2
+// flat_top || flat_bottom requires height > $rounding
+// flat_top && flat_bottom requires height > $bleed
+module rounded_cube(size, flat=false, flat_top=false, flat_bottom=false) {
+  _flat_top = flat_top || flat;
+  _flat_bottom = flat_bottom || flat;
+
+  top_height = (_flat_top && _flat_bottom)
+    ? $bleed
+    : flat_top 
+    ? 0
+    : $rounding;
+  bottom_height = _flat_bottom ? 0: $rounding;
+
   width = size[0] - $rounding * 2;
   length = size[1] - $rounding * 2;
-  height = size[2] - $rounding * 2;
+  height = size[2] - (top_height + bottom_height);
 
   minkowski() {
-    translate([$rounding, $rounding, $rounding]) {
+    translate([$rounding, $rounding, bottom_height]) {
       cube([width, length, height]);
     }
-    sphere($rounding);
+    if (_flat_top && _flat_bottom) {
+      cylinder($bleed, $rounding, $rounding);
+    } else if (_flat_top) {
+      difference() {
+        sphere($rounding);
+        cylinder($rounding, $rounding, $rounding);
+      }
+    } else if (_flat_bottom) {
+      difference() {
+        sphere($rounding);
+        translate ([0, 0, -$rounding]) {
+          cylinder($rounding, $rounding, $rounding);
+        }
+      }
+    } else {
+      sphere($rounding);
+    }
   }
 }

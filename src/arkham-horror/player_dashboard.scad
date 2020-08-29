@@ -1,6 +1,6 @@
 echo(version=version());
 
-include <../../lib/flat_rounded_cube.scad>
+include <../../lib/rounded_cube.scad>
 
 // Config
 $wall_thickness = 4;
@@ -60,25 +60,25 @@ hole_offset = [
 // Model
 difference() {
   // Draw starting dashbaord
-  flat_rounded_cube(dashboard_size);
+  rounded_cube(dashboard_size, flat=true);
   // Inset for outter walls
   translate([$wall_thickness, $wall_thickness, floor_height]) {
     // Cutout left resource tray
-    flat_rounded_cube(resource_cutout_size);
+    rounded_cube(resource_cutout_size, flat=true);
     translate([resource_cutout_size[0] + $wall_thickness, 0, 0]) {
       // Cutout bottom health tray
-      flat_rounded_cube(health_cutout_size);
+      rounded_cube(health_cutout_size, flat=true);
       translate([0, health_cutout_size[1] + $wall_thickness, 0]) {
         // Cutout player card tray
         cube(player_cutout_size);
         translate(hole_offset) {
           // Cutout player card hole
-          flat_rounded_cube(hole_size);
+          rounded_cube(hole_size, flat=true);
         }
       }
       translate([0, health_cutout_size[1] + player_cutout_size[1] + $wall_thickness*2, 0]) {
         // Cutout top sanity tray
-        flat_rounded_cube(health_cutout_size);
+        rounded_cube(health_cutout_size, flat=true);
       }
     }
   }

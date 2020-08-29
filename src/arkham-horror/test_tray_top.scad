@@ -1,6 +1,6 @@
 echo(version=version());
 
-include <../../lib/flat_rounded_cube.scad>
+include <../../lib/rounded_cube.scad>
 
 // Config
 $fn = 50;
@@ -62,14 +62,24 @@ corner_hole_offsets = [
 difference() {
   // Base
   union() {
-    flat_rounded_cube(base_size);
+    rounded_cube([40, 10, 10]);
+    rounded_cube([10, 40, 10]);
+    translate([0, 30, 0]) {
+      rounded_cube([40, 10, 10]);
+    }
+    translate([30, 0, 0]) {
+      rounded_cube([10, 40, 10]);
+    }
+    /*
     translate(card_offset) {
       cube(card_size);
     }
+    */
   }
   translate(card_window_offset) {
-    flat_rounded_cube(card_window_size);
+    // rounded_cube(card_window_size, flat=true);
   }
+  /*
   translate([0, 0, base_height-magnet_height]) {
     // Cut out corner magnet holes
     for (i=corner_hole_offsets) {
@@ -78,4 +88,5 @@ difference() {
       }
     }
   }
+  */
 }

@@ -1,6 +1,6 @@
 echo(version=version());
 
-include <../../lib/flat_rounded_cube.scad>
+include <../../lib/rounded_cube.scad>
 
 // Config
 $fn = 50;
@@ -72,7 +72,7 @@ corner_hole_offsets = [
 // Model
 difference() {
   // Base
-  flat_rounded_cube(base_size);
+  rounded_cube(base_size, flat=true);
   translate([0, 0, height-magnet_height]) {
     // Cut out corner magnet holes
     for (i=corner_hole_offsets) {
