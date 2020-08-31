@@ -23,7 +23,7 @@ translate([120, 0, 0]) {
   rounded_cube([30, 30, 20], flat=true);
 }
 
-// can render flat top and flat bottom shorter than or equal to rounding*2
+// can render flat top and flat bottom that is short
 translate([120, 40, 0]) {
-  rounded_cube([30, 30, 2], flat=true);
+  rounded_cube([30, 30, 1], flat=true);
 }

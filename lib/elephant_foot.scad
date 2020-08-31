@@ -18,10 +18,11 @@ module elephant_foot(
   girth = ($rounding + $bleed) * 2;
 
   torus_size = [
-    size[0] + girth + $rounding - $bleed,
-    size[1] + girth + $rounding - $bleed,
+    size[0] + (girth - $rounding) * 2,
+    size[1] + (girth - $rounding) * 2,
     $rounding + $bleed
   ];
+
   torus_offset = [
     0 - (torus_size[0] - size[0]) / 2,
     0 - (torus_size[1] - size[1]) / 2,
@@ -53,13 +54,17 @@ module elephant_foot(
     }
 
     translate([$rounding, $rounding, foot_bottom_height]) {
-      rounded_cube(inner_size, flat_top=flat_top || foot_top, flat_bottom=flat_bottom || foot_bottom);
+      rounded_cube(
+        inner_size, 
+        flat_top=flat_top || foot_top, 
+        flat_bottom=flat_bottom || foot_bottom
+      );
     }
 
     if (foot_top) {
       translate([0, 0, inner_size[2] + foot_bottom_height]) {
         difference() {
-          translate([0, 0, 0]) rounded_cube(foot_size, flat=true);
+          rounded_cube(foot_size, flat=true);
           translate([torus_offset[0], torus_offset[1], -$bleed]) {
             square_torus(torus_size, girth, flat_bottom=true);
           }

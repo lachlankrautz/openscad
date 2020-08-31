@@ -1,6 +1,7 @@
 echo(version=version());
 
 include <../../lib/rounded_cube.scad>
+include <../../lib/elephant_foot.scad>
 
 // Config
 $wall_thickness = 4;
@@ -57,27 +58,38 @@ hole_offset = [
   -(floor_height+$bleed)
 ];
 
+cube_width = 5;
+cube_rounding = 1;
+
+cube_foot_size = [
+  cube_width + cube_rounding * 2,
+  cube_width + cube_rounding * 2,
+  3
+];
+
 // Model
 difference() {
   // Draw starting dashbaord
   rounded_cube(dashboard_size, flat=true);
+
   // Inset for outter walls
   translate([$wall_thickness, $wall_thickness, floor_height]) {
     // Cutout left resource tray
     rounded_cube(resource_cutout_size, flat=true);
+
+    // Cutout bottom health/sanity cubes
     translate([resource_cutout_size[0] + $wall_thickness, 0, 0]) {
-      // Cutout bottom health cubes
       for (i=[0:10]) {
         translate([i*6, 0, 0]) {
-          rounded_cube([5, 5, 5 + $bleed], $rounding=1);
+          elephant_foot(cube_foot_size, flat_bottom=true, $rounding=cube_rounding);
         }
         translate([i*6, 15, 0]) {
-          rounded_cube([5, 5, 5 + $bleed], $rounding=1);
+          elephant_foot(cube_foot_size, flat_bottom=true, $rounding=cube_rounding);
         }
       }
 
+      // Cutout player card tray
       translate([0, health_cutout_size[1] + $wall_thickness, 0]) {
-        // Cutout player card tray
         cube(player_cutout_size);
         translate(hole_offset) {
           // Cutout player card hole

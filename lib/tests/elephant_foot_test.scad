@@ -26,10 +26,19 @@ translate([160, 0, 0]) {
 card_window_size = [
   66,
   91.8,
-  4.5
+  $rounding
 ];
 foot_rounding = 3;
 
 translate([0, -100, 0]) {
   elephant_foot(card_window_size, flat_top=true, $rounding=foot_rounding);
+}
+
+// Can render with low rounding
+translate([80, -30, 0]) {
+  elephant_foot([10, 10, 7], rounded_bottom=true, $rounding=1);
+}
+
+translate([120, -30, 0]) {
+  elephant_foot([20, 20, 10], rounded_bottom=true, $rounding=4);
 }

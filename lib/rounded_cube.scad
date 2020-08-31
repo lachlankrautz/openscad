@@ -1,3 +1,5 @@
+include <./rounded_square.scad>
+
 $bleed = 1;
 $rounding = 3;
 
@@ -14,37 +16,39 @@ module rounded_cube(size, flat=false, flat_top=false, flat_bottom=false) {
   _flat_top = flat_top || flat;
   _flat_bottom = flat_bottom || flat;
 
-  top_height = (_flat_top && _flat_bottom)
-    ? $bleed
-    : flat_top 
-    ? 0
-    : $rounding;
+  top_height = _flat_top ? 0: $rounding;
   bottom_height = _flat_bottom ? 0: $rounding;
 
-  width = size[0] - $rounding * 2;
-  length = size[1] - $rounding * 2;
-  height = size[2] - (top_height + bottom_height);
+  cube_size = [
+    size[0] - $rounding * 2,
+    size[1] - $rounding * 2,
+    size[2] - (top_height + bottom_height)
+  ];
 
-  minkowski() {
-    translate([$rounding, $rounding, bottom_height]) {
-      cube([width, length, height]);
-    }
-    if (_flat_top && _flat_bottom) {
-      cylinder($bleed, $rounding, $rounding);
-    } else if (_flat_top) {
-      difference() {
-        sphere($rounding);
-        cylinder($rounding, $rounding, $rounding);
-      }
-    } else if (_flat_bottom) {
-      difference() {
-        sphere($rounding);
-        translate ([0, 0, -$rounding]) {
-          cylinder($rounding, $rounding, $rounding);
-        }
-      }
-    } else {
-      sphere($rounding);
+  if (_flat_top && _flat_bottom) {
+     linear_extrude(cube_size[2]) {
+       rounded_square([size[0], size[1]]);
+     }
+   } else {
+     minkowski() {
+       translate([$rounding, $rounding, bottom_height]) {
+         cube(cube_size);
+       }
+       if (_flat_top) {
+         difference() {
+           sphere($rounding);
+           cylinder($rounding, $rounding, $rounding);
+         }
+       } else if (_flat_bottom) {
+         difference() {
+           sphere($rounding);
+           translate ([0, 0, -$rounding]) {
+             cylinder($rounding, $rounding, $rounding);
+           }
+         }
+       } else {
+         sphere($rounding);
+       }
     }
   }
 }
