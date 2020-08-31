@@ -31,7 +31,7 @@ module square_torus(size, girth, flat_top=false, flat_bottom=false) {
     // Left
     translate([0, shaft_size[1] + girth + $rounding, 0]) {
       rotate(a=[90, 0, 0]) {
-        linear_extrude(shaft_size[0]) {
+        linear_extrude(shaft_size[1]) {
           rounded_square([girth, size[2]], flat_top=flat_top, flat_bottom=flat_bottom);
         }
       }
@@ -47,7 +47,7 @@ module square_torus(size, girth, flat_top=false, flat_bottom=false) {
     // Right
     translate([shaft_size[0] + girth + $rounding * 2, shaft_size[1] + girth + $rounding, 0]) {
       rotate(a=[90, 0, 0]) {
-        linear_extrude(shaft_size[0]) {
+        linear_extrude(shaft_size[1]) {
           rounded_square([girth, size[2]], flat_top=flat_top, flat_bottom=flat_bottom);
         }
       }
