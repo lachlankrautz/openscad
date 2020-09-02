@@ -8,11 +8,11 @@ $rounding = 3;
 elephant_foot([30, 30, 20]);
 
 translate([40, 0, 0]) {
-  elephant_foot([30, 30, 20], flat_bottom=true);
+  elephant_foot([30, 30, 20], flat_bottom=true, use_bleed=true);
 }
 
 translate([80, 0, 0]) {
-  elephant_foot([30, 30, 20], flat_top=true);
+  elephant_foot([30, 30, 20], flat_top=true, use_bleed=true);
 }
 
 translate([120, 0, 0]) {
