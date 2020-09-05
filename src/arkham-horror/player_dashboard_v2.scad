@@ -2,16 +2,18 @@ echo(version=version());
 
 include <../../lib/rounded_cube.scad>
 include <../../lib/elephant_foot.scad>
-use <../../fonts/Teutonic.ttf>
+include <../../lib/svg_icon.scad>
+use <../../assets/fonts/Teutonic.ttf>
 
 // Config
 $wall_thickness = 4;
 $bleed = 1;
-// $fn = 50;
+$fn = 2;
 floor_height = 2;
 cutout_depth = 3;
 card_gap = 1;
 cube_foot_rounding = 1;
+skip_cubes = true;
 
 // Attributes
 card_width = 92;
@@ -25,6 +27,9 @@ health_height = 27;
 cube_count = 10;
 cube_size = 9;
 cube_dish_height = 4;
+
+number_depth = 0.8;
+icon_depth = 0.5;
 
 // Derived Attributes
 height = floor_height + cutout_depth;
@@ -53,16 +58,6 @@ health_tray_width = player_cutout_size[0] + action_width + $wall_thickness;
 cube_array_width = cube_foot_size * cube_count;
 resource_tray_width_offset = resource_width + $wall_thickness * 2;
 
-module base_dashboard() {
-  dashboard_size = [
-    resource_width + player_cutout_size[0] + action_tray_size[0] + $wall_thickness * 4,
-    resource_cutout_size[1] + $wall_thickness*2, 
-    height
-  ];
-
-  rounded_cube(dashboard_size, flat=true);
-}
-
 module letter(l) {
   font = "Teutonic";
   letter_size = 5;
@@ -75,6 +70,16 @@ module letter(l) {
   }
 }
 
+module base_dashboard() {
+  dashboard_size = [
+    resource_width + player_cutout_size[0] + action_tray_size[0] + $wall_thickness * 4,
+    resource_cutout_size[1] + $wall_thickness*2, 
+    height
+  ];
+
+  rounded_cube(dashboard_size, flat=true);
+}
+
 module health_and_sanity_board() {
   foot_size = [
     cube_foot_size,
@@ -83,29 +88,62 @@ module health_and_sanity_board() {
   ];
   icon_offset = health_tray_width - cube_array_width + cube_foot_rounding;
 
+  heart_file = "../../assets/images/arkham_horror_lcg_heart_token.svg";
+  heart_size = [
+    100,
+    100
+  ];
+
+
+  brain_file = "../../assets/images/arkham_horror_lcg_brain_token.svg";
+  brain_size = [
+    100,
+    100
+  ];
+
+  icon_target_size = [
+    9,
+    9,
+  ];
+
+  icon_width_buffer = icon_offset - icon_target_size[0];
+  heart_length_adjustment = 1;
+
+  translate([
+    icon_width_buffer,
+    cube_foot_size + heart_length_adjustment,
+    cutout_depth -icon_depth
+  ]) {
+    svg_icon(heart_file, icon_depth + $bleed, heart_size, icon_target_size);
+  }
+
+  translate([
+    icon_width_buffer,
+    0,
+    cutout_depth -icon_depth
+  ]) {
+    svg_icon(brain_file, icon_depth + $bleed, brain_size, icon_target_size);
+  }
+
+  cube_rows = 2;
   translate([icon_offset, 0, 0]) {
     for(i=[0:cube_count-1]) {
       translate([i * foot_size[0], 0, 0]) {
-        translate([cube_foot_size / 2, cube_foot_size * 2.3, cutout_depth - 1]) {
+        translate([cube_foot_size / 2, cube_foot_size * 2.3, cutout_depth - number_depth]) {
           letter(str(i));
         }
   
-        translate([0, 0, -cube_foot_rounding]) {
-          elephant_foot(
-            foot_size, 
-            flat_bottom=true, 
-            use_bleed=true, 
-            $rounding=cube_foot_rounding
-          );
-        }
-  
-        translate([0, cube_foot_size, -cube_foot_rounding]) {
-          elephant_foot(
-            foot_size, 
-            flat_bottom=true, 
-            use_bleed=true, 
-            $rounding=cube_foot_rounding
-          );
+        if (!skip_cubes) {
+          for(j=[0:cube_rows-1]) {
+            translate([0, j * cube_foot_size, -cube_foot_rounding]) {
+              elephant_foot(
+                foot_size, 
+                flat_bottom=true, 
+                use_bleed=true, 
+                $rounding=cube_foot_rounding
+              );
+            }
+          }
         }
       }
     }
@@ -179,13 +217,51 @@ module notch(size) {
   }
 }
 
+module resource_tray() {
+  resource_file = "../../assets/images/arkham_horror_lcg_resource_token.svg";
+  resource_size = [
+    211,
+    250
+  ];
+
+  clue_file = "../../assets/images/arkham_horror_lcg_clue_token.svg";
+  clue_size = [
+    72,
+    72
+  ];
+
+  icon_target_size = [
+    resource_cutout_size[0] / 3,
+    resource_cutout_size[0] / 3
+  ];
+
+  rounded_cube(resource_cutout_size, flat=true);
+  icon_offset = (resource_cutout_size[0] - icon_target_size[0]) / 2;
+
+  translate([
+    icon_offset,
+    resource_cutout_size[1] - icon_offset - icon_target_size[1],
+    -icon_depth
+  ]) {
+    svg_icon(resource_file, icon_depth + $bleed, resource_size, icon_target_size);
+  }
+
+  translate([
+    icon_offset,
+    icon_offset,
+    -icon_depth
+  ]) {
+    svg_icon(clue_file, icon_depth + $bleed, clue_size, icon_target_size);
+  }
+}
+
 // Model
 difference() {
   base_dashboard();
 
   // Resource tray
   translate([$wall_thickness, $wall_thickness, floor_height]) {
-    rounded_cube(resource_cutout_size, flat=true);
+    resource_tray();
   }
 
   // Health and sanity tray
