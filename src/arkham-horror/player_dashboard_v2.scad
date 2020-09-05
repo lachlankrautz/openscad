@@ -20,13 +20,14 @@ card_width = 92;
 card_length = 67;
 
 resource_width = 40;
-action_width = 30;
-
-health_height = 27;
+action_width = 25;
 
 cube_count = 10;
 cube_size = 9;
 cube_dish_height = 4;
+
+number_font_size = 8;
+health_height = cube_size * 2 + number_font_size * 1.5;
 
 number_depth = 0.8;
 icon_depth = 0.5;
@@ -58,9 +59,8 @@ health_tray_width = player_cutout_size[0] + action_width + $wall_thickness;
 cube_array_width = cube_foot_size * cube_count;
 resource_tray_width_offset = resource_width + $wall_thickness * 2;
 
-module letter(l) {
+module letter(l, letter_size) {
   font = "Teutonic";
-  letter_size = 5;
   letter_height = 3;
 
   // Use linear_extrude() to make the letters 3D objects as they
@@ -108,6 +108,7 @@ module health_and_sanity_board() {
 
   icon_width_buffer = icon_offset - icon_target_size[0];
   heart_length_adjustment = 1;
+  letter_length_offset = $wall_thickness + cube_foot_size * 2 + $bleed;
 
   translate([
     icon_width_buffer,
@@ -129,8 +130,8 @@ module health_and_sanity_board() {
   translate([icon_offset, 0, 0]) {
     for(i=[0:cube_count-1]) {
       translate([i * foot_size[0], 0, 0]) {
-        translate([cube_foot_size / 2, cube_foot_size * 2.3, cutout_depth - number_depth]) {
-          letter(str(i));
+        translate([cube_foot_size / 2, letter_length_offset, cutout_depth - number_depth]) {
+          letter(str(i), number_font_size);
         }
   
         if (!skip_cubes) {
