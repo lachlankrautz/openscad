@@ -8,8 +8,6 @@ module svg_icon(file, depth=$depth, icon_size, target_size) {
     target_size[1] / icon_size[1],
   ];
 
-  echo("icon scale: ", icon_scale);
-
   linear_extrude(depth) {
     scale(icon_scale) {
       import(file);

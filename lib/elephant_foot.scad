@@ -2,7 +2,9 @@ include <./rounded_cube.scad>
 include <./square_torus.scad>
 
 $rounding = 3;
-$bleed = 1;
+$bleed = 0.01;
+
+// TODO investigate poor performance
 
 // TODO use bleed_top|bottom help with differencing a foot
 module elephant_foot(
