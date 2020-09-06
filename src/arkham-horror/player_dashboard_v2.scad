@@ -8,11 +8,12 @@ use <../../assets/fonts/Teutonic.ttf>
 // Config
 $wall_thickness = 4;
 $bleed = 1;
-$fn = 4;
-// $fn = 50;
+// $fn = 4;
+$fn = 50;
 skip_cubes = false;
 
 // Attributes
+magnet_diameter = 3.4;
 min_floor_height = 2;
 cube_dish_height = 4;
 
@@ -151,9 +152,8 @@ module player_card_tray() {
   top_notch_inset = (player_cutout_width - top_notch_size[0]) / 2;
 
   render() translate([0, 0, base_dashboard_height - card_cutout_depth]) {
-
     cube([
-      player_cutout_width,
+      player_cutout_width + $bleed,
       player_cutout_length,
       card_cutout_depth + $bleed
     ]);
@@ -169,7 +169,6 @@ module player_card_tray() {
 }
 
 module magnet_hole() {
-  magnet_diameter = 3.4;
   magnet_height = 1;
 
   translate([magnet_diameter / 2, magnet_diameter / 2, -magnet_height]) {
@@ -178,42 +177,61 @@ module magnet_hole() {
 }
 
 module action_tray() {
-  action_cutout_depth = 3;
   action_card_inset = 1;
 
   // TODO not sure if used
   action_card_height = 0.7;
+  action_card_top_inset = 1;
+
+  action_full_length = player_cutout_length + $wall_thickness;
+
+  // cut 1 for the top to latch in
+  // cut 0.7 for the card height
+  // starting height needs room for 1 cut from magnet
+
+  magnet_inset = 1;
+  magnet_wall_girth = magnet_diameter + magnet_inset;
+  action_cutout_height = min_floor_height + 2;
+  action_inner_cutout_height = action_cutout_height - action_card_height - action_card_top_inset;
 
   action_tray_size = [
-    action_full_width + $wall_thickness + $bleed,
-    player_cutout_length + $wall_thickness + $bleed,
-    action_cutout_depth + $bleed
+    action_full_width + $bleed,
+    action_full_length + $bleed,
+    action_cutout_height + $bleed
   ];
 
-  action_cutout_height = min_floor_height + 1;
+  action_inner_tray_size = [
+    action_full_width - magnet_wall_girth * 2,
+    action_full_length - magnet_wall_girth * 2,
+    action_card_height + action_card_top_inset + $bleed
+  ];
 
-  magnet_inset = 0.5;
-  magnet_positions = [
+  corner_magnet_positions = [
     [magnet_inset, magnet_inset],
-    [action_full_width - magnet_inset, magnet_inset],
-    [action_full_width - magnet_inset, player_cutout_length - magnet_inset],
-    [magnet_inset, player_cutout_length - magnet_inset],
+    [action_full_width - magnet_diameter - magnet_inset, magnet_inset],
+    [action_full_width - magnet_diameter - magnet_inset, action_full_length - magnet_diameter - magnet_inset],
+    [magnet_inset, action_full_length - magnet_diameter - magnet_inset],
   ];
-
 
   translate([0, 0, action_cutout_height]) {
     cube(action_tray_size);
 
-    translate([0, 0, magnet_inset]) {
-      cube([
-        action_tray_size[0] - 4,
-        action_tray_size[1] - 4,
-        action_card_inset + $bleed
-      ]);
+    for(i=corner_magnet_positions) {
+      translate(i) {
+        magnet_hole();
+      }
     }
+  }
 
-    for(p=magnet_positions) {
-      translate(p) {
+  translate([magnet_wall_girth, magnet_wall_girth, action_inner_cutout_height]) {
+    cube(action_inner_tray_size);
+
+    action_count = 6;
+    centre_magnet_width = (action_inner_tray_size[0] - magnet_diameter) / 2;
+    action_length_spacer = (action_inner_tray_size[1] - (action_count * magnet_diameter)) / (action_count + 1);
+
+    for(i=[0:action_count-1]) {
+      translate([centre_magnet_width, (i + 1) * action_length_spacer + (i * magnet_diameter), 0]) {
         magnet_hole();
       }
     }

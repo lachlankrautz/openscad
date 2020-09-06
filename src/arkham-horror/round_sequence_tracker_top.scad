@@ -26,7 +26,7 @@ corner_magnet_offset = corner_magnet_buffer + magnet_diameter / 2;
 card_size = [
   card_width,
   card_length,
-  inset
+  inset + $bleed
 ];
 
 card_window_size = [
@@ -44,7 +44,7 @@ base_size = [
 card_offset = [
   (base_size[0] - card_size[0]) / 2,
   (base_size[1] - card_size[1]) / 2,
-  base_height
+  base_height - $bleed
 ];
 
 card_window_offset = [

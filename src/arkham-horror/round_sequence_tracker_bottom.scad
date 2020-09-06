@@ -73,14 +73,14 @@ corner_hole_offsets = [
 difference() {
   // Base
   rounded_cube(base_size, flat=true);
-  translate([0, 0, height-magnet_height]) {
-    // Cut out corner magnet holes
-    for (i=corner_hole_offsets) {
-      translate([i[0], i[1], 0]) {
-        cylinder(h=magnet_height + $bleed, d=magnet_diameter);
-      }
+
+  // Cut out corner magnet holes
+  for (i=corner_hole_offsets) {
+    translate([i[0], i[1], height-magnet_height]) {
+      cylinder(h=magnet_height + $bleed, d=magnet_diameter);
     }
   }
+
   translate(card_offset) {
     // Cut out for card
     translate([0, 0, base_height]) {
