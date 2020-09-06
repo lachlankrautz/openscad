@@ -23,15 +23,26 @@ card_gap = 0.5;
 resource_cutout_width = 40;
 action_min_width = 25;
 
+cube_cols = 10;
+cube_icon_gap = 1;
 cube_size = 9;
+cube_foot_rounding = 1;
 
 number_font_size = 8;
-health_height = cube_size * 2 + number_font_size * 1.5;
 
 number_depth = 0.8;
 icon_depth = 0.5;
 
+health_icon_size = [
+  9,
+  9,
+];
+
 // Derived Attributes
+cube_foot_size = cube_size + cube_foot_rounding * 2;
+cube_array_width = cube_foot_size * cube_cols;
+
+health_height = cube_size * 2 + number_font_size * 1.5;
 base_dashboard_height = min_floor_height + cube_dish_height;
 
 player_cutout_width = card_width + card_gap * 2;
@@ -39,9 +50,10 @@ player_cutout_length = card_length + card_gap * 2;
 
 resource_cutout_length = player_cutout_length + health_height + $wall_thickness;
 
+health_tray_min_width = cube_array_width + health_icon_size[0] + cube_icon_gap + $wall_thickness;
 health_tray_width = max(
   player_cutout_width + action_min_width,
-  100
+  health_tray_min_width
 );
 
 action_full_width = health_tray_width - player_cutout_width;
@@ -64,26 +76,9 @@ module letter(l, letter_size, halign="center", valign="center") {
 }
 
 module health_tray() {
-  cube_foot_rounding = 1;
-  cube_foot_size = cube_size + cube_foot_rounding * 2;
-
-  foot_size = [
-    cube_foot_size,
-    cube_foot_size,
-    cube_dish_height
-  ];
+  left_buffer = health_tray_width - health_tray_min_width - cube_icon_gap;
 
   cube_rows = 2;
-  cube_cols = 10;
-
-  icon_target_size = [
-    9,
-    9,
-  ];
-
-  cube_array_width = cube_foot_size * cube_cols;
-  icon_offset = health_tray_width - cube_array_width + cube_foot_rounding;
-  icon_width_buffer = icon_offset - icon_target_size[0];
   heart_length_adjustment = 1;
   letter_length_offset = $wall_thickness + cube_foot_size * 2 + $bleed;
 
@@ -93,11 +88,11 @@ module health_tray() {
     100
   ];
   translate([
-    icon_width_buffer,
+    left_buffer,
     cube_foot_size + heart_length_adjustment,
     base_dashboard_height -icon_depth
   ]) {
-    svg_icon(heart_file, icon_depth + $bleed, heart_size, icon_target_size);
+    svg_icon(heart_file, icon_depth + $bleed, heart_size, health_icon_size);
   }
 
   brain_file = "../../assets/images/arkham_horror_lcg_brain_token.svg";
@@ -106,12 +101,19 @@ module health_tray() {
     100
   ];
   translate([
-    icon_width_buffer,
+    left_buffer,
     0,
     base_dashboard_height -icon_depth
   ]) {
-    svg_icon(brain_file, icon_depth + $bleed, brain_size, icon_target_size);
+    svg_icon(brain_file, icon_depth + $bleed, brain_size, health_icon_size);
   }
+
+  icon_offset = left_buffer + health_icon_size[0] + cube_icon_gap;
+  foot_size = [
+    cube_foot_size,
+    cube_foot_size,
+    cube_dish_height
+  ];
 
   translate([icon_offset, 0, 0]) {
     for(i=[0:cube_cols-1]) {
