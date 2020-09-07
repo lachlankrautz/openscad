@@ -60,6 +60,14 @@ corner_hole_offsets = [
   [base_size[0] - corner_magnet_offset, base_size[1] - corner_magnet_offset],
 ];
 
+/*
+echo("window buffer: ", window_buffer);
+echo("base size: ", base_size);
+echo("card size: ", card_size);
+echo("card window size: ", card_window_size);
+echo("card window offset: ", card_window_offset);
+*/
+
 // Model
 difference() {
   // Base

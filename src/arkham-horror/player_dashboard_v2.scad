@@ -17,8 +17,8 @@ magnet_diameter = 3.4;
 min_floor_height = 2;
 cube_dish_height = 4;
 
-card_width = 92;
-card_length = 67;
+card_width = 91;
+card_length = 65.5;
 card_gap = 0.5;
 
 resource_cutout_width = 40;
@@ -58,6 +58,7 @@ health_tray_width = max(
 );
 
 action_full_width = health_tray_width - player_cutout_width;
+action_full_length = player_cutout_length + $wall_thickness;
 
 dashboard_size = [
   resource_cutout_width + player_cutout_width + action_full_width + $wall_thickness * 2,
@@ -153,7 +154,7 @@ module player_card_tray() {
 
   render() translate([0, 0, base_dashboard_height - card_cutout_depth]) {
     cube([
-      player_cutout_width + $bleed,
+      player_cutout_width,
       player_cutout_length,
       card_cutout_depth + $bleed
     ]);
@@ -183,15 +184,16 @@ module action_tray() {
   action_card_height = 0.7;
   action_card_top_inset = 1;
 
-  action_full_length = player_cutout_length + $wall_thickness;
 
   // cut 1 for the top to latch in
   // cut 0.7 for the card height
   // starting height needs room for 1 cut from magnet
 
   magnet_inset = 1;
+  min_magnet_height_buffer = 0.5;
   magnet_wall_girth = magnet_diameter + magnet_inset;
-  action_cutout_height = min_floor_height + 2;
+
+  action_cutout_height = base_dashboard_height - magnet_inset - min_magnet_height_buffer;
   action_inner_cutout_height = action_cutout_height - action_card_height - action_card_top_inset;
 
   action_tray_size = [
@@ -205,6 +207,12 @@ module action_tray() {
     action_full_length - magnet_wall_girth * 2,
     action_card_height + action_card_top_inset + $bleed
   ];
+
+  /*
+  echo("action width: ", action_full_width);
+  echo("action length: ", action_full_length);
+  echo("inner size: ", action_inner_tray_size);
+  */
 
   corner_magnet_positions = [
     [magnet_inset, magnet_inset],
@@ -221,6 +229,11 @@ module action_tray() {
         magnet_hole();
       }
     }
+  }
+
+  // fix z-tearing between player card tray and action tray
+  translate([-$bleed, 0, action_cutout_height]) {
+    cube([$bleed * 2, action_full_length - $wall_thickness, base_dashboard_height - action_cutout_height + $bleed]);
   }
 
   translate([magnet_wall_girth, magnet_wall_girth, action_inner_cutout_height]) {
@@ -325,6 +338,24 @@ module resource_tray() {
   }
 }
 
+module test_action_tray() {
+  difference() {
+    rounded_cube([
+      action_full_width + 10 + $wall_thickness, 
+      action_full_length + $wall_thickness, 
+      dashboard_size[2]
+    ], flat=true);
+
+    translate([-$bleed, $wall_thickness, base_dashboard_height - 2]) {
+      cube([10 + $wall_thickness + $bleed, action_full_length - $wall_thickness, 2 + $bleed]);
+    }
+
+    translate([10 + $wall_thickness, $wall_thickness, 0]) {
+      action_tray();
+    }
+  }
+}
+
 module player_dashboard() {
   // Positioning
   resource_tray_width_offset = resource_cutout_width + $wall_thickness;
@@ -334,7 +365,7 @@ module player_dashboard() {
   // Model
   difference() {
     rounded_cube(dashboard_size, flat=true);
-  
+ 
     // Place all trays inside wall bufer
     translate([$wall_thickness, $wall_thickness, 0]) {
       resource_tray();
@@ -357,4 +388,5 @@ module player_dashboard() {
   }
 }
 
-player_dashboard();
+// player_dashboard();
+test_action_tray();
