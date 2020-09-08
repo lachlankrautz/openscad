@@ -25,6 +25,7 @@ resource_cutout_width = 40;
 action_min_width = 25;
 
 cube_cols = 10;
+// cube_cols = 2;
 cube_icon_gap = 1;
 cube_size = 9;
 cube_foot_rounding = 1;
@@ -41,7 +42,6 @@ health_icon_size = [
 
 // Derived Attributes
 cube_foot_size = cube_size + cube_foot_rounding * 2;
-cube_array_width = cube_foot_size * cube_cols;
 
 health_height = cube_size * 2 + number_font_size * 1.5;
 base_dashboard_height = min_floor_height + cube_dish_height;
@@ -51,7 +51,7 @@ player_cutout_length = card_length + card_gap * 2;
 
 resource_cutout_length = player_cutout_length + health_height + $wall_thickness;
 
-health_tray_min_width = cube_array_width + health_icon_size[0] + cube_icon_gap + $wall_thickness;
+health_tray_min_width = cube_foot_size * cube_cols + health_icon_size[0] + cube_icon_gap + $wall_thickness;
 health_tray_width = max(
   player_cutout_width + action_min_width,
   health_tray_min_width
@@ -62,7 +62,7 @@ action_full_length = player_cutout_length + $wall_thickness;
 
 dashboard_size = [
   resource_cutout_width + player_cutout_width + action_full_width + $wall_thickness * 2,
-  resource_cutout_length + $wall_thickness*2, 
+  resource_cutout_length + $wall_thickness * 2, 
   base_dashboard_height
 ];
 
@@ -94,7 +94,7 @@ module health_tray() {
     cube_foot_size + heart_length_adjustment,
     base_dashboard_height -icon_depth
   ]) {
-    svg_icon(heart_file, icon_depth + $bleed, heart_size, health_icon_size);
+    svg_icon(heart_file, number_depth + $bleed, heart_size, health_icon_size);
   }
 
   brain_file = "../../assets/images/arkham_horror_lcg_brain_token.svg";
@@ -107,7 +107,7 @@ module health_tray() {
     0,
     base_dashboard_height -icon_depth
   ]) {
-    svg_icon(brain_file, icon_depth + $bleed, brain_size, health_icon_size);
+    svg_icon(brain_file, number_depth + $bleed, brain_size, health_icon_size);
   }
 
   icon_offset = left_buffer + health_icon_size[0] + cube_icon_gap;
@@ -356,6 +356,23 @@ module test_action_tray() {
   }
 }
 
+module test_health_tray() {
+  difference() {
+    // TODO figure out clean positioning when other elements are absent
+    translate([80, 0, 0]) {
+      rounded_cube([
+        40,
+        40,
+        base_dashboard_height
+      ], flat=true);
+    }
+
+    translate([$wall_thickness, $wall_thickness, 0]) {
+      health_tray();
+    }
+  }
+}
+
 module player_dashboard() {
   // Positioning
   resource_tray_width_offset = resource_cutout_width + $wall_thickness;
@@ -388,5 +405,6 @@ module player_dashboard() {
   }
 }
 
-// player_dashboard();
-test_action_tray();
+player_dashboard();
+// test_action_tray();
+// test_health_tray();

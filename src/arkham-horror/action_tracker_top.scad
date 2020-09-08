@@ -28,8 +28,6 @@ magnet_height = 1;
 magnet_diameter = 3.4;
 corner_magnet_buffer = 1;
 border_width = 4.5;
-card_width = size[0];
-card_length = size[1];
 window_buffer = 1;
 foot_rounding = 3;
 
