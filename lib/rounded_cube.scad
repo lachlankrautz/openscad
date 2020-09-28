@@ -26,9 +26,6 @@ module rounded_cube(
   top_height = _flat_top ? 0: $rounding;
   bottom_height = _flat_bottom ? 0: $rounding;
 
-  echo ("side rounding:", _side_rounding);
-  echo("rounding:", $rounding);
-
   cube_size = [
     size[0] - $rounding * 2,
     size[1] - $rounding * 2,
