@@ -12,12 +12,22 @@ $rounding = 3;
 // requires height > $rounding * 2
 // flat_top || flat_bottom requires height > $rounding
 // flat_top && flat_bottom requires height > $bleed
-module rounded_cube(size, flat=false, flat_top=false, flat_bottom=false) {
+module rounded_cube(
+  size, 
+  flat=false, 
+  flat_top=false, 
+  flat_bottom=false,
+  side_rounding=-1
+) {
   _flat_top = flat_top || flat;
   _flat_bottom = flat_bottom || flat;
+  _side_rounding = side_rounding > -1 ? side_rounding: $rounding;
 
   top_height = _flat_top ? 0: $rounding;
   bottom_height = _flat_bottom ? 0: $rounding;
+
+  echo ("side rounding:", _side_rounding);
+  echo("rounding:", $rounding);
 
   cube_size = [
     size[0] - $rounding * 2,
@@ -32,7 +42,13 @@ module rounded_cube(size, flat=false, flat_top=false, flat_bottom=false) {
    } else {
      minkowski() {
        translate([$rounding, $rounding, bottom_height]) {
-         cube(cube_size);
+         if (_side_rounding != $rounding) {
+           linear_extrude(cube_size[2]) {
+             rounded_square([cube_size[0], cube_size[1]], $rounding=_side_rounding);
+           }
+         } else {
+           cube(cube_size);
+         }
        }
        if (_flat_top) {
          difference() {

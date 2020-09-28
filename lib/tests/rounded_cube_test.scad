@@ -23,6 +23,11 @@ translate([120, 0, 0]) {
   rounded_cube([30, 30, 20], flat=true);
 }
 
+// can render cube with different side and top rounding
+translate([80, 40, 0]) {
+  rounded_cube([30, 30, 2], flat_bottom=true, side_rounding=2, $rounding=1);
+}
+
 // can render flat top and flat bottom that is short
 translate([120, 40, 0]) {
   rounded_cube([30, 30, 1], flat=true);

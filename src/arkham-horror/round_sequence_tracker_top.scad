@@ -72,7 +72,7 @@ echo("card window offset: ", card_window_offset);
 difference() {
   // Base
   union() {
-    rounded_cube(base_size, flat_top=true, $rounding=1);
+    rounded_cube(base_size, flat_top=true, side_rounding=2, $rounding=1);
     translate(card_offset) {
       cube(card_size);
     }
