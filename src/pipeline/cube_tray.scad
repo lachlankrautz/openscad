@@ -13,21 +13,14 @@ $wall_thickness = 2;
 function get_offset (size, index=1) = (size + $wall_thickness) * index;
 
 // Attributes
-/*
 size = [
   118,
   118,
-  28,
-];
-*/
-size = [
-  (118 - $wall_thickness * 3) / 2 + $wall_thickness * 2,
-  (118 - $wall_thickness * 3) / 2 + $wall_thickness * 2,
   24,
 ];
 
-cols = 1;
-rows = 1;
+cols = 2;
+rows = 2;
 
 // Derived attributes
 
