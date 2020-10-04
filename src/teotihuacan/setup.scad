@@ -22,7 +22,7 @@ royal_tile_count = 11;
 royal_tile_size = [
   55,
   40, 
-  2.5,
+  2.2,
 ];
 
 // Temple bonus tiles
@@ -43,8 +43,8 @@ technology_tile_size = [
 ];
 
 building_size = [
-  12,
-  12,
+  12.2,
+  12.2,
   16.5,
 ];
 building_count = 5;
