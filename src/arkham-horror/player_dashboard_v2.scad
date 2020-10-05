@@ -1,6 +1,7 @@
 echo(version=version());
 
 include <../../lib/rounded_cube.scad>
+include <../../lib/layout.scad>
 include <../../lib/elephant_foot.scad>
 include <../../lib/svg_icon.scad>
 use <../../assets/fonts/Teutonic.ttf>
@@ -238,8 +239,8 @@ module action_tray() {
 }
 
 module fillet() {
-   offset(r=-$rounding) {
-     offset(delta=$rounding) {
+   padded_offset(r=-$rounding) {
+     padded_offset(delta=$rounding) {
        children();
      }
    }

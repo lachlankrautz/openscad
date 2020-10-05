@@ -3,6 +3,7 @@ echo(version=version());
 include <../../lib/rounded_cube.scad>
 include <../../lib/tile_tray.scad>
 include <../../lib/disc_socket.scad>
+include <../../lib/layout.scad>
 
 // Config
 $fn = 50;
@@ -74,8 +75,8 @@ box_size = [
 ];
 
 module fillet() {
-   offset(r=-$rounding) {
-     offset(delta=$rounding) {
+   padded_offset(r=-$rounding) {
+     padded_offset(delta=$rounding) {
        children();
      }
    }
@@ -86,7 +87,7 @@ module swish() {
   start_l = -$bleed;
   end_w = box_size[0] + $bleed;
 
-  // temple_w = get_tile_offset(temple_bonus_tile_size[0]) + $wall_thickness * 2+ $rounding;
+  // temple_w = padded_offset(temple_bonus_tile_size[0]) + $wall_thickness * 2+ $rounding;
   temple_w = disc_offset(eclipse_diameter) + $wall_thickness * 2+ $rounding;
   eclipse_l = disc_offset(eclipse_diameter) + $wall_thickness - $rounding;
   buildings_l = building_length * 2 + $wall_thickness * 3 - $rounding;

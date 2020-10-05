@@ -1,6 +1,7 @@
 echo(version=version());
 
 include <../../lib/rounded_cube.scad>
+include <../../lib/layout.scad>
 include <../../lib/tile_tray.scad>
 
 // Config
@@ -26,8 +27,8 @@ contract_tile_size = [
 ];
 
 box_size = [
-  get_tile_offset(contract_tile_size[0]) + get_tile_offset(order_tile_size[0]) + $wall_thickness,
-  get_tile_offset(contract_tile_size[1], 3) + $wall_thickness,
+  padded_offset(contract_tile_size[0]) + padded_offset(order_tile_size[0]) + $wall_thickness,
+  padded_offset(contract_tile_size[1], 3) + $wall_thickness,
   contract_tile_size[2] * contract_tile_count + $wall_thickness,
 ];
 
@@ -38,10 +39,10 @@ difference() {
 
   translate([$wall_thickness, $wall_thickness, 0]) {
     for(i=[0:tile_rows-1]) {
-      translate([0, get_tile_offset(order_tile_size[1], i), 0]) {
+      translate([0, padded_offset(order_tile_size[1], i), 0]) {
         tile_cutout(contract_tile_size, 10, left_cutout=true);
 
-        translate([get_tile_offset(contract_tile_size[0], 1), 0, 0]) {
+        translate([padded_offset(contract_tile_size[0], 1), 0, 0]) {
           tile_cutout(order_tile_size, 10, height_diff + $wall_thickness, right_cutout=true);
         }
       }

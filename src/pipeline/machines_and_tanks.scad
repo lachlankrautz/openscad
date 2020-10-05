@@ -2,6 +2,7 @@ echo(version=version());
 
 include <../../lib/rounded_cube.scad>
 include <../../lib/tile_tray.scad>
+include <../../lib/layout.scad>
 
 // Config
 $fn = 50;
@@ -26,8 +27,8 @@ tank_tile_size = [
 ];
 
 box_size = [
-  get_tile_offset(machine_tile_size[0], machine_cols) + $wall_thickness,
-  get_tile_offset(machine_tile_size[1]) + get_tile_offset(tank_tile_size[1], tank_rows) + $wall_thickness,
+  padded_offset(machine_tile_size[0], machine_cols) + $wall_thickness,
+  padded_offset(machine_tile_size[1]) + padded_offset(tank_tile_size[1], tank_rows) + $wall_thickness,
   tank_tile_size[2] * tank_tile_count + $wall_thickness,
 ];
 
@@ -41,20 +42,20 @@ difference() {
     tile_cutout(machine_tile_size, machine_tile_count, machine_height, left_cutout=true);
 
     // Layout right of first machine tray
-    translate([get_tile_offset(machine_tile_size[0]), 0, 0]) {
+    translate([padded_offset(machine_tile_size[0]), 0, 0]) {
       tile_cutout(machine_tile_size, machine_tile_count, machine_height, right_cutout=true);
     }
 
     // Layout above machines
-    translate([0, get_tile_offset(machine_tile_size[1]), 0]) {
+    translate([0, padded_offset(machine_tile_size[1]), 0]) {
       for(i=[0:tank_rows-1]) {
         // Layout tank row
-        translate([0, get_tile_offset(tank_tile_size[1], i), 0]) {
+        translate([0, padded_offset(tank_tile_size[1], i), 0]) {
           tile_cutout(tank_tile_size, tank_tile_count, left_cutout=true);
 
           
           // Layout align tank to right side
-          translate([box_size[0] - get_tile_offset(tank_tile_size[0]) - $wall_thickness, 0, 0]) {
+          translate([box_size[0] - padded_offset(tank_tile_size[0]) - $wall_thickness, 0, 0]) {
             tile_cutout(tank_tile_size, tank_tile_count, right_cutout=true);
           }
         }

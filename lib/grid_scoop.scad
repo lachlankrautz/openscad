@@ -1,5 +1,5 @@
 include <./scoop.scad>
-include <./layout.scad>
+include <./grid_layout.scad>
 
 module grid_scoop(grid, pos, radius = 0) {
   translate(grid_offset(grid, pos)) {

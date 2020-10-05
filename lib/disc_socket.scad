@@ -1,3 +1,5 @@
+include <./layout.scad>
+
 $bleed = 0.01;
 $padding = 0.4;
 

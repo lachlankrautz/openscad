@@ -1,10 +1,12 @@
+include <./layout.scad>
+
 $wall_thickness = 2;
 $bleed = 0.01;
-$tile_gap = 0.5;
+$gap = 0.5;
 $inset = 6;
+$cutout_fraction = 0.6;
 
-function get_tile_offset (size, index=1) = (size + $tile_gap * 2 + $wall_thickness) * index;
-function get_tile_stack_height (size, count) = size[2] * count + $tile_gap;
+function get_tile_stack_height (size, count) = size[2] * count + $gap;
 
 module tile_cutout(
   tile_size, 
@@ -17,19 +19,19 @@ module tile_cutout(
   bottom_cutout=false
 ) {
   tray_size = [
-    tile_size[0] + $tile_gap * 2,
-    tile_size[1] + $tile_gap * 2,
+    tile_size[0] + $gap * 2,
+    tile_size[1] + $gap * 2,
     get_tile_stack_height(tile_size, count) + $bleed,
   ];
 
-  fraction = 0.6;
   cutout_size = [
-    tray_size[0] * fraction,
-    tray_size[1] * fraction,
+    tray_size[0] * $cutout_fraction,
+    tray_size[1] * $cutout_fraction,
     box_size[2] + $bleed * 2,
   ];
 
   // TODO fix to not rely on box size!
+  echo("cutout size: ", cutout_size);
 
   _floor_height = roof_height 
     ? roof_height - tray_size[2] + $bleed

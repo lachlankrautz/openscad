@@ -2,6 +2,7 @@ echo(version=version());
 
 include <../../lib/rounded_cube.scad>
 include <../../lib/tile_tray.scad>
+include <../../lib/layout.scad>
 
 // Config
 $fn = 50;
@@ -16,8 +17,8 @@ decoration_tile_size = [
 ];
 
 box_size = [
-  get_tile_offset(decoration_tile_size[0]) + $wall_thickness,
-  get_tile_offset(decoration_tile_size[1]) + $wall_thickness,
+  padded_offset(decoration_tile_size[0]) + $wall_thickness,
+  padded_offset(decoration_tile_size[1]) + $wall_thickness,
   get_tile_stack_height(decoration_tile_size, decoration_tile_count)
     + $wall_thickness,
 ];

@@ -3,6 +3,7 @@ echo(version=version());
 include <../../lib/rounded_cube.scad>
 include <../../lib/tile_tray.scad>
 include <../../lib/disc_socket.scad>
+include <../../lib/layout.scad>
 
 // Config
 $fn = 50;
@@ -62,20 +63,20 @@ swoosh_height = building_size[2] / 2 + 2;
 
 box_size = [
   max(
-    get_tile_offset(season_tile_size[0])
-      + get_tile_offset(technology_tile_size[0])
+    padded_offset(season_tile_size[0])
+      + padded_offset(technology_tile_size[0])
       + $wall_thickness,
     disc_offset(eclipse_diameter, eclipse_count)
       + building_width_2
       + $wall_thickness * 2
   ),
   max(
-    get_tile_offset(technology_tile_size[1], technology_tile_stack_count)
+    padded_offset(technology_tile_size[1], technology_tile_stack_count)
       + building_length * 2
       + $wall_thickness,
-    get_tile_offset(season_tile_size[1])
-      + get_tile_offset(royal_tile_size[1])
-      + get_tile_offset(temple_bonus_tile_size[1])
+    padded_offset(season_tile_size[1])
+      + padded_offset(royal_tile_size[1])
+      + padded_offset(temple_bonus_tile_size[1])
       + disc_offset(eclipse_diameter)
   ) + $wall_thickness * 2,
   get_tile_stack_height(royal_tile_size, royal_tile_count)
@@ -83,8 +84,8 @@ box_size = [
 ];
 
 module fillet() {
-   offset(r=-$rounding) {
-     offset(delta=$rounding) {
+   padded_offset(r=-$rounding) {
+     padded_offset(delta=$rounding) {
        children();
      }
    }
@@ -95,7 +96,7 @@ module swish() {
   start_l = -$bleed;
   end_w = box_size[0] + $bleed;
 
-  temple_w = get_tile_offset(temple_bonus_tile_size[0]) + $wall_thickness * 2+ $rounding;
+  temple_w = padded_offset(temple_bonus_tile_size[0]) + $wall_thickness * 2+ $rounding;
   eclipse_l = disc_offset(eclipse_diameter) + $wall_thickness - $rounding;
   buildings_l = building_length * 2 + $wall_thickness * 3 - $rounding;
 
@@ -162,11 +163,11 @@ difference() {
       tile_cutout(temple_bonus_tile_size, temple_bonus_count, roof_height=box_size[2], left_cutout=true);
 
       // Royal
-      translate([0, get_tile_offset(temple_bonus_tile_size[1]), 0]) {
+      translate([0, padded_offset(temple_bonus_tile_size[1]), 0]) {
         tile_cutout(royal_tile_size, royal_tile_count, roof_height=box_size[2], left_cutout=true);
     
         // Season
-        translate([0, get_tile_offset(royal_tile_size[1]), 0]) {
+        translate([0, padded_offset(royal_tile_size[1]), 0]) {
           tile_cutout(season_tile_size, season_tile_count, roof_height=box_size[2], left_cutout=true);
         }
       }
@@ -176,13 +177,13 @@ difference() {
   // Technology
   translate([
     box_size[0]
-      - get_tile_offset(technology_tile_size[0]),
+      - padded_offset(technology_tile_size[0]),
     box_size[1] 
-      - get_tile_offset(technology_tile_size[1], technology_tile_stack_count),
+      - padded_offset(technology_tile_size[1], technology_tile_stack_count),
     0
   ]) {
     for(i=[0:technology_tile_stack_count-1]) {
-      translate([0, get_tile_offset(technology_tile_size[1], i), 0]) {
+      translate([0, padded_offset(technology_tile_size[1], i), 0]) {
         tile_cutout(technology_tile_size, technology_tile_count, roof_height=box_size[2], right_cutout=true);
       }
     }

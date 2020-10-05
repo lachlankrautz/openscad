@@ -1,7 +1,7 @@
 echo(version=version());
 
 include <../../lib/cutout_tray.scad>
-include <../../lib/layout.scad>
+include <../../lib/grid_layout.scad>
 include <../../lib/scoop.scad>
 include <../../lib/grid_scoop.scad>
 

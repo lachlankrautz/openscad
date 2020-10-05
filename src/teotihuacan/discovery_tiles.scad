@@ -3,6 +3,7 @@ echo(version=version());
 include <../../lib/rounded_cube.scad>
 include <../../lib/tile_tray.scad>
 include <../../lib/disc_socket.scad>
+include <../../lib/layout.scad>
 
 // Config
 $fn = 50;
@@ -22,8 +23,8 @@ rows = 2;
 cols = 2;
 
 box_size = [
-  get_tile_offset(discovery_tile_size[0], cols) + $wall_thickness,
-  get_tile_offset(discovery_tile_size[1], rows) + $wall_thickness,
+  padded_offset(discovery_tile_size[0], cols) + $wall_thickness,
+  padded_offset(discovery_tile_size[1], rows) + $wall_thickness,
   get_tile_stack_height(discovery_tile_size, discovery_tile_count) + $wall_thickness,
 ];
 
@@ -34,8 +35,8 @@ difference() {
     for(i=[0:cols-1]) {
       for(j=[0:rows-1]) {
         translate([
-          get_tile_offset(discovery_tile_size[0], i),
-          get_tile_offset(discovery_tile_size[1], j),
+          padded_offset(discovery_tile_size[0], i),
+          padded_offset(discovery_tile_size[1], j),
           0,
         ]) {
           tile_cutout(
