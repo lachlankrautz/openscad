@@ -17,9 +17,11 @@ total_size = [
   22
 ];
 
+die_size = 17;
+cube_foot_rounding = 1;
 dice_cutout_size = [
-  34,
-  34,
+  die_size * 2 + cube_foot_rounding * 2,
+  die_size * 2 + cube_foot_rounding * 2,
   8,
 ];
 
@@ -66,6 +68,6 @@ difference() {
       dice_cutout_size[0],
       dice_cutout_size[1],
       dice_cutout_size[2] + $bleed,
-    ], flat_bottom=true, $rounding=1);
+    ], flat_bottom=true, $rounding=cube_foot_rounding);
   }
 }
