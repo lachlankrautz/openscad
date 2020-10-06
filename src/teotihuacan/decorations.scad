@@ -19,7 +19,7 @@ decoration_tile_size = [
 box_size = [
   padded_offset(decoration_tile_size[0]) + $wall_thickness,
   padded_offset(decoration_tile_size[1]) + $wall_thickness,
-  get_tile_stack_height(decoration_tile_size, decoration_tile_count)
+  tile_stack_height(decoration_tile_size, decoration_tile_count)
     + $wall_thickness,
 ];
 

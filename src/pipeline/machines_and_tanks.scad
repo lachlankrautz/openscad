@@ -39,11 +39,11 @@ difference() {
   rounded_cube(box_size, flat_top=true, $rounding=2);
 
   translate([$wall_thickness, $wall_thickness, 0]) {
-    tile_cutout(machine_tile_size, machine_tile_count, machine_height, left_cutout=true);
+    tile_cutout(machine_tile_size, machine_tile_count, box_size[2], machine_height, left_cutout=true);
 
     // Layout right of first machine tray
     translate([padded_offset(machine_tile_size[0]), 0, 0]) {
-      tile_cutout(machine_tile_size, machine_tile_count, machine_height, right_cutout=true);
+      tile_cutout(machine_tile_size, machine_tile_count, box_size[2], machine_height, right_cutout=true);
     }
 
     // Layout above machines
@@ -51,12 +51,12 @@ difference() {
       for(i=[0:tank_rows-1]) {
         // Layout tank row
         translate([0, padded_offset(tank_tile_size[1], i), 0]) {
-          tile_cutout(tank_tile_size, tank_tile_count, left_cutout=true);
+          tile_cutout(tank_tile_size, tank_tile_count, box_size[2], left_cutout=true);
 
           
           // Layout align tank to right side
           translate([box_size[0] - padded_offset(tank_tile_size[0]) - $wall_thickness, 0, 0]) {
-            tile_cutout(tank_tile_size, tank_tile_count, right_cutout=true);
+            tile_cutout(tank_tile_size, tank_tile_count, box_size[2], right_cutout=true);
           }
         }
       }

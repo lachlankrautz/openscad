@@ -8,7 +8,7 @@ include <../../lib/layout.scad>
 // Config
 $fn = 50;
 // $fn = 10;
-$gap = 0.5;
+$padding = 0.5;
 $wall_thickness = 2;
 $bleed = 0.01;
 
@@ -25,7 +25,7 @@ cols = 2;
 box_size = [
   padded_offset(discovery_tile_size[0], cols) + $wall_thickness,
   padded_offset(discovery_tile_size[1], rows) + $wall_thickness,
-  get_tile_stack_height(discovery_tile_size, discovery_tile_count) + $wall_thickness,
+  tile_stack_height(discovery_tile_size, discovery_tile_count) + $wall_thickness,
 ];
 
 difference() {

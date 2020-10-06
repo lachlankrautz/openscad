@@ -78,6 +78,7 @@ difference() {
       tile_cutout([
         upgrade_size[0],
         upgrade_size[1],
+        box_size[2],
         upgrade_size[2] + valuation_size[2] + $bleed,
       ], left_cutout=true, right_cutout=true);
     }

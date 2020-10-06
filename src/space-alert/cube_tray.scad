@@ -3,7 +3,6 @@ echo(version=version());
 include <../../lib/cutout_tray.scad>
 include <../../lib/layout.scad>
 include <../../lib/dish.scad>
-include <../../lib/offset_cylinder.scad>
 
 // Config
 $fn = 50;
@@ -11,14 +10,15 @@ $fn = 50;
 $wall_thickness = 2;
 $padding = 0.5;
 $rounding = 2;
+$bleed = 0.01;
 dish_roundness = 0.8;
 
 tracker_diameter = 12;
-tracker_height = 23;
+tracker_height = 23.2;
 padded_tracker_diameter = tracker_diameter + $padding * 2;
 
-canister_diameter = 7;
-canister_height = 13;
+canister_diameter = 6.5;
+canister_height = 13.7;
 padded_canister_diameter = canister_diameter + $padding * 2;
 canister_count = 3;
 
@@ -40,7 +40,7 @@ left_dish_size = [
    + padded_canister_diameter * canister_count 
    + $wall_thickness * (canister_count + 1),
   usable_left_size / left_dish_rows,
-  12,
+  14,
 ];
 
 box_size = [

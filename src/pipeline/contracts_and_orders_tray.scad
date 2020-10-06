@@ -29,7 +29,7 @@ contract_tile_size = [
 box_size = [
   padded_offset(contract_tile_size[0]) + padded_offset(order_tile_size[0]) + $wall_thickness,
   padded_offset(contract_tile_size[1], 3) + $wall_thickness,
-  contract_tile_size[2] * contract_tile_count + $wall_thickness,
+  tile_stack_height(contract_tile_size, contract_tile_count) + $wall_thickness,
 ];
 
 height_diff = contract_tile_size[2] * contract_tile_count - order_tile_size[2] * order_tile_count;
@@ -40,10 +40,20 @@ difference() {
   translate([$wall_thickness, $wall_thickness, 0]) {
     for(i=[0:tile_rows-1]) {
       translate([0, padded_offset(order_tile_size[1], i), 0]) {
-        tile_cutout(contract_tile_size, 10, left_cutout=true);
+        tile_cutout(
+          contract_tile_size, 
+          10, 
+          roof_height=box_size[2],
+          left_cutout=true
+        );
 
         translate([padded_offset(contract_tile_size[0], 1), 0, 0]) {
-          tile_cutout(order_tile_size, 10, height_diff + $wall_thickness, right_cutout=true);
+          tile_cutout(
+            order_tile_size, 
+            10, 
+            roof_height=box_size[2],
+            right_cutout=true
+          );
         }
       }
     }

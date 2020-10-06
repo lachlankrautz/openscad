@@ -8,7 +8,7 @@ include <../../lib/tile_tray.scad>
 $fn = 50;
 // $fn = 10;
 $wall_thickness = 2;
-$gap = 0.5;
+$padding = 0.5;
 $rounding = 2;
 $cutout_fraction = 0.4;
 
@@ -24,7 +24,7 @@ damage_stack_count = 3;
 box_size = [
   padded_offset(damage_tile_size[0], damage_stack_count) + $wall_thickness,
   padded_offset(damage_tile_size[0]) + $wall_thickness,
-  get_tile_stack_height(damage_tile_size, damage_tile_count) + $wall_thickness,
+  tile_stack_height(damage_tile_size, damage_tile_count) + $wall_thickness,
 ];
 
 difference() {

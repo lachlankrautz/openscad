@@ -8,7 +8,7 @@ include <../../lib/layout.scad>
 // Config
 $fn = 50;
 // $fn = 10;
-$gap = 0.5;
+$padding = 0.5;
 
 // Season
 season_tile_count = 8;
@@ -51,9 +51,9 @@ building_size = [
 building_count = 5;
 building_count_2 = 6;
 
-building_length = building_size[1] + $gap * 2;
-building_width = building_size[0] * building_count + $gap * 2;
-building_width_2 = building_size[0] * building_count_2 + $gap * 2;
+building_length = pad(building_size[1]);
+building_width = pad(building_size[0] * building_count);
+building_width_2 = pad(building_size[0] * building_count_2);
 
 eclipse_diameter = 15;
 eclipse_height = 10;
@@ -79,7 +79,7 @@ box_size = [
       + padded_offset(temple_bonus_tile_size[1])
       + disc_offset(eclipse_diameter)
   ) + $wall_thickness * 2,
-  get_tile_stack_height(royal_tile_size, royal_tile_count)
+  tile_stack_height(royal_tile_size, royal_tile_count)
     + $wall_thickness,
 ];
 
