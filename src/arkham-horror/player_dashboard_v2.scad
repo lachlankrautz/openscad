@@ -12,6 +12,7 @@ $bleed = 1;
 // $fn = 4;
 $fn = 50;
 skip_cubes = false;
+abs_filament = true
 
 // Attributes
 magnet_diameter = 3.4;
@@ -20,7 +21,10 @@ cube_dish_height = 4;
 
 card_width = 91;
 card_length = 65.5;
-card_gap = 0.5;
+// card_gap = 0.5;
+card_gap = abs_filament 
+  ? 1 
+  : 0.5; // more padding for ABS
 
 action_tray_gap = 2;
 
@@ -239,8 +243,8 @@ module action_tray() {
 }
 
 module fillet() {
-   padded_offset(r=-$rounding) {
-     padded_offset(delta=$rounding) {
+   offset(r=-$rounding) {
+     offset(delta=$rounding) {
        children();
      }
    }
