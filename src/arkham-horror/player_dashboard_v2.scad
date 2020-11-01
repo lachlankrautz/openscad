@@ -12,7 +12,7 @@ $bleed = 1;
 // $fn = 4;
 $fn = 50;
 skip_cubes = false;
-abs_filament = true
+$abs_filament = true;
 
 // Attributes
 magnet_diameter = 3.4;
@@ -21,10 +21,11 @@ cube_dish_height = 4;
 
 card_width = 91;
 card_length = 65.5;
-// card_gap = 0.5;
-card_gap = abs_filament 
+
+// more padding for ABS
+card_gap = $abs_filament 
   ? 1 
-  : 0.5; // more padding for ABS
+  : 0.5;
 
 action_tray_gap = 2;
 
@@ -178,7 +179,12 @@ module player_card_tray() {
 }
 
 module magnet_hole() {
-  magnet_height = 1;
+  /*
+  magnet_height = $abs_filament
+    ? 1.2
+    : 1;
+  */
+  magnet_height = 1.2;
 
   translate([magnet_diameter / 2, magnet_diameter / 2, -magnet_height]) {
     cylinder(h=magnet_height + $bleed, d=magnet_diameter);
@@ -347,7 +353,7 @@ module test_health_tray() {
 }
 
 module test_cube_slide() {
-  slide_cube_count = 6;
+  slide_cube_count = 3;
 
   slide_length = cube_size * slide_cube_count + cube_foot_rounding * 2;
   gap = 2;
