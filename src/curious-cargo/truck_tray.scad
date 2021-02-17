@@ -40,58 +40,81 @@ truck_2_size = [
 
 truck_count = 5;
 
-box_size = [
-  max(
-    padded_offset(truck_6_size[0]),
-    padded_offset(truck_5_size[0]) + padded_offset(truck_2_size[0]),
-    padded_offset(truck_4_size[0]) + padded_offset(truck_3_size[0])
-  ) + $wall_thickness,
-  padded_offset(truck_6_size[1], 3) + $wall_thickness,
-  tile_stack_height(truck_6_size, truck_count) + $wall_thickness,
-];
-
-difference() {
-  rounded_cube(box_size, flat_top=true, $rounding=2);
-
-  translate([$wall_thickness, $wall_thickness, 0]) {
-    // Bottom row
-    tile_cutout(
-      truck_4_size, 
-      truck_count, 
-      roof_height=box_size[2],
-      left_cutout=true
-    );
-    translate([padded_offset(truck_4_size[0]), 0, 0]) {
+module truck_tray() {
+  box_size = [
+    max(
+      padded_offset(truck_6_size[0]),
+      padded_offset(truck_5_size[0]) + padded_offset(truck_2_size[0]),
+      padded_offset(truck_4_size[0]) + padded_offset(truck_3_size[0])
+    ) + $wall_thickness,
+    padded_offset(truck_6_size[1], 3) + $wall_thickness,
+    tile_stack_height(truck_6_size, truck_count) + $wall_thickness,
+  ];
+  
+  difference() {
+    rounded_cube(box_size, flat_top=true, $rounding=2);
+  
+    translate([$wall_thickness, $wall_thickness, 0]) {
+      // Bottom row
       tile_cutout(
-        truck_3_size, 
-        truck_count, 
-        roof_height=box_size[2],
-        right_cutout=true
-      );
-    }
-
-    // Middle row
-    translate([0, padded_offset(truck_6_size[1]), 0]) {
-      tile_cutout(
-        truck_5_size, 
+        truck_4_size, 
         truck_count, 
         roof_height=box_size[2],
         left_cutout=true
       );
+      translate([padded_offset(truck_4_size[0]), 0, 0]) {
+        tile_cutout(
+          truck_3_size, 
+          truck_count, 
+          roof_height=box_size[2],
+          right_cutout=true
+        );
+      }
+  
+      // Middle row
+      translate([0, padded_offset(truck_6_size[1]), 0]) {
+        tile_cutout(
+          truck_5_size, 
+          truck_count, 
+          roof_height=box_size[2],
+          left_cutout=true
+        );
+      }
+      translate([padded_offset(truck_5_size[0]), padded_offset(truck_6_size[1]), 0]) {
+        tile_cutout(
+          truck_2_size, 
+          truck_count, 
+          roof_height=box_size[2],
+          right_cutout=true
+        );
+      }
+  
+      // Top row
+      translate([0, padded_offset(truck_6_size[1], 2), 0]) {
+        tile_cutout(
+          truck_6_size, 
+          truck_count, 
+          roof_height=box_size[2],
+          left_cutout=true
+        );
+      }
     }
-    translate([padded_offset(truck_5_size[0]), padded_offset(truck_6_size[1]), 0]) {
+  }
+}
+
+module test_truck_tray() {
+  box_size = [
+    padded_offset(truck_2_size[0]) + $wall_thickness,
+    padded_offset(truck_2_size[1]) + $wall_thickness,
+    tile_stack_height(truck_2_size, truck_count) + $wall_thickness,
+  ];
+  
+  difference() {
+    rounded_cube(box_size, flat_top=true, $rounding=2);
+  
+    translate([$wall_thickness, $wall_thickness, 0]) {
       tile_cutout(
         truck_2_size, 
-        truck_count, 
-        roof_height=box_size[2],
-        right_cutout=true
-      );
-    }
-
-    // Top row
-    translate([0, padded_offset(truck_6_size[1], 2), 0]) {
-      tile_cutout(
-        truck_6_size, 
         truck_count, 
         roof_height=box_size[2],
         left_cutout=true
@@ -99,3 +122,6 @@ difference() {
     }
   }
 }
+
+// truck_tray();
+test_truck_tray();
