@@ -9,27 +9,28 @@ include <../../lib/util_functions.scad>
 $fn = 50;
 // $fn = 10;
 
-/*
 tile_map = [
   [6, 7, 7, 7, 0],
   [8, 5, 6, 7, 7]
 ];
-*/
 
 // test tile map
+/*
 tile_map = [
   [5]
 ];
+*/
 
 tile_columns = len(tile_map[0]);
 tile_rows = len(tile_map);
 max_stack_count = max(flatten(tile_map));
 
 // Tokens
+// The calipers are actual garbage
 tile_size = [
-  27.6, 
-  27.6, 
-  2.8,
+  27, 
+  27, 
+  2,
 ];
 
 box_size = [
