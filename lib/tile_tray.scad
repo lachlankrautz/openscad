@@ -17,71 +17,74 @@ module tile_cutout(
   top_cutout=false,
   bottom_cutout=false
 ) {
-  tray_size = [
-    pad(tile_size[0]),
-    pad(tile_size[1]),
-    tile_stack_height(tile_size, count) + $bleed,
-  ];
-
-  floor_height = roof_height - tray_size[2] + $bleed;
-
-  translate([0, 0, floor_height]) {
-    rounded_cube(tray_size, flat=true, $rounding=1);
-  }
-
-  if (left_cutout) {
-    left_cutout_size = [
-      $inset * 2 + $wall_thickness,
-      tray_size[1] * $cutout_fraction,
-      roof_height + $bleed * 2,
+  // No need to render any cutout if the size is zero
+  if (count > 0) {
+    tray_size = [
+      pad(tile_size[0]),
+      pad(tile_size[1]),
+      tile_stack_height(tile_size, count) + $bleed,
     ];
-
-    translate([-left_cutout_size[0] + $inset, (tray_size[1] - left_cutout_size[1]) / 2, 0]) {
-      rounded_cube(left_cutout_size, flat=true);
+  
+    floor_height = roof_height - tray_size[2] + $bleed;
+  
+    translate([0, 0, floor_height]) {
+      rounded_cube(tray_size, flat=true, $rounding=1);
     }
-  }
-
-  if (right_cutout) {
-    right_cutout_size = [
-      $inset * 2 + $wall_thickness,
-      tray_size[1] * $cutout_fraction,
-      roof_height + $bleed * 2,
-    ];
-
-    translate([tray_size[0] - $inset, (tray_size[1] - right_cutout_size[1]) / 2, 0]) {
-      rounded_cube(right_cutout_size, flat=true);
+    
+    if (left_cutout) {
+      left_cutout_size = [
+        $inset * 2 + $wall_thickness,
+        tray_size[1] * $cutout_fraction,
+        roof_height + $bleed * 2,
+      ];
+  
+      translate([-left_cutout_size[0] + $inset, (tray_size[1] - left_cutout_size[1]) / 2, 0]) {
+        rounded_cube(left_cutout_size, flat=true);
+      }
     }
-  }
-
-  if (top_cutout) {
-    top_cutout_size = [
-      tray_size[0] * $cutout_fraction,
-      $inset * 2 + $wall_thickness,
-      roof_height + $bleed * 2,
-    ];
-
-    translate([
-      (tray_size[0] - top_cutout_size[0]) / 2, 
-      tray_size[1] + $wall_thickness - $inset,
-      0
-    ]) {
-      rounded_cube(top_cutout_size, flat=true);
+  
+    if (right_cutout) {
+      right_cutout_size = [
+        $inset * 2 + $wall_thickness,
+        tray_size[1] * $cutout_fraction,
+        roof_height + $bleed * 2,
+      ];
+  
+      translate([tray_size[0] - $inset, (tray_size[1] - right_cutout_size[1]) / 2, 0]) {
+        rounded_cube(right_cutout_size, flat=true);
+      }
     }
-  }
-
-  if (bottom_cutout) {
-    bottom_cutout_size = [
-      tray_size[0] * $cutout_fraction,
-      $inset * 2 + $wall_thickness,
-      roof_height + $bleed * 2,
-    ];
-
-    translate([
-      (tray_size[0] - bottom_cutout_size[0]) / 2, 
-      0 - bottom_cutout_size[1] - $wall_thickness + $inset,
-      0
-    ]) {
-      rounded_cube(bottom_cutout_size, flat=true);
+  
+    if (top_cutout) {
+      top_cutout_size = [
+        tray_size[0] * $cutout_fraction,
+        $inset * 2 + $wall_thickness,
+        roof_height + $bleed * 2,
+      ];
+  
+      translate([
+        (tray_size[0] - top_cutout_size[0]) / 2, 
+        tray_size[1] + $wall_thickness - $inset,
+        0
+      ]) {
+        rounded_cube(top_cutout_size, flat=true);
+      }
+    }
+  
+    if (bottom_cutout) {
+      bottom_cutout_size = [
+        tray_size[0] * $cutout_fraction,
+        $inset * 2 + $wall_thickness,
+        roof_height + $bleed * 2,
+      ];
+  
+      translate([
+        (tray_size[0] - bottom_cutout_size[0]) / 2, 
+        0 - bottom_cutout_size[1] - $wall_thickness + $inset,
+        0
+      ]) {
+        rounded_cube(bottom_cutout_size, flat=true);
+      }
     }
   }
 }
