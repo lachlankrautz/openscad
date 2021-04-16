@@ -17,7 +17,7 @@ tile_map = [
 // test tile map
 /*
 tile_map = [
-  [5]
+  [6]
 ];
 */
 
@@ -27,7 +27,7 @@ max_stack_count = max(flatten(tile_map));
 
 // Tokens
 diameter = 27;
-tile_height = 2.2;
+tile_height = 2;
 
 box_size = [
   padded_offset(diameter, tile_columns) + $wall_thickness,
