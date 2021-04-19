@@ -10,14 +10,14 @@ $fn = 50;
 // $fn = 10;
 
 tile_map = [
-  [6, 7, 7, 7, 0],
+  [6, 7, 7, 7, 4],
   [8, 5, 6, 7, 7]
 ];
 
 // test tile map
 /*
 tile_map = [
-  [5]
+  [4]
 ];
 */
 
@@ -30,6 +30,21 @@ max_stack_count = max(flatten(tile_map));
 tile_size = [
   27, 
   27, 
+  2,
+];
+
+// test
+/*
+tile_size = [
+  25,
+  25,
+  2,
+];
+*/
+
+small_tile_size = [
+  25,
+  25,
   2,
 ];
 
@@ -46,13 +61,26 @@ difference() {
     for(i=[0:tile_rows-1]) {
       for(j=[0:tile_columns-1]) {
         translate([padded_offset(tile_size[0], j), padded_offset(tile_size[1], i), 0]) {
-          tile_cutout(
-            tile_size, 
-            tile_map[i][j], 
-            roof_height=box_size[2],
-            top_cutout=true,
-            bottom_cutout=true
-          );
+          if (i == 0 && j == 4) {
+            translate([(tile_size[0] - small_tile_size[0]) / 2, 0, 0]) {
+              tile_cutout(
+                small_tile_size, 
+                tile_map[i][j], 
+                roof_height=box_size[2],
+                top_cutout=true,
+                bottom_cutout=true,
+                $cutout_fraction=0.646 // try to make the cutout match the larger tiles
+              );
+            }
+          } else {
+            tile_cutout(
+              tile_size, 
+              tile_map[i][j], 
+              roof_height=box_size[2],
+              top_cutout=true,
+              bottom_cutout=true
+            );
+          }
         }
       }
     }
