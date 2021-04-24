@@ -6,7 +6,13 @@ $padding = 0.5;
 $inset = 6;
 $cutout_fraction = 0.6;
 
+// I have no idea why it needs to be this vaule
+// Seems to be to do with how the cube handles rounding
+magic_pill_number = 0.4;
+
 function tile_stack_height (size, count=1) = size[2] * count + $padding;
+
+function tile_rounding (size, pill=false) = pill ? min(size[0], size[1]) / 2  + magic_pill_number: 1;
 
 module tile_cutout(
   tile_size, 
@@ -15,7 +21,8 @@ module tile_cutout(
   left_cutout=false, 
   right_cutout=false,
   top_cutout=false,
-  bottom_cutout=false
+  bottom_cutout=false,
+  pill=false
 ) {
   // No need to render any cutout if the size is zero
   if (count > 0) {
@@ -28,7 +35,7 @@ module tile_cutout(
     floor_height = roof_height - tray_size[2] + $bleed;
   
     translate([0, 0, floor_height]) {
-      rounded_cube(tray_size, flat=true, $rounding=1);
+      rounded_cube(tray_size, flat=true, $rounding=tile_rounding(tile_size, pill));
     }
     
     if (left_cutout) {

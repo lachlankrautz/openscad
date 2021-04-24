@@ -18,7 +18,7 @@ time_tile_stack = 3;
 
 urgency_size = [
   13.5,
-  24.5,
+  24,
   tile_height,
 ];
 urgency_count = 2;
@@ -101,7 +101,8 @@ difference() {
             tracker_stack,
             box_size[2],
             top_cutout=true,
-            bottom_cutout=true
+            bottom_cutout=true,
+            pill=true
           );
         }
       }
