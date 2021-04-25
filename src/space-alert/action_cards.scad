@@ -21,7 +21,7 @@ card_size = [
 box_size = [
   padded_offset(card_size[0]) + $wall_thickness,
   padded_offset(card_size[1]) + $wall_thickness,
-  tile_stack_height(card_size) + $wall_thickness,
+  stack_height(card_size[2]) + $wall_thickness,
 ];
 
 difference() {

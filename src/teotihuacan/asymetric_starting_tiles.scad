@@ -42,7 +42,7 @@ box_size = [
   padded_offset(player_power_size[1])
     + padded_offset(starting_tile_size[1])
     + $wall_thickness,
-  tile_stack_height(player_power_size, player_power_count)
+  stack_height(player_power_size[2], player_power_count)
     + $wall_thickness
 ];
 

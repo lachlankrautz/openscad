@@ -79,7 +79,7 @@ box_size = [
       + padded_offset(temple_bonus_tile_size[1])
       + disc_offset(eclipse_diameter)
   ) + $wall_thickness * 2,
-  tile_stack_height(royal_tile_size, royal_tile_count)
+  stack_height(royal_tile_size[2], royal_tile_count)
     + $wall_thickness,
 ];
 

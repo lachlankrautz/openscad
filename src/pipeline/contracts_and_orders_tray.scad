@@ -29,7 +29,7 @@ contract_tile_size = [
 box_size = [
   padded_offset(contract_tile_size[0]) + padded_offset(order_tile_size[0]) + $wall_thickness,
   padded_offset(contract_tile_size[1], 3) + $wall_thickness,
-  tile_stack_height(contract_tile_size, contract_tile_count) + $wall_thickness,
+  stack_height(contract_tile_size[2], contract_tile_count) + $wall_thickness,
 ];
 
 height_diff = contract_tile_size[2] * contract_tile_count - order_tile_size[2] * order_tile_count;

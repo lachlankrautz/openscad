@@ -6,10 +6,6 @@ $padding = 0.5;
 $inset = 8;
 $cutout_fraction = 0.6;
 
-function tile_stack_height (size, count=1) = size[2] * count + $padding;
-
-function stack_height (size, count=1) = size * count + $padding;
-
 module round_tile_cutout(
   diameter, 
   tile_height,

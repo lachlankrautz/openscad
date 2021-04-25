@@ -48,7 +48,7 @@ module truck_tray() {
       padded_offset(truck_4_size[0]) + padded_offset(truck_3_size[0])
     ) + $wall_thickness,
     padded_offset(truck_6_size[1], 3) + $wall_thickness,
-    tile_stack_height(truck_6_size, truck_count) + $wall_thickness,
+    stack_height(truck_6_size[2], truck_count) + $wall_thickness,
   ];
   
   difference() {
@@ -106,7 +106,7 @@ module test_truck_tray() {
   box_size = [
     padded_offset(truck_2_size[0]) + $wall_thickness,
     padded_offset(truck_2_size[1]) + $wall_thickness,
-    tile_stack_height(truck_2_size, truck_count) + $wall_thickness,
+    stack_height(truck_2_size[2], truck_count) + $wall_thickness,
   ];
   
   difference() {

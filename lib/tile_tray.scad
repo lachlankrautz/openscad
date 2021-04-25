@@ -10,8 +10,6 @@ $cutout_fraction = 0.6;
 // Seems to be to do with how the cube handles rounding
 magic_pill_number = 0.4;
 
-function tile_stack_height (size, count=1) = size[2] * count + $padding;
-
 function tile_rounding (size, pill=false) = pill ? min(size[0], size[1]) / 2  + magic_pill_number: 1;
 
 module tile_cutout(
@@ -29,7 +27,7 @@ module tile_cutout(
     tray_size = [
       pad(tile_size[0]),
       pad(tile_size[1]),
-      tile_stack_height(tile_size, count) + $bleed,
+      stack_height(tile_size[2], count) + $bleed,
     ];
   
     floor_height = roof_height - tray_size[2] + $bleed;

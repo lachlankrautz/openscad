@@ -44,7 +44,7 @@ box_size = [
     + padded_offset(water_tile_size[0]) 
     + $wall_thickness,
   padded_offset(end_goal_tile_size[1]) + $wall_thickness,
-  tile_stack_height(water_tile_size, max_stack_count) + $wall_thickness,
+  stack_height(water_tile_size[2], max_stack_count) + $wall_thickness,
 ];
 
 difference() {

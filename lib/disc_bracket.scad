@@ -5,7 +5,7 @@ $wall_thickness = 2;
 
 module disc_bracket(size, count=1) {
   outter_size = size + [$wall_thickness * 2, $wall_thickness * 2, 0];
-  stack_height = tile_stack_height(size, count);
+  stack_height = stack_height(size[2], count);
 
   linear_extrude(stack_height) {
     difference() {

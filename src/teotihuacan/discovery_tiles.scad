@@ -25,7 +25,7 @@ cols = 2;
 box_size = [
   padded_offset(discovery_tile_size[0], cols) + $wall_thickness,
   padded_offset(discovery_tile_size[1], rows) + $wall_thickness,
-  tile_stack_height(discovery_tile_size, discovery_tile_count) + $wall_thickness,
+  stack_height(discovery_tile_size[2], discovery_tile_count) + $wall_thickness,
 ];
 
 difference() {

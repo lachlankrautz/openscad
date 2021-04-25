@@ -31,7 +31,7 @@ module event_cards(with_tokens) {
     padded_offset(card_size[0], card_stack_count) + stack_gap + $wall_thickness,
     padded_offset(card_size[1]) 
       + $wall_thickness,
-    tile_stack_height(card_size) + $wall_thickness,
+    stack_height(card_size[2]) + $wall_thickness,
   ];
   
   difference() {

@@ -24,7 +24,7 @@ damage_stack_count = 3;
 box_size = [
   padded_offset(damage_tile_size[0], damage_stack_count) + $wall_thickness,
   padded_offset(damage_tile_size[0]) + $wall_thickness,
-  tile_stack_height(damage_tile_size, damage_tile_count) + $wall_thickness,
+  stack_height(damage_tile_size[2], damage_tile_count) + $wall_thickness,
 ];
 
 difference() {

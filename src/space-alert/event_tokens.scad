@@ -92,7 +92,7 @@ union() {
       0,
       0,
     ]) {
-      linear_extrude(tile_stack_height(disc_size, poly_count)) {
+      linear_extrude(stack_height(disc_size[2], poly_count)) {
         polygon(poly_coords);
       }
 
@@ -102,7 +102,7 @@ union() {
             rounded_cube([
               cap_width, 
               $wall_thickness, 
-              tile_stack_height(disc_size, poly_count)
+              stack_height(disc_size[2], poly_count)
             ], flat_bottom=true, $rounding=0.5);
           }
         }

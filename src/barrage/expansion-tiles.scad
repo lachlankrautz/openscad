@@ -32,7 +32,7 @@ max_stack_count = dev_tile_stack;
 box_size = [
   padded_offset(dev_tile_size[0]) + $wall_thickness,
   padded_offset(dev_tile_size[1]) + padded_offset(external_tile_size[1]) + $wall_thickness,
-  tile_stack_height(dev_tile_size, max_stack_count) + $wall_thickness,
+  stack_height(dev_tile_size[2], max_stack_count) + $wall_thickness,
 ];
 
 difference() {

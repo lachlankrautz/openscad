@@ -51,7 +51,7 @@ small_tile_size = [
 box_size = [
   padded_offset(tile_size[0], tile_columns) + $wall_thickness,
   padded_offset(tile_size[1], tile_rows) + $wall_thickness,
-  tile_stack_height(tile_size, max_stack_count) + $wall_thickness,
+  stack_height(tile_size[2], max_stack_count) + $wall_thickness,
 ];
 
 difference() {
