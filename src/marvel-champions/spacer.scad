@@ -3,7 +3,6 @@ echo(version=version());
 $wall_thickness = 2;
 $fn = 50;
 
-// Variables
 depth = 15;
 card_space_width = 98;
 

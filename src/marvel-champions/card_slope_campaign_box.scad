@@ -1,16 +1,21 @@
 echo(version=version());
 
-$card_space_width = 98;
+$wall_thickness = 3;
+$card_space_width = 97;
 $fn = 50;
 
 height = 70;
 depth = 10;
 
-module triangular_prism(width, height, depth, distance=0) {
+module triangular_prism(width, height, depth, distance="undef") {
+  _distance = (distance == "undef")
+    ? (width / 2)
+    : distance;
+
   translate([0, depth, width]) {
     rotate([90, 90, 0]) {
       linear_extrude(depth) {
-        polygon([[0, 0], [width, 0], [(distance == 0) ? (width / 2) : distance, height]]);
+        polygon([[0, 0], [width, 0], [_distance, height]]);
       }
     }
   }
