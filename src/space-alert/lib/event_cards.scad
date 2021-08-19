@@ -1,6 +1,6 @@
 include <../../../lib/rounded_cube.scad>
 include <../../../lib/layout.scad>
-include <../../../lib/tile_tray.scad>
+include <../../../lib/cutouts.scad>
 
 // Config
 $fn = 50;
@@ -54,7 +54,7 @@ module event_cards(with_tokens) {
     translate([$wall_thickness, $wall_thickness, 0]) {
       for(i=[0:card_stack_count-1]) {
         translate([padded_offset(card_size[0] + stack_gap, i), 0, 0]) {
-          tile_cutout(card_size, roof_height=box_size[2], left_cutout=true, right_cutout=true);
+          tile_cutout(card_size, 1, box_size[2], left_cutout=true, right_cutout=true);
         }
       }
     }

@@ -1,6 +1,4 @@
-echo(version=version());
-
-include <../../lib/cutout_tray.scad>
+include <../../lib/cutout_children.scad>
 include <../../lib/grid_layout.scad>
 include <../../lib/dish.scad>
 include <../../lib/grid_dish.scad>
@@ -36,7 +34,7 @@ large_dish_cell = [0, 0];
 small_dish_cells = [for (i = [0:cols-2]) [0,i+1]];
 
 // Model
-cutout_tray(size) {
+cutout_children(size) {
   grid_dish(grid, large_dish_cell);
 
   for (i=[0:cols-2]) grid_dish(grid, small_dish_cells[i]);

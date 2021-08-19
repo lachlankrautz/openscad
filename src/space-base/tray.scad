@@ -1,6 +1,4 @@
-echo(version=version());
-
-include <../../lib/cutout_tray.scad>
+include <../../lib/cutout_children.scad>
 include <../../lib/grid_layout.scad>
 include <../../lib/scoop.scad>
 include <../../lib/grid_scoop.scad>
@@ -34,7 +32,7 @@ dice_tray_cell = [1, 0];
 ship_tray_cell = [1, 1];
 
 // Model
-cutout_tray(size) {
+cutout_children(size) {
   scoop([cube_tray_width, cube_tray_length, size[2]]);
 
   grid_scoop(grid, ship_tray_cell);

@@ -1,8 +1,6 @@
-echo(version=version());
-
 include <../../lib/rounded_cube.scad>
 include <../../lib/layout.scad>
-include <../../lib/tile_tray.scad>
+include <../../lib/cutouts.scad>
 
 // Config
 $fn = 50;
@@ -59,14 +57,14 @@ module truck_tray() {
       tile_cutout(
         truck_4_size, 
         truck_count, 
-        roof_height=box_size[2],
+        box_size[2],
         left_cutout=true
       );
       translate([padded_offset(truck_4_size[0]), 0, 0]) {
         tile_cutout(
           truck_3_size, 
           truck_count, 
-          roof_height=box_size[2],
+          box_size[2],
           right_cutout=true
         );
       }
@@ -76,7 +74,7 @@ module truck_tray() {
         tile_cutout(
           truck_5_size, 
           truck_count, 
-          roof_height=box_size[2],
+          box_size[2],
           left_cutout=true
         );
       }
@@ -84,7 +82,7 @@ module truck_tray() {
         tile_cutout(
           truck_2_size, 
           truck_count, 
-          roof_height=box_size[2],
+          box_size[2],
           right_cutout=true
         );
       }
@@ -94,7 +92,7 @@ module truck_tray() {
         tile_cutout(
           truck_6_size, 
           truck_count, 
-          roof_height=box_size[2],
+          box_size[2],
           left_cutout=true
         );
       }
@@ -116,7 +114,7 @@ module test_truck_tray() {
       tile_cutout(
         truck_2_size, 
         truck_count, 
-        roof_height=box_size[2],
+        box_size[2],
         left_cutout=true
       );
     }

@@ -1,5 +1,3 @@
-echo(version=version());
-
 include <../../lib/disc_bracket.scad>
 
 $fn = 50;

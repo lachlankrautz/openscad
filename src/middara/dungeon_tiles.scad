@@ -1,8 +1,6 @@
-echo(version=version());
-
-include <../../lib/cutout_tray.scad>
+include <../../lib/cutout_children.scad>
 include <../../lib/grid_layout.scad>
-include <../../lib/tile_tray.scad>
+include <../../lib/cutouts.scad>
 include <../../lib/dish.scad>
 include <../../lib/grid_dish.scad>
 include <../../lib/layout.scad>
@@ -63,6 +61,6 @@ box_size = [
   long_tile_box_size[2] + $wall_thickness,
 ];
 
-cutout_tray(box_size) {
+cutout_children(box_size) {
   tile_cutout(long_tile_box_size, 1, box_size[2]);
 }

@@ -21,14 +21,15 @@ module rounded_cube(
 ) {
   _flat_top = flat_top || flat;
   _flat_bottom = flat_bottom || flat;
+  _rounding = min($rounding, size[2] / 2);
   _side_rounding = side_rounding > -1 ? side_rounding: $rounding;
 
-  top_height = _flat_top ? 0: $rounding;
-  bottom_height = _flat_bottom ? 0: $rounding;
+  top_height = _flat_top ? 0: _rounding;
+  bottom_height = _flat_bottom ? 0: _rounding;
 
   cube_size = [
-    size[0] - $rounding * 2,
-    size[1] - $rounding * 2,
+    size[0] - _rounding * 2,
+    size[1] - _rounding * 2,
     size[2] - (top_height + bottom_height)
   ];
 
@@ -38,8 +39,8 @@ module rounded_cube(
      }
    } else {
      minkowski() {
-       translate([$rounding, $rounding, bottom_height]) {
-         if (_side_rounding != $rounding) {
+       translate([_rounding, _rounding, bottom_height]) {
+         if (_side_rounding != _rounding) {
            linear_extrude(cube_size[2]) {
              rounded_square([cube_size[0], cube_size[1]], $rounding=_side_rounding);
            }
@@ -49,18 +50,18 @@ module rounded_cube(
        }
        if (_flat_top) {
          difference() {
-           sphere($rounding);
-           cylinder($rounding, $rounding, $rounding);
+           sphere(_rounding);
+           cylinder(_rounding, _rounding, _rounding);
          }
        } else if (_flat_bottom) {
          difference() {
-           sphere($rounding);
-           translate ([0, 0, -$rounding]) {
-             cylinder($rounding, $rounding, $rounding);
+           sphere(_rounding);
+           translate ([0, 0, -_rounding]) {
+             cylinder(_rounding, _rounding, _rounding);
            }
          }
        } else {
-         sphere($rounding);
+         sphere(_rounding);
        }
     }
   }

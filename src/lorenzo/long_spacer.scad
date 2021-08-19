@@ -1,5 +1,3 @@
-echo(version=version());
-
 width = 23.5;
 full_length = 210;
 short_length = 130;

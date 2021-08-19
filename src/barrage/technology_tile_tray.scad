@@ -1,8 +1,6 @@
-echo(version=version());
-
 include <../../lib/rounded_cube.scad>
 include <../../lib/layout.scad>
-include <../../lib/tile_tray.scad>
+include <../../lib/cutouts.scad>
 include <../../lib/util_functions.scad>
 
 // Config

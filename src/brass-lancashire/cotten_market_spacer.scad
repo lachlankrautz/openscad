@@ -1,5 +1,3 @@
-echo(version=version());
-
 include <../../lib/rounded_cube.scad>
 
 $wall_thickness = 2;

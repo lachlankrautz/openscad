@@ -1,6 +1,4 @@
-echo(version=version());
-
-include <../../lib/cutout_tray.scad>
+include <../../lib/cutout_children.scad>
 include <../../lib/grid_layout.scad>
 include <../../lib/dish.scad>
 include <../../lib/grid_dish.scad>
@@ -36,7 +34,7 @@ box_size = [
 short_dish_height = box_size[2] - 8;
 
 // Model
-cutout_tray(box_size) {
+cutout_children(box_size) {
   dish(stamina_size);
 
   translate([get_offset(stamina_size[0]), 0, 0,

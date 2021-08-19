@@ -1,5 +1,3 @@
-echo(version=version());
-
 $wall_thickness = 3;
 $card_space_width = 97;
 $fn = 50;

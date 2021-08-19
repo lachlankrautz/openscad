@@ -1,5 +1,3 @@
-echo(version=version());
-
 include <../../lib/rounded_cube.scad>
 include <../../lib/elephant_foot.scad>
 include <../../lib/svg_icon.scad>

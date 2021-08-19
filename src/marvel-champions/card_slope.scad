@@ -1,5 +1,3 @@
-echo(version=version());
-
 $card_space_width = 98;
 $fn = 50;
 

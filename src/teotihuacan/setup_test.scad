@@ -1,7 +1,5 @@
-echo(version=version());
-
 include <../../lib/rounded_cube.scad>
-include <../../lib/tile_tray.scad>
+include <../../lib/cutouts.scad>
 include <../../lib/disc_socket.scad>
 include <../../lib/layout.scad>
 

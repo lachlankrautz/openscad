@@ -1,8 +1,6 @@
-echo(version=version());
-
 include <../../lib/rounded_cube.scad>
 include <../../lib/layout.scad>
-include <../../lib/tile_tray.scad>
+include <../../lib/cutouts.scad>
 include <../../lib/util_functions.scad>
 
 // Config
@@ -54,7 +52,7 @@ difference() {
     tile_cutout(
       end_goal_tile_size, 
       end_goal_tile_stack, 
-      roof_height=box_size[2],
+      box_size[2],
       top_cutout=true,
       bottom_cutout=true
     );
@@ -64,7 +62,7 @@ difference() {
     tile_cutout(
       round_goal_tile_size, 
       round_goal_tile_map[1], 
-      roof_height=box_size[2],
+      box_size[2],
       bottom_cutout=true
     );
   }
@@ -77,7 +75,7 @@ difference() {
     tile_cutout(
       round_goal_tile_size, 
       round_goal_tile_map[0], 
-      roof_height=box_size[2],
+      box_size[2],
       top_cutout=true
     );
   }
@@ -90,7 +88,7 @@ difference() {
     tile_cutout(
       water_tile_size,
       water_tile_stack,
-      roof_height=box_size[2],
+      box_size[2],
       top_cutout=true,
       bottom_cutout=true
     );

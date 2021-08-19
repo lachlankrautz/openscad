@@ -1,8 +1,6 @@
-echo(version=version());
-
 include <../../lib/rounded_cube.scad>
 include <../../lib/layout.scad>
-include <../../lib/tile_tray.scad>
+include <../../lib/cutouts.scad>
 include <../../lib/round_tile_tray.scad>
 include <../../lib/util_functions.scad>
 
@@ -56,7 +54,7 @@ difference() {
       diameter, 
       tile_height,
       time_tile_stack, 
-      roof_height=box_size[2],
+      box_size[2],
       top_cutout=true,
       bottom_cutout=true
     );
@@ -102,6 +100,8 @@ difference() {
             box_size[2],
             top_cutout=true,
             bottom_cutout=true,
+            // TODO review pill feature, it's been changed to include padding so
+            // the magic pill number might no longer be needed
             pill=true
           );
         }

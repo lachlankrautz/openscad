@@ -1,5 +1,3 @@
-echo(version=version());
-
 include <../../lib/square_torus.scad>
 
 $fn = 50;

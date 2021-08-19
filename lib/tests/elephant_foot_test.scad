@@ -1,5 +1,3 @@
-echo(version=version());
-
 include <../../lib/elephant_foot.scad>
 
 $fn = 50;

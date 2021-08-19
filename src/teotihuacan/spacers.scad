@@ -1,6 +1,3 @@
-echo(version=version());
-
-include <../../lib/honeycomb_spacer.scad>
 include <../../lib/rounded_cube.scad>
 include <../../lib/layout.scad>
 
@@ -34,9 +31,6 @@ front_length = 41.5;
 // using length of teotibot because it is on its side
 front_width = padded_offset(player_power_size[0]) + $wall_thickness + $rounding + $bleed;
 front_height = stack_height(player_power_size[2], player_power_count) + $wall_thickness;
-
-// actual honeycomb takes longer to print than infill honeycomb
-// honeycomb_spacer([base_width, base_length, base_height], spacing_fraction=1);
 
 union() {
   rounded_cube([base_length, base_width, base_height], flat_top=true, flat_bottom=true, $rounding=2);

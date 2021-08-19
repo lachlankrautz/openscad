@@ -1,5 +1,3 @@
-echo(version=version());
-
 // Settings
 box_length = 95.5;
 box_width = 62.5;

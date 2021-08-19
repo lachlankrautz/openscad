@@ -1,5 +1,3 @@
-echo(version=version());
-
 include <../../../lib/rounded_cube.scad>
 include <../../../lib/elephant_foot.scad>
 use <../../../assets/fonts/Teutonic.ttf>

@@ -1,5 +1,3 @@
-echo(version=version());
-
 $wall_thickness = 3;
 $fn = 50;
 

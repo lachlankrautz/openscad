@@ -1,5 +1,3 @@
-echo(version=version());
-
 // Tray
 tray_width = 95;
 tray_height = 15;

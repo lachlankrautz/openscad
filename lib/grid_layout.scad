@@ -4,9 +4,9 @@ $wall_thickness = 2;
 
 function total_wall_size(count = 1) = (count + 1) * $wall_thickness;
 
-function usable_size(size, count = 1) = size - total_wall_size(count);
+function usable_size(length, count = 1) = length - total_wall_size(count);
 
-function item_size(size, count = 1, i = 0) = usable_size(size, count) / count;
+function item_size(length, count = 1, i = 0) = usable_size(length, count) / count;
 
 function axis_offset(v, i) = take_sum(v, i) + $wall_thickness * i;
 

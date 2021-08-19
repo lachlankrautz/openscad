@@ -1,5 +1,3 @@
-echo(version=version());
-
 include <../../lib/rounded_cube.scad>
 include <../../lib/layout.scad>
 include <../../lib/round_tile_tray.scad>
@@ -46,7 +44,7 @@ difference() {
             diameter, 
             tile_height,
             tile_map[i][j], 
-            roof_height=box_size[2],
+            box_size[2],
             top_cutout=true,
             bottom_cutout=true
           );

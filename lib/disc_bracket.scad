@@ -1,5 +1,5 @@
 include <./layout.scad>
-include <./tile_tray.scad>
+include <./cutouts.scad>
 
 $wall_thickness = 2;
 
@@ -18,15 +18,16 @@ module disc_bracket(size, count=1) {
           offset_circle(size[0]);
         }
       }
-      
+
+      cutout_scale = 1.1;
       translate([0, outter_size[1] / 2, 0]) {
         rotate(45) {
-          square([outter_size[1], outter_size[1]], center=true);
+          square([outter_size[1] * cutout_scale, outter_size[1] * cutout_scale], center=true);
         }
       }
       translate([outter_size[0], outter_size[1] / 2, 0]) {
         rotate(45) {
-          square([outter_size[1], outter_size[1]], center=true);
+          square([outter_size[1] * cutout_scale, outter_size[1] * cutout_scale], center=true);
         }
       }
     }

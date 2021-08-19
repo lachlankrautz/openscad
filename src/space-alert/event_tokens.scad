@@ -1,5 +1,3 @@
-echo(version=version());
-
 include <../../lib/disc_bracket.scad>
 include <../../lib/layout.scad>
 include <../../lib/rounded_cube.scad>
@@ -8,7 +6,8 @@ $fn = 50;
 $rounding = 1;
 $bleed = 0.01;
 
-test = false;
+// test = false;
+test = true;
 verbosity = 1;
 
 function flatten(outter_vector) = [for(inner_vector=outter_vector) for(item=inner_vector) item];
@@ -72,10 +71,10 @@ cols = test ? 2: 4;
 rows = test ? 1: 3;
 
 box_size = [
-  padded_offset(disc_size[0], cols, $padding=$wall_thickness) + $wall_thickness,
+  padded_offset(disc_size[0], cols) + $wall_thickness,
   (disc_size[1] + $wall_thickness * 2) * rows 
     + poly_long_length 
-    + $wall_thickness * 8,
+    + $wall_thickness * 6,
   $wall_thickness + $bleed,
 ];
 
@@ -84,14 +83,15 @@ if (verbosity > 0) {
 }
 
 union() {
-  rounded_cube(box_size, flat_top=true);
+  rounded_cube(box_size, flat_bottom=true);
 
   translate([$wall_thickness, $wall_thickness, box_size[2] - $bleed]) {
     translate([
-      (box_size[0] - (poly_width * poly_stack_count + $wall_thickness * 2)) / 2 - $wall_thickness,
+      (box_size[0] - (poly_width * poly_stack_count + $wall_thickness * 1)) / 2 - $wall_thickness,
       0,
       0,
     ]) {
+      // zig zag for timing tokens
       linear_extrude(stack_height(disc_size[2], poly_count)) {
         polygon(poly_coords);
       }
@@ -99,6 +99,7 @@ union() {
       translate([$wall_thickness, $wall_thickness, 0]) {
         for(i=[0:poly_stack_count-2]) {
           translate([poly_width * (i+1) - cap_width / 2, poly_long_length, 0]) {
+            // top tabs to keep timing tokens in place
             rounded_cube([
               cap_width, 
               $wall_thickness, 
@@ -109,16 +110,17 @@ union() {
       }
     }
 
+    // arc token holders
     translate([
       0, 
-      poly_long_length + $wall_thickness * 6,
+      poly_long_length + $wall_thickness * 4,
       0
     ]) {
       for(i=[0:cols-1]) {
         for(j=[0:rows-1]) {
           translate([
-            padded_offset(disc_size[0], i, $padding=$wall_thickness),
-            (disc_size[1] + $wall_thickness * 2) * j,
+            padded_offset(disc_size[0], i),
+            (disc_size[1] + $wall_thickness) * j,
             0,
           ]) {
             disc_bracket(disc_size, row_stack_heights[j]);

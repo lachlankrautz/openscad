@@ -1,7 +1,5 @@
-echo(version=version());
-
 include <../../lib/rounded_cube.scad>
-include <../../lib/tile_tray.scad>
+include <../../lib/cutouts.scad>
 include <../../lib/layout.scad>
 
 // Config
@@ -30,7 +28,7 @@ difference() {
     tile_cutout(
       decoration_tile_size, 
       decoration_tile_count, 
-      roof_height=box_size[2], 
+      box_size[2],
       top_cutout=true,
       bottom_cutout=true
     );

@@ -1,5 +1,3 @@
-echo(version=version());
-
 include <../../lib/svg_icon.scad>
 
 $bleed = 1;

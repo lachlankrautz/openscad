@@ -1,8 +1,6 @@
-echo(version=version());
-
 include <../../lib/rounded_cube.scad>
 include <../../lib/layout.scad>
-include <../../lib/tile_tray.scad>
+include <../../lib/cutouts.scad>
 
 // Config
 // $fn = 50;
@@ -43,7 +41,7 @@ difference() {
         tile_cutout(
           contract_tile_size, 
           10, 
-          roof_height=box_size[2],
+          box_size[2],
           left_cutout=true
         );
 
@@ -51,7 +49,7 @@ difference() {
           tile_cutout(
             order_tile_size, 
             10, 
-            roof_height=box_size[2],
+            box_size[2],
             right_cutout=true
           );
         }

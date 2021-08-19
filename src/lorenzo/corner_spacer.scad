@@ -1,5 +1,3 @@
-echo(version=version());
-
 width = 23.5;
 base_top_length = 35;
 base_top_width = 122;

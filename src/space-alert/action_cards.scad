@@ -1,6 +1,4 @@
-echo(version=version());
-
-include <../../lib/tile_tray.scad>
+include <../../lib/cutouts.scad>
 include <../../lib/rounded_cube.scad>
 include <../../lib/layout.scad>
 
@@ -28,6 +26,6 @@ difference() {
   rounded_cube(box_size, flat_top=true);
 
   translate([$wall_thickness, $wall_thickness, 0]) {
-    tile_cutout(card_size, roof_height=box_size[2], left_cutout=true, right_cutout=true);
+    tile_cutout(card_size, 1, box_size[2], left_cutout=true, right_cutout=true);
   }
 }

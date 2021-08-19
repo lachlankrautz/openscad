@@ -1,8 +1,6 @@
-echo(version=version());
-
 include <../../lib/rounded_cube.scad>
 include <../../lib/layout.scad>
-include <../../lib/tile_tray.scad>
+include <../../lib/cutouts.scad>
 include <../../lib/util_functions.scad>
 
 // Config
@@ -42,7 +40,7 @@ difference() {
     tile_cutout(
       external_tile_size, 
       5, 
-      roof_height=box_size[2],
+      box_size[2],
       left_cutout=true
     );
   }
@@ -50,7 +48,7 @@ difference() {
     tile_cutout(
       external_tile_size, 
       10, 
-      roof_height=box_size[2],
+      box_size[2],
       right_cutout=true
     );
   }
@@ -58,7 +56,7 @@ difference() {
     tile_cutout(
       dev_tile_size, 
       10, 
-      roof_height=box_size[2],
+      box_size[2],
       left_cutout=true,
       right_cutout=true
     );

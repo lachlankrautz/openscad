@@ -1,7 +1,5 @@
-echo(version=version());
-
 include <../../lib/rounded_cube.scad>
-include <../../lib/tile_tray.scad>
+include <../../lib/cutouts.scad>
 include <../../lib/disc_socket.scad>
 include <../../lib/layout.scad>
 
@@ -42,7 +40,7 @@ difference() {
           tile_cutout(
             discovery_tile_size, 
             discovery_tile_count, 
-            roof_height=box_size[2],
+            box_size[2],
             bottom_cutout=(j == 0),
             top_cutout=(j == rows - 1)
           );

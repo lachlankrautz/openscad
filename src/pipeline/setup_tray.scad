@@ -1,7 +1,5 @@
-echo(version=version());
-
 include <../../lib/rounded_cube.scad>
-include <../../lib/tile_tray.scad>
+include <../../lib/cutouts.scad>
 include <../../lib/layout.scad>
 
 // Config
@@ -106,16 +104,16 @@ difference() {
 
   translate([$wall_thickness, $wall_thickness, 0]) {
     // Market
-    tile_cutout(market_tile_size, market_tile_count, roof_height=box_size[2], left_cutout=true);
+    tile_cutout(market_tile_size, market_tile_count, box_size[2], left_cutout=true);
 
     // Crude Market
     translate([0, padded_offset(market_tile_size[1]), 0]) {
-      tile_cutout(crude_market_tile_size, crude_market_tile_count, roof_height=box_size[2], left_cutout=true);
+      tile_cutout(crude_market_tile_size, crude_market_tile_count, box_size[2], left_cutout=true);
     }
 
     // Action
     translate([padded_offset(market_tile_size[0]), 0, 0]) {
-      tile_cutout(action_tile_size, action_tile_count, roof_height=box_size[2], right_cutout=true);
+      tile_cutout(action_tile_size, action_tile_count, box_size[2], right_cutout=true);
     }
 
     // Cutout half height section
@@ -153,7 +151,7 @@ difference() {
     translate([box_size[0] - padded_offset(refinement_tile_size[0]) - $wall_thickness, padded_offset(action_tile_size[1]), 0]) {
       for(i=[0:refinement_rows-1]) {
         translate([0, padded_offset(refinement_tile_size[1], i), 0]) {
-          tile_cutout(refinement_tile_size, refinement_tile_count, roof_height=box_size[2], right_cutout=true);
+          tile_cutout(refinement_tile_size, refinement_tile_count, box_size[2], right_cutout=true);
         }
       }
       translate([0, padded_offset(refinement_tile_size[1], refinement_rows), box_size[2] - cylinder_height]) {
