@@ -12,7 +12,7 @@ $bleed = 0.01;
  * @param tray_size [x, y, z]
  * @param matrix [x, y] how many scoop divisions on each axis
  */
-module scoop_tray(tray_size, matrix=[1, 1], radius=0) {
+module scoop_tray(tray_size, matrix=[1, 1], radius=0, rounded=false) {
   scoop_size = [
     item_size(tray_size[0], matrix[0]),
     item_size(tray_size[1], matrix[1]),
@@ -21,7 +21,7 @@ module scoop_tray(tray_size, matrix=[1, 1], radius=0) {
 
   // Cut the scoops out from the tray
   difference() {
-    rounded_cube(tray_size, flat_top=true);
+    rounded_cube(tray_size, flat_top=true, $rounding=1);
 
     translate([$wall_thickness, $wall_thickness, $wall_thickness]) {
       for(i=[0:matrix[0]-1]) {
@@ -31,7 +31,7 @@ module scoop_tray(tray_size, matrix=[1, 1], radius=0) {
             offset(scoop_size[1], j),
             0
           ]) {
-            scoop(scoop_size, radius);
+            scoop(scoop_size, radius, rounded=rounded);
           }
         }
       }

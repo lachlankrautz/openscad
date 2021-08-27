@@ -9,7 +9,6 @@ $clearance = 0.5;
 function inset() = $rounding * 2 + $clearance;
 function notch_length() = notch_width() * 2;
 function notch_width() = 5;
-function notch_height() = $wall_thickness + $bleed;
 
 /**
  * Draw the notches to lock in the lid
@@ -18,11 +17,18 @@ function notch_height() = $wall_thickness + $bleed;
  * @param tray_size [x, y]
  * @param matrix [x, y] how many divisions on each axis
  */
-module tray_lid_notches(tray_size, matrix) {
+module tray_lid_notches(
+  tray_size,
+  matrix,
+  notch_height,
+  top=true,
+  right=true,
+  bottom=true,
+  left=true
+) {
   inset = inset();
   notch_length = notch_length();
   notch_width = notch_width();
-  notch_height = notch_height();
 
   size = [
     tray_size[0] - (notch_width + $wall_thickness) * 2,
@@ -31,36 +37,40 @@ module tray_lid_notches(tray_size, matrix) {
 
   translate([$wall_thickness, $wall_thickness, 0]) {
 
-    // bottom left
-    translate([0, notch_width, 0]) {
-      rounded_cube([notch_width, notch_length, $wall_thickness], flat_bottom = true, $rounding = 0.5);
-    }
-    translate([notch_width, 0, 0]) {
-      rounded_cube([notch_length, notch_width, $wall_thickness], flat_bottom = true, $rounding = 0.5);
-    }
-
-    // bottom right
-    translate([size[0] + notch_width, notch_width, 0]) {
-      rounded_cube([notch_width, notch_length, $wall_thickness], flat_bottom=true, $rounding=0.5);
-    }
-    translate([size[0] - notch_width, 0, 0]) {
-      rounded_cube([notch_length, notch_width, $wall_thickness], flat_bottom=true, $rounding=0.5);
+    if (left) {
+      translate([0, notch_width, 0]) {
+        rounded_cube([notch_width, notch_length, notch_height], flat_bottom = true, $rounding = 0.5);
+      }
+      translate([0, size[1] - notch_width]) {
+        rounded_cube([notch_width, notch_length, notch_height], flat_bottom=true, $rounding=0.5);
+      }
     }
 
-    // top left
-    translate([0, size[1] - notch_width]) {
-      rounded_cube([notch_width, notch_length, $wall_thickness], flat_bottom=true, $rounding=0.5);
-    }
-    translate([notch_width, size[1] + notch_width, 0]) {
-      rounded_cube([notch_length, notch_width, $wall_thickness], flat_bottom=true, $rounding=0.5);
+    if (right) {
+      translate([size[0] + notch_width , size[1] - notch_width, 0]) {
+        rounded_cube([notch_width, notch_length, notch_height], flat_bottom=true, $rounding=0.5);
+      }
+      translate([size[0] + notch_width, notch_width, 0]) {
+        rounded_cube([notch_width, notch_length, notch_height], flat_bottom=true, $rounding=0.5);
+      }
     }
 
-    // top right
-    translate([size[0] + notch_width , size[1] - notch_width, 0]) {
-      rounded_cube([notch_width, notch_length, $wall_thickness], flat_bottom=true, $rounding=0.5);
+    if (bottom) {
+      translate([notch_width, 0, 0]) {
+        rounded_cube([notch_length, notch_width, notch_height], flat_bottom = true, $rounding = 0.5);
+      }
+      translate([size[0] - notch_width, 0, 0]) {
+        rounded_cube([notch_length, notch_width, notch_height], flat_bottom=true, $rounding=0.5);
+      }
     }
-    translate([size[0] - notch_width, size[1] + notch_width, 0]) {
-      rounded_cube([notch_length, notch_width, $wall_thickness], flat_bottom=true, $rounding=0.5);
+
+    if (top) {
+      translate([notch_width, size[1] + notch_width, 0]) {
+        rounded_cube([notch_length, notch_width, notch_height], flat_bottom=true, $rounding=0.5);
+      }
+      translate([size[0] - notch_width, size[1] + notch_width, 0]) {
+        rounded_cube([notch_length, notch_width, notch_height], flat_bottom=true, $rounding=0.5);
+      }
     }
   }
 }
@@ -71,17 +81,27 @@ module tray_lid_notches(tray_size, matrix) {
  * @param tray_size [x, y]
  * @param matrix [x, y] how many divisions on each axis
  */
-module tray_lid(tray_size, matrix, honeycomb=false) {
+module tray_lid(
+  tray_size,
+  matrix,
+  notch_height = 4,
+  honeycomb_diameter=false,
+  top=true,
+  right=true,
+  bottom=true,
+  left=true
+) {
   lid_size = [
     tray_size[0],
     tray_size[1],
     $wall_thickness,
   ];
+  _notch_height = notch_height + $bleed;
+  honeycomb = honeycomb_diameter > 0;
 
   inset = inset();
   notch_length = notch_length();
   notch_width = notch_width();
-  notch_height = notch_height();
 
   honeycomb_size = [
     lid_size[0] - (notch_width + $wall_thickness) * 2,
@@ -90,16 +110,24 @@ module tray_lid(tray_size, matrix, honeycomb=false) {
   ];
 
   difference() {
-    rounded_cube(lid_size, flat_top=true);
+    rounded_cube(lid_size, flat=true);
 
     if (honeycomb) {
-      translate([notch_width + $wall_thickness, notch_width + $wall_thickness - $bleed]) {
-        negative_honeycomb_cube(honeycomb_size);
+      translate([notch_width + $wall_thickness, notch_width + $wall_thickness, - $bleed]) {
+        negative_honeycomb_cube(honeycomb_size, honeycomb_diameter);
       }
     }
   }
 
   translate([0, 0, $wall_thickness - $bleed]) {
-    tray_lid_notches(tray_size, matrix);
+    tray_lid_notches(
+      tray_size,
+      matrix,
+      _notch_height,
+      top=top,
+      right=right,
+      bottom=bottom,
+      left=left
+    );
   }
 }

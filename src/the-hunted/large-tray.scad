@@ -1,23 +1,24 @@
 include <../../lib/scoop_tray.scad>
+include <../../lib/dovetail_lid.scad>
 
 // Config
 // $fn = 10;
 $fn = 50;
 $wall_thickness = 2;
 
-// TODO measure
 size = [
-  // 104,
-  // 156,
-  // 29.7,
+  104,
+  154,
+  20,
 ];
 
-roof_gap = 2.2;
+matrix = [2, 4];
 
-tray_size = [
-  size[0],
-  size[1],
-  size[2] - roof_gap,
-];
+/*
+difference() {
+  scoop_tray(size, matrix);
+  dovetail_lid_cutout(size);
+}
+*/
 
-scoop_tray(tray_size, [2, 3]);
+dovetail_lid(size, honeycomb_diameter=12);

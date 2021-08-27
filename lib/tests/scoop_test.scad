@@ -1,3 +1,9 @@
 include <../../lib/scoop.scad>
 
-scoop([40, 30, 20]);
+dimensions = [40, 30, 20];
+
+scoop(dimensions);
+
+translate([dimensions[0] + 10, 0, 0]) {
+  scoop(dimensions, rounded=false);
+}

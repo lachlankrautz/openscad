@@ -21,45 +21,63 @@ module cylinder_quarter(height, radius) {
   }
 }
 
-module scoop(size, radius = 0) {
+module _unrounded_scoop(size, radius) {
   width = size[0];
   length = size[1];
   height = size[2];
 
   min_radius = min(
-    radius ? radius : height, 
-    height,
+    radius ? radius : height,
+  height,
     width / 3
   );
+  hull() {
+    translate([width -1, 0, 0]) {
+      cube([1, length, height]);
+    }
+    translate([0, 0, height - 1]) {
+      cube([width, length, 1]);
+    }
+    translate([min_radius, 0, min_radius]) rotate([-90, 0, 0]) {
+      cylinder_quarter(length, min_radius);
+    }
+  }
+}
 
-  cube_length = length - $rounding * 2;
-  cube_width = width - $rounding * 2;
-  cube_height = height - $rounding;
+module scoop(size, radius = 0, rounded=true) {
+  min_radius = min(
+    radius ? radius : size[2],
+    size[2],
+    size[0] / 3
+  );
 
-  difference() {
-    translate([$rounding, $rounding, $rounding]) {
-      minkowski() {
-        hull() {
-          translate([cube_width -1, 0, 0]) {
-            cube([1, cube_length, cube_height]);
-          }
-          translate([0, 0, cube_height - 1]) {
-            cube([cube_width, cube_length, 1]);
-          }
-          translate([min_radius, 0, min_radius]) rotate([-90, 0, 0]) {
-            cylinder_quarter(cube_length, min_radius);
-          }
+  unrounded_size = [
+    size[0] - $rounding * 2,
+    size[1] - $rounding * 2,
+    size[2] - $rounding,
+  ];
+
+  if (rounded) {
+    difference() {
+      translate([$rounding, $rounding, $rounding]) {
+        minkowski() {
+          _unrounded_scoop(unrounded_size, radius);
+
+          // round with a sphere
+          sphere($rounding);
         }
-        sphere($rounding);
+      }
+
+      // slice off the top
+      translate([-$bleed, -$bleed, size[2]]) {
+        cube([
+          size[0] + $bleed * 2,
+          size[1] + $bleed * 2,
+          $rounding +  $bleed * 2
+        ]);
       }
     }
-
-    translate([-$bleed, -$bleed, height]) {
-      cube([
-        width + $bleed * 2, 
-        length + $bleed * 2, 
-        $rounding +  $bleed * 2
-      ]);
-    }
+  } else {
+    _unrounded_scoop(size, radius);
   }
 }

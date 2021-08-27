@@ -19,10 +19,13 @@ module rounded_cube(
   flat_bottom=false,
   side_rounding=-1
 ) {
+  _flat = flat || (flat_top && flat_bottom);
   _flat_top = flat_top || flat;
   _flat_bottom = flat_bottom || flat;
   _rounding = min($rounding, size[2] / 2);
   _side_rounding = side_rounding > -1 ? side_rounding: $rounding;
+
+  assert(_side_rounding >= $rounding, "side rounding cannot be less than rounding");
 
   top_height = _flat_top ? 0: _rounding;
   bottom_height = _flat_bottom ? 0: _rounding;
@@ -48,6 +51,7 @@ module rounded_cube(
            cube(cube_size);
          }
        }
+
        if (_flat_top) {
          difference() {
            sphere(_rounding);

@@ -1,4 +1,5 @@
 include <../../lib/scoop_tray.scad>
+include <../../lib/dovetail_lid.scad>
 
 // Config
 // $fn = 10;
@@ -8,15 +9,16 @@ $wall_thickness = 2;
 size = [
   104,
   156,
-  29.7,
+  20,
 ];
 
-roof_gap = 2.2;
+matrix = [2, 3];
 
-tray_size = [
-  size[0],
-  size[1],
-  size[2] - roof_gap,
-];
+// Tray
+difference() {
+  scoop_tray(size, matrix, radius=12);
+  dovetail_lid_cutout(tray_size);
+}
 
-scoop_tray(tray_size, [2, 3]);
+// Lid
+// dovetail_lid(size, honeycomb_diameter=12);

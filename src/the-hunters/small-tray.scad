@@ -1,14 +1,11 @@
 include <../../lib/scoop_tray.scad>
-include <../../lib/tray_lid.scad>
+include <../../lib/dovetail_lid.scad>
 
 // Config
 // $fn = 10;
 $fn = 50;
 $wall_thickness = 2;
 $bleed = 0.01;
-
-// Honeycomb size
-$spacing_fraction = 10;
 
 size = [
   116,
@@ -27,7 +24,10 @@ tray_size = [
 matrix = [2, 3];
 
 // tray
-// scoop_tray(tray_size, matrix);
+difference() {
+  scoop_tray(tray_size, matrix);
+  dovetail_lid_cutout(tray_size);
+}
 
 // lid
-tray_lid(tray_size, matrix, honeycomb=true);
+// dovetail_lid(tray_size, honeycomb_diameter=12);

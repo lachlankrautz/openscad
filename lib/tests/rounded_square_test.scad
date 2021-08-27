@@ -15,3 +15,8 @@ translate([40, 0, 0]) {
 translate([80, 0, 0]) {
   rounded_square([30, 30, 20], flat_top=true);
 }
+
+// can render sharper corner
+translate([0, 40, 0]) {
+  rounded_square([30, 30, 20], $rounding=1);
+}
