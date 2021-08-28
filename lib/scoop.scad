@@ -1,6 +1,6 @@
 include <./rounded_cube.scad>
 
-$bleed = 1;
+$bleed = 0.1;
 $rounding = 3;
 $wall_thickness = 2;
 

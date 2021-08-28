@@ -12,8 +12,8 @@ function relative_diameter(dimensions) = (
   ) / $hexagons_per_side;
 
 function honeycomb_inset_size(size, inset = $wall_thickness) = [
-    size[0] - $wall_thickness * 2,
-    size[1] - $wall_thickness * 2,
+    size[0] - $wall_thickness,
+    size[1] - inset * 2,
     size[2] + $bleed * 2,
 ];
 

@@ -2,64 +2,67 @@ include <./honeycomb.scad>
 include <./trapezoid.scad>
 
 $wall_thickness = 2;
+$inner_wall_thickness = 1;
+$lid_height = 3;
+$trapezoid_inset = 2;
 $bleed = 0.01;
 $rounding = 3;
 $clearance = 0.5;
-// 20 too low
-// 30 too hight
-// 25...
-$tolerance = 0.25;
+$length_tolerance = 0.25;
+$width_tolerance = 0.25;
 
-function dovetail_size(size, inset, lid_height = $wall_thickness) = [
-  size[0] - $wall_thickness - $tolerance * 1.5,
-  size[1] - ($wall_thickness - inset) * 2 - $tolerance * 2,
-  lid_height,
+dovetail_tolerance = [$length_tolerance, $width_tolerance * 2, 0];
+dovetail_cutout_bleed = [$bleed, $bleed * 2, $bleed * 2];
+
+function dovetail_size(box_size) = [
+  box_size[0] - $wall_thickness,
+  box_size[1] - ($wall_thickness - $inner_wall_thickness) * 2,
+  $lid_height,
 ];
 
-module dovetail_lid_cutout(size, lid_height = $wall_thickness, trapezoid_inset = 1) {
-  padded_size = size + [0, $bleed * 2, $bleed * 2];
-  padded_lid_height = lid_height + $bleed * 2;
+/**
+ * Draw a lid for the given box size
+ *
+ * @param box_size [x, y]
+ */
+module dovetail_lid(box_size, honeycomb_diameter = false) {
+  dovetail_size = dovetail_size(box_size);
 
-  // Set tolerance to 0 so the cutout uses the full size
-  cutout_size = dovetail_size(padded_size, trapezoid_inset, padded_lid_height, $tolerance=0);
+  // Shrink slightly using tolerance values for a better slotting fit
+  tolerant_dovetail_size = dovetail_size - dovetail_tolerance;
+
+  dovetail(tolerant_dovetail_size, honeycomb_diameter=honeycomb_diameter);
+}
+
+module dovetail_lid_cutout(box_size) {
+  dovetail_size = dovetail_size(box_size);
+
+  // Expand slightly with bleed so cutout doesn't leave ghost panels
+  dovetail_cutout_size = dovetail_size + dovetail_cutout_bleed;
 
   translate([
-    0,
-    (size[1] - cutout_size[1]) / 2, // centre
-    size[2] - lid_height, // cutout from top
+    -$bleed, // move left to bleed over the left wall
+    (box_size[1] - dovetail_cutout_size[1]) / 2, // put in the middle using the difference
+    box_size[2] - dovetail_cutout_size[2] + $bleed, // cut off the top of the tray box, move up to bleed over the roof
   ]) {
-    dovetail_lid(padded_size, padded_lid_height, $tolerance=0);
+    dovetail(dovetail_cutout_size);
   }
 }
 
-/**
- * Draw a lid for the given tray size
- *
- * @param tray_size [x, y]
- */
-module dovetail_lid(
-  tray_size,
-  lid_height = $wall_thickness,
-  trapezoid_inset = 1,
-  honeycomb_diameter = false
-) {
+module dovetail(size, honeycomb_diameter = false) {
   honeycomb = honeycomb_diameter > 0;
+  honeycomb_size = honeycomb_inset_size(size, $trapezoid_inset + $wall_thickness / 2);
 
-  lid_size = dovetail_size(tray_size, trapezoid_inset, lid_height);
-  honeycomb_size = honeycomb_inset_size(lid_size);
+  difference() {
+    trapezoid_prism(size, $trapezoid_inset);
 
-  translate([-$bleed, 0, 0]) {
-    difference() {
-      trapezoid_prism(lid_size, trapezoid_inset);
-
-      if (honeycomb) {
-        translate([
-          (lid_size[0] - honeycomb_size[0]) / 2,
-          (lid_size[1] - honeycomb_size[1]) / 2,
-          -$bleed
-        ]) {
-          negative_honeycomb_cube(honeycomb_size, honeycomb_diameter);
-        }
+    if (honeycomb) {
+      translate([
+        (size[0] - honeycomb_size[0]) / 2,
+        (size[1] - honeycomb_size[1]) / 2,
+        -$bleed
+      ]) {
+        negative_honeycomb_cube(honeycomb_size, honeycomb_diameter);
       }
     }
   }

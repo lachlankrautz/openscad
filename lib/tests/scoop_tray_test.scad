@@ -1,31 +1,26 @@
-include <../../lib/scoop_tray.scad>
-include <../../lib/tray_lid.scad>
-include <../../lib/dovetail_lid.scad>
+include <../../lib/dovetail_scoop_tray.scad>
 
 // Config
 // fn fails at small sizes
 // $fn = 10;
-// $fn = 30;
 $fn = 50;
 $wall_thickness = 2;
 $bleed = 0.01;
 
 size = [
+  15,
   20,
-  20,
-  10,
+  8,
 ];
+
+model_gap = $wall_thickness * 2;
 
 matrix = [1, 1];
 
 // tray
-difference() {
-  scoop_tray(size, matrix);
-  dovetail_lid_cutout(size);
-}
+dovetail_scoop_tray(size, matrix);
 
 // lid
-translate([size[0] + $wall_thickness * 2, 0, 0]) {
-  // tray_lid(size, matrix, honeycomb_diameter=10, left=false, right=false, $rounding=1);
+translate([size[0] + model_gap, 0, 0]) {
   dovetail_lid(size, honeycomb_diameter=10);
 }
