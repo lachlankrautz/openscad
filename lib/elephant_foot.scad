@@ -17,7 +17,7 @@ module elephant_foot(
 ) {
   foot_top = !(flat_top || rounded_top);
   foot_bottom = !(flat_bottom || rounded_bottom);
-  assert(foot_top || foot_bottom, "Elephan foot can only have flat/rounded top or bottom not both");
+  assert(foot_top || foot_bottom, "Foot can only have flat/rounded top or bottom not both");
 
   girth = ($rounding + $bleed) * 2;
 

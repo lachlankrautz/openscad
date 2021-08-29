@@ -1,5 +1,6 @@
 include <./scoop_tray.scad>
 include <./dovetail_lid.scad>
+include <./elephant_foot_compensation.scad>
 
 // Config
 // $fn = 50;

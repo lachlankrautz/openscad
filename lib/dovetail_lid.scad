@@ -31,7 +31,13 @@ module dovetail_lid(box_size, honeycomb_diameter = false) {
   // Shrink slightly using tolerance values for a better slotting fit
   tolerant_dovetail_size = dovetail_size - dovetail_tolerance;
 
-  dovetail(tolerant_dovetail_size, honeycomb_diameter=honeycomb_diameter);
+  difference() {
+    dovetail(tolerant_dovetail_size, honeycomb_diameter=honeycomb_diameter);
+
+    // Need to ensure the fit is as clean as possible
+    // TODO this really didn't work
+    elephant_foot_compensation(tolerant_dovetail_size);
+  }
 }
 
 module dovetail_lid_cutout(box_size) {
