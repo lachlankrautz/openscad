@@ -8,6 +8,22 @@ module triangular_prism(l, w, h) {
   );
 }
 
+module elephant_foot_compensation_trapezoid(size) {
+  bleed_size = size + [$bleed * 2, $bleed * 2, $bleed * 2];
+  bleed_offset = [-$bleed, -$bleed, -$bleed];
+  edge_size = [bleed_size[0], $foot_offset * 5, $foot_offset * 5];
+
+  translate(bleed_offset) {
+    translate([0, -edge_size[1] + $foot_offset, 0]) {
+        cube(edge_size);
+    }
+
+    translate([0, bleed_size[1] - $foot_offset, 0]) {
+      cube(edge_size);
+    }
+  }
+}
+
 module elephant_foot_compensation(size) {
   bleed_size = size + [$bleed * 2, $bleed * 2, $bleed * 2];
   bleed_offset = [-$bleed, -$bleed, -$bleed];

@@ -6,6 +6,8 @@ include <../../lib/dovetail_scoop_tray.scad>
 $fn = 50;
 $wall_thickness = 2;
 $bleed = 0.01;
+$trapezoid_inset = 1;
+$lid_height = 2;
 
 size = [
   15,

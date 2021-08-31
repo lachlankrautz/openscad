@@ -6,6 +6,7 @@ $bleed = 0.01;
 $padding = 0.5;
 $inset = 6;
 $cutout_fraction = 0.6;
+$cutout_lid_height = $wall_thickness;
 
 // I have no idea why it needs to be this vaule
 // Seems to be to do with how the cube handles rounding
@@ -43,7 +44,7 @@ module cutout(
     left_cutout_size = [
       $inset * 2 + $wall_thickness,
       size[1] * $cutout_fraction,
-      size[2] + $bleed * 2,
+      size[2] + $cutout_lid_height + $bleed * 2,
     ];
 
     translate([
@@ -59,7 +60,7 @@ module cutout(
     right_cutout_size = [
       $inset * 2 + $wall_thickness,
       size[1] * $cutout_fraction,
-      size[2] + $bleed * 2,
+      size[2] + $cutout_lid_height + $bleed * 2,
     ];
 
     translate([
@@ -75,7 +76,7 @@ module cutout(
     top_cutout_size = [
       size[0] * $cutout_fraction,
       $inset * 2 + $wall_thickness,
-      size[2] + $bleed * 2,
+      size[2] + $cutout_lid_height + $bleed * 2,
     ];
 
     translate([
@@ -91,7 +92,7 @@ module cutout(
     bottom_cutout_size = [
       size[0] * $cutout_fraction,
       $inset * 2 + $wall_thickness,
-      size[2] + $bleed * 2,
+      size[2] + $cutout_lid_height + $bleed * 2,
     ];
 
     translate([

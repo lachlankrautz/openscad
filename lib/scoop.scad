@@ -21,30 +21,43 @@ module cylinder_quarter(height, radius) {
   }
 }
 
-module _unrounded_scoop(size, radius) {
-  width = size[0];
-  length = size[1];
-  height = size[2];
+module _unrounded_scoop(size, radius, edge="left") {
+  _size = edge == "left"
+    ? size
+    : [size[1], size[0], size[2]];
+
+  rotation = edge == "left"
+    ? [0, 0, 0]
+    : [0, 0, 90];
+
+  rotation_offset = edge == "left"
+    ? [0, 0, 0]
+    : [size[0], 0, 0];
 
   min_radius = min(
-    radius ? radius : height,
-  height,
-    width / 3
+    radius ? radius : _size[2],
+    _size[2],
+    _size[0] / 3
   );
-  hull() {
-    translate([width -1, 0, 0]) {
-      cube([1, length, height]);
-    }
-    translate([0, 0, height - 1]) {
-      cube([width, length, 1]);
-    }
-    translate([min_radius, 0, min_radius]) rotate([-90, 0, 0]) {
-      cylinder_quarter(length, min_radius);
+
+  translate(rotation_offset) {
+    rotate(rotation) {
+      hull() {
+        translate([_size[0] -1, 0, 0]) {
+          cube([1, _size[1], _size[2]]);
+        }
+        translate([0, 0, _size[2] - 1]) {
+          cube([_size[0], _size[1], 1]);
+        }
+        translate([min_radius, 0, min_radius]) rotate([-90, 0, 0]) {
+          cylinder_quarter(_size[1], min_radius);
+        }
+      }
     }
   }
 }
 
-module scoop(size, radius = 0, rounded=true) {
+module scoop(size, radius = 0, rounded=true, edge="left") {
   min_radius = min(
     radius ? radius : size[2],
     size[2],
@@ -61,7 +74,7 @@ module scoop(size, radius = 0, rounded=true) {
     difference() {
       translate([$rounding, $rounding, $rounding]) {
         minkowski() {
-          _unrounded_scoop(unrounded_size, radius);
+          _unrounded_scoop(unrounded_size, radius, edge=edge);
 
           // round with a sphere
           sphere($rounding);
@@ -78,6 +91,6 @@ module scoop(size, radius = 0, rounded=true) {
       }
     }
   } else {
-    _unrounded_scoop(size, radius);
+    _unrounded_scoop(size, radius, edge=edge);
   }
 }

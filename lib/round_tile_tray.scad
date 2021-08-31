@@ -5,6 +5,7 @@ $bleed = 0.01;
 $padding = 0.5;
 $inset = 8;
 $cutout_fraction = 0.6;
+$cutout_lid_height = $wall_thickness;
 
 module round_tile_cutout(
   diameter, 
@@ -34,7 +35,7 @@ module round_tile_cutout(
       left_cutout_size = [
         $inset * 2 + $wall_thickness,
         tray_size[1] * $cutout_fraction,
-        roof_height + $bleed * 2,
+        roof_height + $cutout_lid_height + $bleed * 2,
       ];
   
       translate([-left_cutout_size[0] + $inset, (tray_size[1] - left_cutout_size[1]) / 2, 0]) {
@@ -46,7 +47,7 @@ module round_tile_cutout(
       right_cutout_size = [
         $inset * 2 + $wall_thickness,
         tray_size[1] * $cutout_fraction,
-        roof_height + $bleed * 2,
+        roof_height + $cutout_lid_height + $bleed * 2,
       ];
   
       translate([tray_size[0] - $inset, (tray_size[1] - right_cutout_size[1]) / 2, 0]) {
@@ -58,7 +59,7 @@ module round_tile_cutout(
       top_cutout_size = [
         tray_size[0] * $cutout_fraction,
         $inset * 2 + $wall_thickness,
-        roof_height + $bleed * 2,
+        roof_height + $cutout_lid_height + $bleed * 2,
       ];
   
       translate([
@@ -69,12 +70,12 @@ module round_tile_cutout(
         rounded_cube(top_cutout_size, flat=true);
       }
     }
-  
+
     if (bottom_cutout) {
       bottom_cutout_size = [
         tray_size[0] * $cutout_fraction,
         $inset * 2 + $wall_thickness,
-        roof_height + $bleed * 2,
+        roof_height + $cutout_lid_height +  $bleed * 2,
       ];
   
       translate([
