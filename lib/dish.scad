@@ -1,3 +1,5 @@
+include <./rounded_cube.scad>
+
 $rounding = 3;
 $bleed = 1;
 $lid_height = 2;
@@ -23,9 +25,9 @@ module dish (size, dish_ratio=default_dish_ratio, lid=false) {
   ];
 
   translate(position) {
-    difference() {
+    // difference() {
       translate([$rounding,$rounding,$rounding]) {
-        minkowski() {
+        // minkowski() {
           hull() {
             translate([0,0,height * dish_ratio - $rounding]) {
               cube([r_width,r_length,height * cube_ratio]);
@@ -36,17 +38,19 @@ module dish (size, dish_ratio=default_dish_ratio, lid=false) {
               }
             }
           }
-          sphere($rounding);
-        }
+          // sphere($rounding);
+        // }
       }
 
       translate([-$bleed,-$bleed,height]) {
+        /*
         cube([
           width + $bleed * 2,
           length + $bleed * 2,
           $rounding + $bleed
         ]);
+        */
       }
     }
-  }
+  // }
 }
