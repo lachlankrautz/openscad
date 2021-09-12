@@ -7,6 +7,7 @@ $padding = 0.5;
 $inset = 6;
 $cutout_fraction = 0.6;
 $cutout_lid_height = $wall_thickness;
+$lid_height = 2;
 
 // I have no idea why it needs to be this vaule
 // Seems to be to do with how the cube handles rounding
@@ -140,17 +141,18 @@ module tile_cutout(
   right_cutout=false,
   top_cutout=false,
   bottom_cutout=false,
-  pill=false
+  pill=false,
+  lid=false
 ) {
   size = [
     pad(tile_size[0]),
     pad(tile_size[1]),
-    height,
+    height - (lid ? $lid_height: 0),
   ];
 
+  // TODO do we need this bleed?
   // floor_height = height - stack_height(tile_size[2], tile_count) + $bleed;
-  // TODO do we need bleed?
-  floor_height = height - stack_height(tile_size[2], tile_count);
+  floor_height = size[2] - stack_height(tile_size[2], tile_count);
 
   // No need to render any cutout if the size is zero
   if (tile_count > 0) {

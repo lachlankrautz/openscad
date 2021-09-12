@@ -31,7 +31,7 @@ tile_diameter = 26;
 box_size = [
   186,
   114,
-  29,
+  16,
 ];
 
 module tray_with_cutouts() {
@@ -94,6 +94,20 @@ module tray_with_lid() {
         dovetail_lid_cutout([box_size[1], box_size[0], box_size[2]]);
       }
     }
+
+    gap_length = box_size[0]
+      - padded_offset(tile_size[0], tile_columns)
+      - padded_offset(tile_diameter)
+      - $wall_thickness * 2;
+
+    inset = tile_size[1] + $rounding + $wall_thickness;
+    translate([
+      padded_offset(tile_size[0], tile_columns) + $wall_thickness,
+      box_size[1] - inset + $wall_thickness,
+      0
+    ]) {
+      rounded_cube([gap_length, inset + $rounding, box_size[2] - $wall_thickness * 2], flat=true);
+    }
   }
 }
 
@@ -107,4 +121,4 @@ module lid() {
 
 tray_with_lid();
 
-lid();
+// lid();
