@@ -1,8 +1,10 @@
 include <./rounded_cube.scad>
+include <./hemisphere.scad>
 
 $rounding = 3;
 $bleed = 1;
 $lid_height = 2;
+$fn = 50;
 
 default_dish_ratio = 0.5;
 
@@ -25,32 +27,21 @@ module dish (size, dish_ratio=default_dish_ratio, lid=false) {
   ];
 
   translate(position) {
-    // difference() {
-      translate([$rounding,$rounding,$rounding]) {
-        // minkowski() {
-          hull() {
-            translate([0,0,height * dish_ratio - $rounding]) {
-              cube([r_width,r_length,height * cube_ratio]);
-            }
-            translate([r_width/2,r_length/2,height * dish_ratio / 2]) {
-              resize([r_width,r_length,height * dish_ratio]) {
-                sphere(radius);
-              }
-            }
+    difference() {
+      minkowski() {
+        hull() {
+          translate([0,0,height * dish_ratio - $rounding]) {
+            cube([r_width,r_length,height * cube_ratio]);
           }
-          // sphere($rounding);
-        // }
-      }
 
-      translate([-$bleed,-$bleed,height]) {
-        /*
-        cube([
-          width + $bleed * 2,
-          length + $bleed * 2,
-          $rounding + $bleed
-        ]);
-        */
+          resize([r_width,r_length,height / 2 * dish_ratio]) {
+            hemisphere(radius, centre=false);
+          }
+        }
+
+        // Rounding
+        hemisphere($rounding);
       }
     }
-  // }
+  }
 }

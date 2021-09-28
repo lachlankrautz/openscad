@@ -63,11 +63,11 @@ module dovetail_lid_cutout(size, orientation) {
   // Expand slightly with bleed so cutout doesn't leave ghost panels
   dovetail_cutout_size = dovetail_size + dovetail_cutout_bleed;
 
-  centre_cutout_offset = orientation_vector([
+  centre_cutout_offset = [
     - $bleed, // move left to bleed over the left wall
     (size[1] - dovetail_cutout_size[1]) / 2, // put in the middle using the difference
     size[2] - dovetail_cutout_size[2] + $bleed, // cut off the top of the tray box, move up to bleed over the roof
-  ], orientation);
+  ];
 
   translate(centre_cutout_offset) {
     dovetail(dovetail_cutout_size);

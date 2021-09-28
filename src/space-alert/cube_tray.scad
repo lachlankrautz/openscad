@@ -6,8 +6,8 @@ include <../../lib/dovetail_lid.scad>
 include <../../lib/orientation.scad>
 
 // Config
-// $fn = 50;
 $fn = 10;
+// $fn = 50;
 $wall_thickness = 2;
 $padding = 0.5;
 $rounding = 2;
@@ -75,36 +75,29 @@ mid_dish_rows = 2;
 module tray() {
   difference() {
     // Box
-    // union() {
-      cube(box_size);
+    union() {
       // short box on left for canisters
-      // cube(box_size - [0, 0, canister_height / 2 + $lid_height]/*, flat_top=true*/);
+      rounded_cube(box_size - [0, 0, canister_height / 2 + $lid_height], flat_top=true);
 
       // tall box on left under canisters
-      /*
-      cube(
+      rounded_cube(
         box_size
-        - [0, padded_tracker_diameter + $wall_thickness * 2, 0]// ,
-        // flat_top=true
+        - [0, padded_tracker_diameter + $wall_thickness * 2, 0],
+        flat_top=true
       );
-      */
 
       // tall box on right (main section)
-
-      /*
       translate([offset(left_dish_size[0]), 0, 0]) {
-        cube(box_size - [
+        rounded_cube(box_size - [
           left_dish_size[0] + $wall_thickness,
           0,
           0
-        ]); // flat_top=true
+        ], flat_top=true);
       }
-      */
-    // }
+    }
 
     translate([$wall_thickness, $wall_thickness, 0]) {
       // Cylinders
-      /*
       translate([0, offset(left_dish_size[1], left_dish_rows) + $wall_thickness, 0]) {
         translate([0, 0, box_size[2] - tracker_height - $lid_height]) {
           offset_cylinder(d=padded_tracker_diameter, h=tracker_height);
@@ -122,12 +115,11 @@ module tray() {
           }
         }
       }
-      */
 
       // Left dishes
       for(i=[0:left_dish_rows-1]) {
         translate([0, offset(left_dish_size[1], i), box_size[2] - left_dish_size[2]]) {
-          // dish(left_dish_size + [0, 0, $bleed], dish_roundness, lid=true);
+          dish(left_dish_size + [0, 0, $bleed], dish_roundness, lid=true);
         }
       }
 
@@ -144,7 +136,6 @@ module tray() {
       // Right damage tile cutout
       translate([offset(left_dish_size[0]) + offset(mid_dish_size[0]), 0, 0]) {
         for(i=[0:damage_stack_count-1]) {
-          /*
           translate([0, padded_offset(damage_tile_size[1], i), 0]) {
             tile_cutout(
               damage_tile_size,
@@ -154,7 +145,6 @@ module tray() {
               lid=true
             );
           }
-          */
         }
       }
     } // end wall thickness
@@ -163,13 +153,9 @@ module tray() {
 
 echo("box size: ", box_size);
 difference() {
-  // orientation(box_size, 1) {
   tray();
-  // }
 
-  translate([0, 0, box_size[2] - 2]) cube([box_size[0], box_size[1] - $wall_thickness, 2 + $bleed]);
-  // dovetail_lid_cutout(box_size, 0);
-  // dovetail_lid_cutout(orientation_size(box_size, 1), 0);
+  dovetail_lid_cutout(box_size, 1);
 }
 
 // dovetail_lid(box_size);
