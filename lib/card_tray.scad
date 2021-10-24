@@ -18,7 +18,7 @@ $bleed = 0.01;
 
 /**
  * Standard card size eg MTG
- * Sleeved with either gamegenic or mayday
+ * Sleeved with either gamegenic gray or mayday green
  */
 standard_sleeved_card_size = [
   67,
@@ -34,10 +34,20 @@ standard_card_size = [
 ];
 
 /**
+ * Standard USA card size eg Bohnanza
+ */
+standard_usa_card_size = [
+  56,
+  87
+];
+
+/**
+ * Pad around the exact card size and create a tray of the given height.
+ *
  * @param card_size [x, y]
  * @param height total height of the container
  */
-module card_tray(card_size, height, matrix=[1, 1], honeycomb_base=false) {
+module card_tray(card_size, height, matrix=[1, 1], honeycomb_diameter=undef) {
   // Pad out the card size to get the cutout size
   card_cutout_size = [
     pad(card_size[0]),
@@ -70,7 +80,8 @@ module card_tray(card_size, height, matrix=[1, 1], honeycomb_base=false) {
               right_cutout = true,
               top_cutout = true,
               bottom_cutout = true,
-              honeycomb_base = honeycomb_base
+              honeycomb_diameter = honeycomb_diameter,
+              floor_cutout = !honeycomb_diameter
             );
           }
         }

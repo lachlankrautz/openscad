@@ -25,10 +25,13 @@ module cutout(
   right_cutout=false,
   top_cutout=false,
   bottom_cutout=false,
-  honeycomb_base=false,
-  pill=false
+  honeycomb_diameter=undef,
+  pill=false,
+  floor_cutout=false
 ) {
   assert(size[2] > floor_height, "Box height shorter than floor height");
+
+  honeycomb_base = honeycomb_diameter != undef;
 
   cutout_size = [
     size[0],
@@ -104,30 +107,43 @@ module cutout(
     }
   }
 
+  // clearences to help place things inside without hitting the other cutouts
+  frame_thickness = honeycomb_base ? $wall_thickness : $wall_thickness * 3;
+  left_clearance = left_cutout
+    ? $inset + frame_thickness
+    : 0;
+
+  right_clearance = right_cutout
+    ? $inset + frame_thickness
+    : 0;
+
+  top_clearance = top_cutout
+    ? $inset + frame_thickness
+    : 0;
+
+  bottom_clearance = bottom_cutout
+    ? $inset + frame_thickness
+    : 0;
+
   if (honeycomb_base) {
-    left_clearance = left_cutout
-      ? $inset + $wall_thickness
-      : 0;
-
-    right_clearance = right_cutout
-      ? $inset + $wall_thickness
-      : 0;
-
-    top_clearance = top_cutout
-      ? $inset + $wall_thickness
-      : 0;
-
-    bottom_clearance = bottom_cutout
-      ? $inset + $wall_thickness
-      : 0;
-
     honeycomb_size = [
       size[0] - left_clearance - right_clearance,
       size[1] - top_clearance - bottom_clearance,
       floor_height + $bleed * 2,
     ];
     translate([left_clearance, bottom_clearance, -$bleed]) {
-      negative_honeycomb_cube(honeycomb_size, 4);
+      negative_honeycomb_cube(honeycomb_size, honeycomb_diameter);
+    }
+  }
+
+  if (floor_cutout) {
+    honeycomb_size = [
+          size[0] - left_clearance - right_clearance,
+          size[1] - top_clearance - bottom_clearance,
+        floor_height + $bleed * 2,
+      ];
+    translate([left_clearance, bottom_clearance, -$bleed]) {
+      rounded_cube(honeycomb_size, flat=true);
     }
   }
 }
