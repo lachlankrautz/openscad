@@ -1,5 +1,5 @@
-include <../../lib/rounded_cube.scad>
-include <../../lib/layout.scad>
+include <../../lib/primitive/rounded_cube.scad>
+include <../../lib/layout/layout.scad>
 
 $fn = 50;
 $wall_thickness = 2;

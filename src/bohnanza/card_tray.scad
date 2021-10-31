@@ -1,4 +1,5 @@
 include <../../lib/card_tray.scad>
+include <../../lib/config/card_sizes.scad>
 
 // Config
 $fn = 50;

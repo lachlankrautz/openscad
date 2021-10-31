@@ -1,6 +1,7 @@
-include <../../lib/rounded_cube.scad>
-include <../../lib/cutouts.scad>
-include <../../lib/layout.scad>
+include <../../lib/primitive/rounded_cube.scad>
+include <../../lib/compound/notched_cube.scad>
+include <../../lib/layout/layout.scad>
+include <../../lib/tile_stack.scad>
 
 // Config
 $fn = 50;
@@ -48,20 +49,20 @@ difference() {
   rounded_cube(box_size, flat_top=true, $rounding=2);
 
   translate([$wall_thickness, $wall_thickness, 0]) {
-    tile_cutout(player_number_size, player_number_count, box_size[2], bottom_cutout=true);
+    tile_stack(player_number_size, player_number_count, box_size[2], bottom_cutout=true);
 
     // Right of player no.
     translate([padded_offset(player_number_size[0]), 0, 0]) {
       for(i=[0:starting_tile_stack_count-1]) {
         translate([padded_offset(starting_tile_size[0], i), 0, 0]) {
-          tile_cutout(starting_tile_size, starting_tile_count, box_size[2], bottom_cutout=true);
+          tile_stack(starting_tile_size, starting_tile_count, box_size[2], bottom_cutout=true);
         }
       }
     }
 
     // Above starting tiles
     translate([0, padded_offset(starting_tile_size[1]), 0]) {
-      tile_cutout(player_power_size, player_power_count, box_size[2], top_cutout=true);
+      tile_stack(player_power_size, player_power_count, box_size[2], top_cutout=true);
     }
   }
 }

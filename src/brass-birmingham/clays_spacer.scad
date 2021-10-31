@@ -1,4 +1,4 @@
-include <../../lib/rounded_cube.scad>
+include <../../lib/primitive/rounded_cube.scad>
 
 $wall_thickness = 2;
 $rounding = 3;

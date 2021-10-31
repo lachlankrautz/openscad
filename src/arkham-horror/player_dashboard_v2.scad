@@ -1,7 +1,7 @@
-include <../../lib/rounded_cube.scad>
-include <../../lib/layout.scad>
-include <../../lib/elephant_foot.scad>
-include <../../lib/svg_icon.scad>
+include <../../lib/primitive/rounded_cube.scad>
+include <../../lib/layout/layout.scad>
+include <../../lib/primitive/elephant_foot.scad>
+include <../../lib/image/svg_icon.scad>
 use <../../assets/fonts/Teutonic.ttf>
 
 // Config

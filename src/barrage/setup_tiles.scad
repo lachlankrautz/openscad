@@ -1,7 +1,8 @@
-include <../../lib/rounded_cube.scad>
-include <../../lib/layout.scad>
-include <../../lib/cutouts.scad>
-include <../../lib/util_functions.scad>
+include <../../lib/primitive/rounded_cube.scad>
+include <../../lib/layout/layout.scad>
+include <../../lib/compound/notched_cube.scad>
+include <../../lib/compound/tile_stack.scad>
+include <../../lib/util/util_functions.scad>
 
 // Config
 $fn = 50;
@@ -49,7 +50,7 @@ difference() {
   rounded_cube(box_size, flat_top=true, $rounding=2);
 
   translate([$wall_thickness, $wall_thickness, 0]) {
-    tile_cutout(
+    tile_stack(
       end_goal_tile_size, 
       end_goal_tile_stack, 
       box_size[2],
@@ -59,7 +60,7 @@ difference() {
   }
 
   translate([padded_offset(end_goal_tile_size[0]) + $wall_thickness, $wall_thickness, 0]) {
-    tile_cutout(
+    tile_stack(
       round_goal_tile_size, 
       round_goal_tile_map[1], 
       box_size[2],
@@ -72,7 +73,7 @@ difference() {
     box_size[1] - padded_offset(round_goal_tile_size[1]), 
     0
   ]) {
-    tile_cutout(
+    tile_stack(
       round_goal_tile_size, 
       round_goal_tile_map[0], 
       box_size[2],
@@ -85,7 +86,7 @@ difference() {
     $wall_thickness,
     0,
   ]) {
-    tile_cutout(
+    tile_stack(
       water_tile_size,
       water_tile_stack,
       box_size[2],

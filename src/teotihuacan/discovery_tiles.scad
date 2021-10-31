@@ -1,7 +1,8 @@
-include <../../lib/rounded_cube.scad>
-include <../../lib/cutouts.scad>
-include <../../lib/disc_socket.scad>
-include <../../lib/layout.scad>
+include <../../lib/primitive/rounded_cube.scad>
+include <../../lib/compound/notched_cube.scad>
+include <../../lib/primitive/disc_socket.scad>
+include <../../lib/layout/layout.scad>
+include <../../lib/tile_stack.scad>
 
 // Config
 $fn = 50;
@@ -37,7 +38,7 @@ difference() {
           padded_offset(discovery_tile_size[1], j),
           0,
         ]) {
-          tile_cutout(
+          tile_stack(
             discovery_tile_size, 
             discovery_tile_count, 
             box_size[2],

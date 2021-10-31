@@ -1,7 +1,8 @@
-include <../../lib/rounded_cube.scad>
-include <../../lib/layout.scad>
-include <../../lib/round_tile_tray.scad>
-include <../../lib/util_functions.scad>
+include <../../lib/primitive/rounded_cube.scad>
+include <../../lib/layout/layout.scad>
+include <../../lib/tile_stack_round.scad>
+include <../../lib/util/util_functions.scad>
+include <../../lib/tile_stack.scad>
 
 // Config
 $fn = 50;
@@ -40,7 +41,7 @@ difference() {
     for(i=[0:tile_rows-1]) {
       for(j=[0:tile_columns-1]) {
         translate([padded_offset(diameter, j), padded_offset(diameter, i), 0]) {
-          round_tile_cutout(
+          tile_stack_round(
             diameter, 
             tile_height,
             tile_map[i][j], 

@@ -1,5 +1,5 @@
-include <../../../lib/rounded_cube.scad>
-include <../../../lib/elephant_foot.scad>
+include <../../../lib/primitive/rounded_cube.scad>
+include <../../../lib/primitive/elephant_foot.scad>
 use <../../../assets/fonts/Teutonic.ttf>
 
 // Config

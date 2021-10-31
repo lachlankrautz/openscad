@@ -1,7 +1,8 @@
-include <../../lib/rounded_cube.scad>
-include <../../lib/cutouts.scad>
-include <../../lib/disc_socket.scad>
-include <../../lib/layout.scad>
+include <../../lib/primitive/rounded_cube.scad>
+include <../../lib/compound/notched_cube.scad>
+include <../../lib/primitive/disc_socket.scad>
+include <../../lib/layout/layout.scad>
+include <../../lib/tile_stack.scad>
 
 // Config
 $fn = 50;
@@ -158,15 +159,15 @@ difference() {
 
     // Temple bonus
     translate([0, disc_offset(eclipse_diameter) + $wall_thickness, 0]) {
-      tile_cutout(temple_bonus_tile_size, temple_bonus_count, box_size[2], left_cutout=true);
+      tile_stack(temple_bonus_tile_size, temple_bonus_count, box_size[2], left_cutout=true);
 
       // Royal
       translate([0, padded_offset(temple_bonus_tile_size[1]), 0]) {
-        tile_cutout(royal_tile_size, royal_tile_count, box_size[2], left_cutout=true);
+        tile_stack(royal_tile_size, royal_tile_count, box_size[2], left_cutout=true);
     
         // Season
         translate([0, padded_offset(royal_tile_size[1]), 0]) {
-          tile_cutout(season_tile_size, season_tile_count, box_size[2], left_cutout=true);
+          tile_stack(season_tile_size, season_tile_count, box_size[2], left_cutout=true);
         }
       }
     }
@@ -182,7 +183,7 @@ difference() {
   ]) {
     for(i=[0:technology_tile_stack_count-1]) {
       translate([0, padded_offset(technology_tile_size[1], i), 0]) {
-        tile_cutout(technology_tile_size, technology_tile_count, box_size[2], right_cutout=true);
+        tile_stack(technology_tile_size, technology_tile_count, box_size[2], right_cutout=true);
       }
     }
   }

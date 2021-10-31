@@ -1,6 +1,7 @@
-include <../../lib/rounded_cube.scad>
-include <../../lib/cutouts.scad>
-include <../../lib/layout.scad>
+include <../../lib/primitive/rounded_cube.scad>
+include <../../lib/compound/notched_cube.scad>
+include <../../lib/layout/layout.scad>
+include <../../lib/tile_stack.scad>
 
 // Config
 $fn = 50;
@@ -25,7 +26,7 @@ difference() {
   rounded_cube(box_size, flat_top=true, $rounding=1);
 
   translate([$wall_thickness, $wall_thickness, 0]) {
-    tile_cutout(
+    tile_stack(
       decoration_tile_size, 
       decoration_tile_count, 
       box_size[2],

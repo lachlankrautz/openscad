@@ -1,7 +1,8 @@
-include <../../lib/rounded_cube.scad>
-include <../../lib/layout.scad>
-include <../../lib/cutouts.scad>
-include <../../lib/util_functions.scad>
+include <../../lib/primitive/rounded_cube.scad>
+include <../../lib/layout/layout.scad>
+include <../../lib/compound/notched_cube.scad>
+include <../../lib/util/util_functions.scad>
+include <../../lib/tile_stack.scad>
 
 // Config
 $fn = 50;
@@ -61,7 +62,7 @@ difference() {
         translate([padded_offset(tile_size[0], j), padded_offset(tile_size[1], i), 0]) {
           if (i == 0 && j == 4) {
             translate([(tile_size[0] - small_tile_size[0]) / 2, 0, 0]) {
-              tile_cutout(
+              tile_stack(
                 small_tile_size, 
                 tile_map[i][j], 
                 box_size[2],
@@ -71,7 +72,7 @@ difference() {
               );
             }
           } else {
-            tile_cutout(
+            tile_stack(
               tile_size, 
               tile_map[i][j], 
               box_size[2],

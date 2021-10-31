@@ -1,6 +1,6 @@
-include <../../lib/disc_bracket.scad>
-include <../../lib/layout.scad>
-include <../../lib/rounded_cube.scad>
+include <../../lib/primitive/disc_bracket.scad>
+include <../../lib/layout/layout.scad>
+include <../../lib/primitive/rounded_cube.scad>
 
 $fn = 50;
 $rounding = 1;

@@ -1,7 +1,7 @@
-include <../../lib/rounded_cube.scad>
-include <../../lib/cutouts.scad>
-include <../../lib/disc_socket.scad>
-include <../../lib/layout.scad>
+include <../../lib/primitive/rounded_cube.scad>
+include <../../lib/compound/notched_cube.scad>
+include <../../lib/primitive/disc_socket.scad>
+include <../../lib/layout/layout.scad>
 
 // Config
 $fn = 50;

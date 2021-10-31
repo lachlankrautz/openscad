@@ -1,9 +1,10 @@
-include <../../lib/cutout_children.scad>
-include <../../lib/grid_layout.scad>
-include <../../lib/cutouts.scad>
-include <../../lib/dish.scad>
-include <../../lib/grid_dish.scad>
-include <../../lib/layout.scad>
+include <../../lib/decorator/cutout_children.scad>
+include <../../lib/layout/grid_layout/layout.scad>
+include <../../lib/compound/notched_cube.scad>
+include <../../lib/primitive/dish.scad>
+include <../../lib/primitive/group/grid_dish.scad>
+include <../../lib/layout/layout.scad>
+include <../../lib/tile_stack.scad>
 
 // Config
 tile_height = 2;
@@ -62,5 +63,5 @@ box_size = [
 ];
 
 cutout_children(box_size) {
-  tile_cutout(long_tile_box_size, 1, box_size[2]);
+  tile_stack(long_tile_box_size, 1, box_size[2]);
 }

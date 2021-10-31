@@ -1,4 +1,4 @@
-include <../../lib/rounded_cube.scad>
+include <../../lib/primitive/rounded_cube.scad>
 
 $fn = 50;
 $rounding = 1;

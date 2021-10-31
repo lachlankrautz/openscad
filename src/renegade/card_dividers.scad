@@ -1,4 +1,4 @@
-include <../../lib/trapezoid.scad>
+include <../../lib/primitive/trapezoid.scad>
 
 $fn = 50;
 $wall_thickness = 2;

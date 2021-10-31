@@ -1,3 +1,3 @@
-include <./lib/event_cards.scad>
+include <../../lib/event_cards.scad>
 
 event_cards(false);

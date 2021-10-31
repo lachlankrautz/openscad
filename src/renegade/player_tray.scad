@@ -1,6 +1,6 @@
-include <../../lib/rounded_cube.scad>
-include <../../lib/layout.scad>
-include <../../lib/scoop.scad>
+include <../../lib/primitive/rounded_cube.scad>
+include <../../lib/layout/layout.scad>
+include <../../lib/primitive/scoop.scad>
 
 $wall_thickness = 2;
 $bleed = 0.01;

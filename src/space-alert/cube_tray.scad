@@ -1,7 +1,8 @@
-include <../../lib/cutout_children.scad>
-include <../../lib/cutouts.scad>
-include <../../lib/layout.scad>
-include <../../lib/dish.scad>
+include <../../lib/decorator/cutout_children.scad>
+include <../../lib/compound/notched_cube.scad>
+include <../../lib/layout/layout.scad>
+include <../../lib/primitive/dish.scad>
+include <../../lib/tile_stack.scad>
 
 // Config
 // $fn = 50;
@@ -126,7 +127,7 @@ difference() {
 
       for(i=[0:damage_stack_count-1]) {
         translate([0, padded_offset(damage_tile_size[1], i), 0]) {
-          tile_cutout(
+          tile_stack(
             damage_tile_size,
             damage_tile_count,
             box_size[2],

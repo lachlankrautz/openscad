@@ -1,8 +1,9 @@
-include <../../lib/rounded_cube.scad>
-include <../../lib/layout.scad>
-include <../../lib/cutouts.scad>
-include <../../lib/round_tile_tray.scad>
-include <../../lib/util_functions.scad>
+include <../../lib/primitive/rounded_cube.scad>
+include <../../lib/layout/layout.scad>
+include <../../lib/compound/notched_cube.scad>
+include <../../lib/tile_stack_round.scad>
+include <../../lib/util/util_functions.scad>
+include <../../lib/tile_stack.scad>
 
 // Config
 $fn = 50;
@@ -50,7 +51,7 @@ difference() {
 
   translate([$wall_thickness, $wall_thickness, 0]) {
     // Time
-    round_tile_cutout(
+    tile_stack_round(
       diameter, 
       tile_height,
       time_tile_stack, 
@@ -71,7 +72,7 @@ difference() {
           0,
           0,
         ]) {
-          tile_cutout(
+          tile_stack(
             urgency_size,
             urgency_stack,
             box_size[2],
@@ -94,7 +95,7 @@ difference() {
           0,
           0,
         ]) {
-          tile_cutout(
+          tile_stack(
             tracker_size,
             tracker_stack,
             box_size[2],

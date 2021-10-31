@@ -1,4 +1,4 @@
-include <../../lib/rounded_cube.scad>
+include <../../lib/primitive/rounded_cube.scad>
 
 length = 94;
 width = 72;

@@ -1,6 +1,7 @@
-include <../../../lib/rounded_cube.scad>
-include <../../../lib/layout.scad>
-include <../../../lib/cutouts.scad>
+include <../../../lib/primitive/rounded_cube.scad>
+include <../../../lib/layout/layout.scad>
+include <../../../lib/compound/notched_cube.scad>
+include <../../../lib/compound/tile_stack.scad>
 
 // Config
 $fn = 50;
@@ -54,7 +55,7 @@ module event_cards(with_tokens) {
     translate([$wall_thickness, $wall_thickness, 0]) {
       for(i=[0:card_stack_count-1]) {
         translate([padded_offset(card_size[0] + stack_gap, i), 0, 0]) {
-          tile_cutout(card_size, 1, box_size[2], left_cutout=true, right_cutout=true);
+          tile_stack(card_size, 1, box_size[2], left_cutout=true, right_cutout=true);
         }
       }
     }

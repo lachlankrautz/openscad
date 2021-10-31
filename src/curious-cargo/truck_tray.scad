@@ -1,6 +1,7 @@
-include <../../lib/rounded_cube.scad>
-include <../../lib/layout.scad>
-include <../../lib/cutouts.scad>
+include <../../lib/primitive/rounded_cube.scad>
+include <../../lib/layout/layout.scad>
+include <../../lib/compound/notched_cube.scad>
+include <../../lib/tile_stack.scad>
 
 // Config
 $fn = 50;
@@ -54,14 +55,14 @@ module truck_tray() {
   
     translate([$wall_thickness, $wall_thickness, 0]) {
       // Bottom row
-      tile_cutout(
+      tile_stack(
         truck_4_size, 
         truck_count, 
         box_size[2],
         left_cutout=true
       );
       translate([padded_offset(truck_4_size[0]), 0, 0]) {
-        tile_cutout(
+        tile_stack(
           truck_3_size, 
           truck_count, 
           box_size[2],
@@ -71,7 +72,7 @@ module truck_tray() {
   
       // Middle row
       translate([0, padded_offset(truck_6_size[1]), 0]) {
-        tile_cutout(
+        tile_stack(
           truck_5_size, 
           truck_count, 
           box_size[2],
@@ -79,7 +80,7 @@ module truck_tray() {
         );
       }
       translate([padded_offset(truck_5_size[0]), padded_offset(truck_6_size[1]), 0]) {
-        tile_cutout(
+        tile_stack(
           truck_2_size, 
           truck_count, 
           box_size[2],
@@ -89,7 +90,7 @@ module truck_tray() {
   
       // Top row
       translate([0, padded_offset(truck_6_size[1], 2), 0]) {
-        tile_cutout(
+        tile_stack(
           truck_6_size, 
           truck_count, 
           box_size[2],
@@ -111,7 +112,7 @@ module test_truck_tray() {
     rounded_cube(box_size, flat_top=true, $rounding=2);
   
     translate([$wall_thickness, $wall_thickness, 0]) {
-      tile_cutout(
+      tile_stack(
         truck_2_size, 
         truck_count, 
         box_size[2],

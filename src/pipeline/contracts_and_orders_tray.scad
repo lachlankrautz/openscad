@@ -1,6 +1,7 @@
-include <../../lib/rounded_cube.scad>
-include <../../lib/layout.scad>
-include <../../lib/cutouts.scad>
+include <../../lib/primitive/rounded_cube.scad>
+include <../../lib/layout/layout.scad>
+include <../../lib/compound/notched_cube.scad>
+include <../../lib/tile_stack.scad>
 
 // Config
 // $fn = 50;
@@ -38,7 +39,7 @@ difference() {
   translate([$wall_thickness, $wall_thickness, 0]) {
     for(i=[0:tile_rows-1]) {
       translate([0, padded_offset(order_tile_size[1], i), 0]) {
-        tile_cutout(
+        tile_stack(
           contract_tile_size, 
           10, 
           box_size[2],
@@ -46,7 +47,7 @@ difference() {
         );
 
         translate([padded_offset(contract_tile_size[0], 1), 0, 0]) {
-          tile_cutout(
+          tile_stack(
             order_tile_size, 
             10, 
             box_size[2],

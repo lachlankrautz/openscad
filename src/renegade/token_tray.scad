@@ -1,10 +1,11 @@
-include <../../lib/rounded_cube.scad>
-include <../../lib/scoop.scad>
-include <../../lib/layout.scad>
-include <../../lib/cutouts.scad>
-include <../../lib/util_functions.scad>
-include <../../lib/round_tile_tray.scad>
-include <../../lib/dovetail_lid.scad>
+include <../../lib/primitive/rounded_cube.scad>
+include <../../lib/primitive/scoop.scad>
+include <../../lib/layout/layout.scad>
+include <../../lib/compound/notched_cube.scad>
+include <../../lib/util/util_functions.scad>
+include <../../lib/tile_stack_round.scad>
+include <../../lib/lid/dovetail_lid.scad>
+include <../../lib/tile_stack.scad>
 
 // Config
 $fn = 50;
@@ -49,7 +50,7 @@ module tray_with_cutouts() {
       // token stacks
       for(i=[0:tile_columns-1]) {
         translate([padded_offset(tile_size[0], i), box_size[1] - padded_offset(tile_size[1]), 0]) {
-          tile_cutout(
+          tile_stack(
             tile_size,
             tile_map[0][i],
             box_size[2] - $wall_thickness,
@@ -65,7 +66,7 @@ module tray_with_cutouts() {
       box_size[1] - padded_offset(tile_diameter),
       0
     ]) {
-      round_tile_cutout(
+      tile_stack_round(
         tile_diameter,
         tile_size[2],
         round_tile_count,
