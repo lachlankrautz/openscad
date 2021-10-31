@@ -1,34 +1,14 @@
+include <./config.scad>
 include <../../lib/tray/card_tray.scad>
 include <../../lib/compound/notched_cube.scad>
-include <../../lib/config/card_sizes.scad>
 include <../../lib/compound/tile_stack.scad>
 include <../../lib/compound/tile_stack_round.scad>
+include <../../lib/lid/dovetail_lid.scad>
 
-tile_size = [
-  20.5,
-  20.5,
-  2.2,
-];
-round_tile_diameter = 25;
-tile_stack_count = 5;
-
-cards = [
-  [standard_usa_card_size],
-  [mini_euro_card_size],
-];
-card_stack_height = 28;
-
-card_tray_size = card_tray_grid_size(cards, card_stack_height);
-token_tray_size = [0, padded_offset(tile_size[1]), 0];
-
-box_size = [
-  max(card_tray_size[0], token_tray_size[0]),
-  card_tray_size[1] + token_tray_size[1],
-  max(card_tray_size[2], token_tray_size[2]),
-];
+$fn = 50;
 
 difference() {
-  rounded_cube(box_size + [0, 0, 2], flat_top=true);
+  rounded_cube(box_size, flat_top=true, $rounding=1);
 
   translate([$wall_thickness, card_tray_size[1], 0]) {
     for (i=[0:2]) {
@@ -39,7 +19,8 @@ difference() {
             tile_stack_count,
             box_size[2],
             top_cutout = true,
-            bottom_cutout = false
+            bottom_cutout = false,
+            lid_height=lid_height
           );
         } else {
           tile_stack_round(
@@ -48,7 +29,8 @@ difference() {
             tile_stack_count,
             box_size[2],
             top_cutout = true,
-            bottom_cutout = false
+            bottom_cutout = false,
+            lid_height=lid_height
           );
         }
       }
@@ -56,4 +38,6 @@ difference() {
   }
 
   card_tray_grid_cutout(cards, card_stack_height, top_cutout=false);
+
+  dovetail_lid_cutout(box_size);
 }

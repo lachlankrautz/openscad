@@ -1,4 +1,4 @@
-include <../../lib/card_tray.scad>
+include <../../lib/tray/card_tray.scad>
 include <../../lib/config/card_sizes.scad>
 
 // Config

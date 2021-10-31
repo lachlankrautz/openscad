@@ -7,17 +7,16 @@ include <../layout/grid_utils.scad>
 // $fn = 50;
 $fn = 10;
 $wall_thickness = 2;
-
-// Default padding is for tokens
-// Cards need more space than tokens
-// default was really tight
-// 2 was a bit loose
-// 1 was...ok
-$padding = 1;
+$card_padding = 1.5;
 $rounding = 2;
 $bleed = 0.01;
 
-function padded_card_size_grid(cards, height) = add_grid_xyz(cards, [$padding * 2, $padding * 2, height]);
+function padded_card_size_grid(cards, height) = add_grid_xyz(cards, [$card_padding * 2, $card_padding * 2, height]);
+function padded_card_size(size, height) = [
+  size[0] + $card_padding * 2,
+  size[1] + $card_padding * 2,
+  size[2] + height,
+];
 
 function card_tray_grid_size(cards, height) = accumulated_grid_cube(accumulated_grid(walled_grid(padded_card_size_grid(cards, height))))
    + [$wall_thickness, $wall_thickness, height];
@@ -84,7 +83,10 @@ module card_tray_grid_cutout(
   honeycomb_diameter=undef
 ) {
   // Add padding and set height for cutout
+  print_grid(card_size_grid);
+  echo("card padding: ", $card_padding);
   card_cutout_size_grid = padded_card_size_grid(card_size_grid, height);
+  print_grid(card_cutout_size_grid);
   normal_grid = max_grid(card_cutout_size_grid);
   median_grid = median_grid(card_cutout_size_grid);
 
@@ -95,6 +97,7 @@ module card_tray_grid_cutout(
     for (x = [0:len(card_cutout_size_grid) - 1]) {
       for (y = [0:len(card_cutout_size_grid[x]) - 1]) {
         translate(card_offset_grid[x][y]) {
+          echo("size: ", card_cutout_size_grid[x][y]);
           notched_cube(
             card_cutout_size_grid[x][y],
             left_cutout = left_cutout,
@@ -114,8 +117,8 @@ module card_tray_grid_cutout(
 
 module card_tray_top_spacer(card_size, height, matrix=[1, 1]) {
   card_spacer_size = [
-    card_size[0] - $padding * 5,
-    card_size[1] - $padding * 5,
+    card_size[0] - $card_padding * 5,
+    card_size[1] - $card_padding * 5,
     height,
   ];
   // spacer hole inset is proportional to the height
@@ -125,11 +128,11 @@ module card_tray_top_spacer(card_size, height, matrix=[1, 1]) {
     height + $bleed * 2,
   ];
 
-  card_cutout_size = card_cutout_size([
+  card_cutout_size = padded_card_size([
     card_size[0],
     card_size[1],
     0,
-  ]);
+  ], 0);
 
   centre_offset = [
     (card_cutout_size[0] - card_spacer_size[0]) / 2,
@@ -144,13 +147,13 @@ module card_tray_top_spacer(card_size, height, matrix=[1, 1]) {
 
   join_length = $wall_thickness * 5;
   join_x_size = [
-    cutout_fraction_size(card_size[0]) - $padding * 4,
+    cutout_fraction_size(card_size[0]) - $card_padding * 4,
     join_length,
     height,
   ];
   join_y_size = [
     join_length,
-    cutout_fraction_size(card_size[1]) - $padding * 4,
+    cutout_fraction_size(card_size[1]) - $card_padding * 4,
     height,
   ];
 

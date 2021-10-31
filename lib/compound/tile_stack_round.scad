@@ -16,14 +16,15 @@ module tile_stack_round(
   left_cutout=false, 
   right_cutout=false,
   top_cutout=false,
-  bottom_cutout=false
+  bottom_cutout=false,
+  lid_height = 0
 ) {
   // No need to render any cutout if the size is zero
   if (count > 0) {
     tray_size = [
       pad(diameter),
       pad(diameter),
-      stack_height(tile_height, count) + $bleed,
+      stack_height(tile_height, count) + $bleed + lid_height,
     ];
   
     floor_height = roof_height - tray_size[2] + $bleed;

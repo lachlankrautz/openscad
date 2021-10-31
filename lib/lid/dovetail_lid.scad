@@ -67,7 +67,7 @@ module dovetail_lid_cutout(box_size) {
 
 module dovetail(size, bump_radius = undef, honeycomb_diameter = false) {
   honeycomb = honeycomb_diameter > 0;
-  honeycomb_size = honeycomb_inset_size(size, $trapezoid_inset + $wall_thickness / 2);
+  honeycomb_size = honeycomb_inset_size(size - [$wall_thickness * 2, $wall_thickness * 2, 0], $trapezoid_inset + $wall_thickness / 2);
 
   _bump_radius = bump_radius ? bump_radius: $default_bump_radius;
   bump_inset = 1.5;
