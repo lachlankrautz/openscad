@@ -1,12 +1,11 @@
 include <../../lib/decorator/cutout_children.scad>
-include <../../lib/layout/grid_layout/layout.scad>
+include <../../lib/layout/grid_layout.scad>
 include <../../lib/primitive/dish.scad>
 include <../../lib/primitive/group/grid_dish.scad>
 
 // Config
 // $fn = 10;
 $fn = 50;
-$wall_thickness = 2;
 
 function get_offset (size, index=1) = (size + $wall_thickness) * index;
 

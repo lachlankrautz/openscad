@@ -1,7 +1,5 @@
 include <../layout/layout.scad>
-
-$bleed = 0.01;
-$padding = 0.4;
+include <../config/constants.scad>
 
 function disc_offset (diameter, index=1) = (diameter + $padding * 2 + $wall_thickness) * index;
 

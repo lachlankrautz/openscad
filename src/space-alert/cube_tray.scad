@@ -5,12 +5,9 @@ include <../../lib/primitive/dish.scad>
 include <../../lib/tile_stack.scad>
 
 // Config
-// $fn = 50;
-$fn = 10;
-$wall_thickness = 2;
+$fn = 50;
 $padding = 0.5;
 $rounding = 2;
-$bleed = 0.01;
 $cutout_fraction = 0.4;
 
 dish_roundness = 0.8;

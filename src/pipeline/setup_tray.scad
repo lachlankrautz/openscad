@@ -5,7 +5,6 @@ include <../../lib/tile_stack.scad>
 
 // Config
 $fn = 50;
-// $fn = 10;
 
 function get_offset (size, index=1, padding=0) = (size + padding * 2 + $wall_thickness) * index;
 

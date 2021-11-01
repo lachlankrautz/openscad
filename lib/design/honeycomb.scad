@@ -1,15 +1,12 @@
 include <../../vendor/honeycomb.scad>
 include <../primitive/rounded_cube.scad>
+include <../config/constants.scad>
 
-$wall_thickness = 2;
-$bleed = 0.01;
-$hexagons_per_side = 2;
-
-function relative_diameter(dimensions) = (
+function relative_diameter(dimensions, hexagons_per_size=2) = (
   min(
     dimensions[0],
     dimensions[1]) + $wall_thickness
-  ) / $hexagons_per_side;
+  ) / hexagons_per_side;
 
 function honeycomb_inset_size(size, inset = $wall_thickness) = [
     size[0] - $wall_thickness,

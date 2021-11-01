@@ -5,11 +5,8 @@ include <../../../lib/compound/tile_stack.scad>
 
 // Config
 $fn = 50;
-// $fn = 10;
-$wall_thickness = 2;
 $padding = 2;
 $rounding = 2;
-$bleed = 0.01;
 $cutout_fraction = 0.8;
 
 stack_gap = 10;

@@ -1,7 +1,6 @@
 include <../layout/layout.scad>
 include <../compound/notched_cube.scad>
-
-$wall_thickness = 2;
+include <../config/constants.scad>
 
 module disc_bracket(size, count=1) {
   outter_size = size + [$wall_thickness * 2, $wall_thickness * 2, 0];

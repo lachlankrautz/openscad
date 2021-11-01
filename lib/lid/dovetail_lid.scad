@@ -1,26 +1,17 @@
 include <../design/honeycomb.scad>
 include <../primitive/trapezoid.scad>
 include <../util/elephant_foot_compensation.scad>
+include <../config/constants.scad>
 
-$wall_thickness = 2;
-$inner_wall_thickness = 1;
+// TODO review all of these constants
+// are they needed by other components?
+// can they just be regular variables or parameter defaults?
+length_tolerance = 0.25;
+width_tolerance = 0.12;
+bump_tolerance = 0.2;
+default_bump_radius = 0.5;
 
-// $lid_height = 3;
-// $trapezoid_inset = 2;
-$lid_height = 2;
-$trapezoid_inset = 1;
-
-$bleed = 0.01;
-$rounding = 3;
-$clearance = 0.5;
-// $length_tolerance = 0.25;
-// $width_tolerance = 0.25;
-$length_tolerance = 0.25;
-$width_tolerance = 0.12;
-$bump_tolerance = 0.2;
-$default_bump_radius = 0.5;
-
-dovetail_tolerance = [$length_tolerance, $width_tolerance * 2, 0];
+dovetail_tolerance = [length_tolerance, width_tolerance * 2, 0];
 dovetail_cutout_bleed = [$bleed, $bleed * 2, $bleed * 2];
 
 function dovetail_size(box_size) = [
@@ -49,7 +40,7 @@ module dovetail_lid(box_size, honeycomb_diameter = false) {
 }
 
 module dovetail_lid_cutout(box_size) {
-  bump_radius = $default_bump_radius + $bump_tolerance;
+  bump_radius = default_bump_radius + bump_tolerance;
   dovetail_size = dovetail_size(box_size);
 
   // Expand slightly with bleed so cutout doesn't leave ghost panels
@@ -69,7 +60,7 @@ module dovetail(size, bump_radius = undef, honeycomb_diameter = false) {
   honeycomb = honeycomb_diameter > 0;
   honeycomb_size = honeycomb_inset_size(size - [$wall_thickness * 2, $wall_thickness * 2, 0], $trapezoid_inset + $wall_thickness / 2);
 
-  _bump_radius = bump_radius ? bump_radius: $default_bump_radius;
+  _bump_radius = bump_radius ? bump_radius: default_bump_radius;
   bump_inset = 1.5;
   disc_height = $bleed;
 

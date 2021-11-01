@@ -1,4 +1,4 @@
-include <../lib/layout/grid_layout/layout.scad>
+include <../lib/layout/grid_layout.scad>
 
 grid_2d = [
   [5, 10, 15],

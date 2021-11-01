@@ -7,7 +7,6 @@ include <../../lib/tile_stack.scad>
 
 // Config
 $fn = 50;
-// $fn = 10;
 
 // Tokens
 tile_height = 2;

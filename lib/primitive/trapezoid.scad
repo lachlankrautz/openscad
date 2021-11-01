@@ -1,3 +1,5 @@
+include <../config/constants.scad>
+
 module trapezoid(size, inset) {
   polygon([
     [0, 0],

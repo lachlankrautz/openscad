@@ -9,9 +9,6 @@ include <../../lib/tile_stack.scad>
 
 // Config
 $fn = 50;
-$wall_thickness = 2;
-$bleed = 0.01;
-// $fn = 10;
 
 tile_map = [
   [5, 5, 5, 5, 5],

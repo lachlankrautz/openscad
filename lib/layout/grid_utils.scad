@@ -1,6 +1,5 @@
 include <../util/util_functions.scad>
-
-$wall_thickness = 2;
+include <../config/constants.scad>
 
 function make_grid_of(matrix, item) = [for(x=[0:matrix[0]-1]) [for(y=[0:matrix[1]-1]) item]];
 

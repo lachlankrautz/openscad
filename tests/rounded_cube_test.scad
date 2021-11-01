@@ -1,7 +1,6 @@
 include <../lib/primitive/rounded_cube.scad>
 
 $fn = 50;
-$rounding = 3;
 
 // can render all rounded
 rounded_cube([30, 30, 20]);

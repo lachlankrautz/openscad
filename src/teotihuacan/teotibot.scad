@@ -5,8 +5,6 @@ include <../../lib/tile_stack.scad>
 
 // Config
 $fn = 50;
-// $fn = 10;
-$wall_thickness = 2;
 
 // Player powers
 player_power_count = 6;

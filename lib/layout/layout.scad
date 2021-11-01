@@ -1,7 +1,4 @@
-$padding = 0.5;
-$wall_thickness = 2;
-$padding_rect = [$padding * 2, $padding * 2];
-$wall_rect = [$wall_thickness, $wall_thickness];
+include <../config/constants.scad>
 
 function stack_height (size, count=1) = size * count + $padding;
 

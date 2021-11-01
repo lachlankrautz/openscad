@@ -1,12 +1,6 @@
 include <../layout/layout.scad>
 include <../design/honeycomb.scad>
-
-$wall_thickness = 2;
-$bleed = 0.01;
-$padding = 0.5;
-$inset = 6;
-$cutout_fraction = 0.6;
-$cutout_lid_height = $wall_thickness;
+include <../config/constants.scad>
 
 // I have no idea why it needs to be this vaule
 // Seems to be to do with how the cube handles rounding

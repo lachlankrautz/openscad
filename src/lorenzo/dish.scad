@@ -1,5 +1,8 @@
 $fn=50;
 
+// TODO is this still needed?
+// refactor to use shared lib
+
 module dish (width, length, height, rounding) {
   r_width = width - rounding * 2;
   r_length = length - rounding * 2;

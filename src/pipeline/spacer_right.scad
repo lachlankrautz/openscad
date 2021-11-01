@@ -1,9 +1,7 @@
 include <../../lib/primitive/rounded_cube.scad>
 
-$rounding = 2;
-$wall_thickness = 2;
 $fn = 50;
-$bleed = 0.01;
+$rounding = 2;
 
 length = 118;
 width = 118;

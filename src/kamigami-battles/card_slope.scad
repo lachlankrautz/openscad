@@ -1,5 +1,6 @@
-$card_space_width = 98;
 $fn = 50;
+
+card_space_width = 98;
 
 height = 70;
 depth = 10;
@@ -14,7 +15,7 @@ module triangular_prism(width, height, depth, distance=0) {
   }
 }
 
-module card_slope(height, depth, width=$card_space_width) {
+module card_slope(height, depth, width=card_space_width) {
   triangular_prism(depth, height, width, depth);
 }
 

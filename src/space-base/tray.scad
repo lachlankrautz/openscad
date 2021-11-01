@@ -1,5 +1,5 @@
 include <../../lib/decorator/cutout_children.scad>
-include <../../lib/layout/grid_layout/layout.scad>
+include <../../lib/layout/grid_layout.scad>
 include <../../lib/primitive/scoop.scad>
 include <../../lib/primitive/group/grid_scoop.scad>
 

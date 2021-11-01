@@ -1,7 +1,5 @@
 include <./rounded_square.scad>
-
-$bleed = 1;
-$rounding = 3;
+include <../config/constants.scad>
 
 // Render a rounded cube
 // flat_top: do not round the top edges

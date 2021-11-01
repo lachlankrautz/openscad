@@ -2,10 +2,7 @@ include <../../lib/primitive/scoop_tray.scad>
 include <../../lib/lid/dovetail_lid.scad>
 
 // Config
-// $fn = 10;
 $fn = 50;
-$wall_thickness = 2;
-$bleed = 0.01;
 
 size = [
   118,

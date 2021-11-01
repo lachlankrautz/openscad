@@ -4,10 +4,6 @@ include <../lib/dovetail_primitive/scoop_tray.scad>
 // fn fails at small sizes
 // $fn = 10;
 $fn = 50;
-$wall_thickness = 2;
-$bleed = 0.01;
-$trapezoid_inset = 1;
-$lid_height = 2;
 
 size = [
   15,

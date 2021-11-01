@@ -5,10 +5,9 @@ include <../../lib/image/svg_icon.scad>
 use <../../assets/fonts/Teutonic.ttf>
 
 // Config
-$wall_thickness = 4;
-$bleed = 1;
-// $fn = 4;
 $fn = 50;
+$wall_thickness = 4;
+
 skip_cubes = false;
 $abs_filament = true;
 

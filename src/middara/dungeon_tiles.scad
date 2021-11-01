@@ -1,5 +1,5 @@
 include <../../lib/decorator/cutout_children.scad>
-include <../../lib/layout/grid_layout/layout.scad>
+include <../../lib/layout/grid_layout.scad>
 include <../../lib/compound/notched_cube.scad>
 include <../../lib/primitive/dish.scad>
 include <../../lib/primitive/group/grid_dish.scad>
@@ -7,9 +7,9 @@ include <../../lib/layout/layout.scad>
 include <../../lib/tile_stack.scad>
 
 // Config
-tile_height = 2;
 $fn = 50;
-// $fn = 10;
+
+tile_height = 2;
 
 // Tiles stack on their side
 function make_side_stack (size, count) = [

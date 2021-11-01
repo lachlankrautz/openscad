@@ -1,7 +1,6 @@
 include <../lib/primitive/elephant_foot.scad>
 
 $fn = 50;
-$rounding = 3;
 
 elephant_foot([30, 30, 20]);
 

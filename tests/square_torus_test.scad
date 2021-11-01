@@ -1,8 +1,6 @@
 include <../lib/primitive/square_torus.scad>
 
 $fn = 50;
-$rounding = 3;
-$bleed = 1;
 
 square_torus([80, 40, 10], 10);
 

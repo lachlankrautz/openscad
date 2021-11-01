@@ -1,9 +1,9 @@
 include <../../lib/primitive/rounded_cube.scad>
 
 // Config
-$wall_thickness = 4;
-$bleed = 1;
 $fn = 50;
+$wall_thickness = 4;
+
 floor_height = 2;
 cutout_depth = 3;
 

@@ -2,13 +2,7 @@ include <../primitive/rounded_cube.scad>
 include <../compound/notched_cube.scad>
 include <../layout/layout.scad>
 include <../layout/grid_utils.scad>
-
-// Config
-// $fn = 50;
-$fn = 10;
-$wall_thickness = 2;
-$card_padding = 1.5;
-$bleed = 0.01;
+include <../config/constants.scad>
 
 function padded_card_size_grid(cards, height) = add_grid_xyz(cards, [$card_padding * 2, $card_padding * 2, height]);
 function padded_card_size(size, height) = [

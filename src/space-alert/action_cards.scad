@@ -5,11 +5,8 @@ include <../../lib/tile_stack.scad>
 
 // Config
 $fn = 50;
-// $fn = 10;
-$wall_thickness = 2;
 $padding = 2;
 $rounding = 2;
-$bleed = 0.01;
 
 card_size = [
   40,

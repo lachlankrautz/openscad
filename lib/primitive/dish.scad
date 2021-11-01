@@ -1,5 +1,4 @@
-$rounding = 3;
-$bleed = 1;
+include <../config/constants.scad>
 
 default_dish_ratio = 0.5;
 

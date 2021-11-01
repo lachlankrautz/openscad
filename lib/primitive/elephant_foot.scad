@@ -1,8 +1,6 @@
 include <./rounded_cube.scad>
 include <./square_torus.scad>
-
-$rounding = 3;
-$bleed = 0.01;
+include <../config/constants.scad>
 
 // TODO investigate poor performance
 

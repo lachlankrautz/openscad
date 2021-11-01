@@ -1,12 +1,6 @@
 include <../primitive/scoop_tray.scad>
 include <../lid/dovetail_lid.scad>
-
-// Config
-// $fn = 50;
-$fn = 10;
-$wall_thickness = 2;
-$inner_wall_thickness = 1;
-$bleed = 0.01;
+include <../config/constants.scad>
 
 module dovetail_scoop_tray(size, matrix=[1, 1], radius=0, rounded=false) {
   // Adjust the scoop tray to allow for wider walls used by dovetail lids

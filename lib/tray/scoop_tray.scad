@@ -1,12 +1,7 @@
 include <../compound/notched_cube.scad>
 include <../primitive/scoop.scad>
-include <../layout/grid_layout/layout.scad>
-
-// Config
-// $fn = 50;
-$fn = 10;
-$wall_thickness = 2;
-$bleed = 0.01;
+include <../layout/grid_layout.scad>
+include <../config/constants.scad>
 
 module scoop_matrix(tray_size, matrix=[1, 1], radius=0, rounded=false) {
   scoop_size = [

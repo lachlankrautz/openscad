@@ -1,8 +1,6 @@
 include <./rounded_cube.scad>
 include <./rounded_square.scad>
-
-$rounding = 3;
-$bleed = 1;
+include <../config/constants.scad>
 
 module rounded_corner(size, flat_top=false, flat_bottom=false) {
   rotate_extrude(angle=90) {

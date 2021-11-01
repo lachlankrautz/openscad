@@ -3,7 +3,6 @@ include <../../lib/primitive/elephant_foot.scad>
 
 // Config
 $fn = 50;
-$bleed = 1;
 $rounding = 2;
 
 // Attributes

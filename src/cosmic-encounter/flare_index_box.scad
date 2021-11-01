@@ -2,10 +2,6 @@ include <../../lib/primitive/rounded_cube.scad>
 include <../../lib/layout/layout.scad>
 
 $fn = 50;
-$wall_thickness = 2;
-$bleed = 0.01;
-$padding = 0.5;
-$cutout_fraction = 0.6;
 
 module index_card_tray(
   cards_size, 

@@ -1,8 +1,6 @@
 include <../../lib/primitive/trapezoid.scad>
 
 $fn = 50;
-$wall_thickness = 2;
-$bleed = 0.01;
 
 height = 54;
 card_gap_width = 70;

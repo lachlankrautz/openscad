@@ -1,3 +1,5 @@
+$fn=50;
+
 width = 23.5;
 base_top_length = 35;
 base_top_width = 122;
@@ -14,7 +16,6 @@ top_edge_width = 8;
 height = 2;
 rounding = 0.5;
 
-$fn=50;
 union() {
   minkowski() {
     cube([base_top_length-rounding*2, base_top_width-rounding*2, height-rounding*2]);

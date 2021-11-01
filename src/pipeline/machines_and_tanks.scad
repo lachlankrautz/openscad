@@ -5,7 +5,6 @@ include <../../lib/tile_stack.scad>
 
 // Config
 $fn = 50;
-// $fn = 10;
 
 // Machines
 machine_tile_count = 9;

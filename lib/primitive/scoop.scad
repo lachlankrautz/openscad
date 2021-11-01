@@ -1,8 +1,5 @@
 include <./rounded_cube.scad>
-
-$bleed = 0.1;
-$rounding = 3;
-$wall_thickness = 2;
+include <../config/constants.scad>
 
 module cylinder_quarter(height, radius) {
   cube_size = (radius + $bleed) * 2;

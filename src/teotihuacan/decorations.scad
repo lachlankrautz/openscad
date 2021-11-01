@@ -5,7 +5,6 @@ include <../../lib/tile_stack.scad>
 
 // Config
 $fn = 50;
-// $fn = 10;
 
 // Decorations
 decoration_tile_count = 18;

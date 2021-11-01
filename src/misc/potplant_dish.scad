@@ -1,5 +1,5 @@
-$wall_thickness = 3;
 $fn = 50;
+$wall_thickness = 3;
 
 height = 12;
 inner_diameter = 75;

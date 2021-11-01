@@ -5,8 +5,6 @@ include <../../lib/layout/layout.scad>
 
 // Config
 $fn = 50;
-// $fn = 10;
-$padding = 0.5;
 
 // Season
 season_tile_count = 8;

@@ -6,7 +6,6 @@ include <../../lib/util/util_functions.scad>
 
 // Config
 $fn = 50;
-// $fn = 10;
 
 dev_tile_size = [
   114,

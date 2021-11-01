@@ -4,10 +4,7 @@ include <../../lib/primitive/dish.scad>
 
 // Config
 $fn = 50;
-// $fn = 10;
-$wall_thickness = 2;
 $rounding = 2;
-$bleed = 0.01;
 
 total_size = [
   84,

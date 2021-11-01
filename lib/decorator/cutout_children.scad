@@ -1,8 +1,5 @@
 include <../primitive/rounded_cube.scad>
-
-$bleed = 1;
-$rounding = 3;
-$wall_thickness = 2;
+include <../config/constants.scad>
 
 module cutout_children(size) {
   width = size[0];

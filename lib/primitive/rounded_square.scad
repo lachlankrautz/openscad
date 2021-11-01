@@ -1,5 +1,4 @@
-$bleed = 1;
-$rounding = 3;
+include <../config/constants.scad>
 
 module rounded_square(size, flat_top=false, flat_bottom=false) {
   assert(!(flat_top && flat_bottom), "Flat top and flat bottom are exclusive");

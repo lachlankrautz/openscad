@@ -1,12 +1,6 @@
 include <../layout/layout.scad>
+include <../config/constants.scad>
 include <./tile_stack.scad>
-
-$wall_thickness = 2;
-$bleed = 0.01;
-$padding = 0.5;
-$inset = 8;
-$cutout_fraction = 0.6;
-$cutout_lid_height = $wall_thickness;
 
 module tile_stack_round(
   diameter, 
@@ -17,7 +11,8 @@ module tile_stack_round(
   right_cutout=false,
   top_cutout=false,
   bottom_cutout=false,
-  lid_height = 0
+  lid_height=0,
+  inset=8
 ) {
   // No need to render any cutout if the size is zero
   if (count > 0) {
@@ -35,24 +30,24 @@ module tile_stack_round(
     
     if (left_cutout) {
       left_cutout_size = [
-        $inset * 2 + $wall_thickness,
+        inset * 2 + $wall_thickness,
         tray_size[1] * $cutout_fraction,
         roof_height + $cutout_lid_height + $bleed * 2,
       ];
   
-      translate([-left_cutout_size[0] + $inset, (tray_size[1] - left_cutout_size[1]) / 2, 0]) {
+      translate([-left_cutout_size[0] + inset, (tray_size[1] - left_cutout_size[1]) / 2, 0]) {
         rounded_cube(left_cutout_size, flat=true);
       }
     }
   
     if (right_cutout) {
       right_cutout_size = [
-        $inset * 2 + $wall_thickness,
+        inset * 2 + $wall_thickness,
         tray_size[1] * $cutout_fraction,
         roof_height + $cutout_lid_height + $bleed * 2,
       ];
   
-      translate([tray_size[0] - $inset, (tray_size[1] - right_cutout_size[1]) / 2, 0]) {
+      translate([tray_size[0] - inset, (tray_size[1] - right_cutout_size[1]) / 2, 0]) {
         rounded_cube(right_cutout_size, flat=true);
       }
     }
@@ -60,13 +55,13 @@ module tile_stack_round(
     if (top_cutout) {
       top_cutout_size = [
         tray_size[0] * $cutout_fraction,
-        $inset * 2 + $wall_thickness,
+        inset * 2 + $wall_thickness,
         roof_height + $cutout_lid_height + $bleed * 2,
       ];
   
       translate([
         (tray_size[0] - top_cutout_size[0]) / 2, 
-        tray_size[1] + $wall_thickness - $inset,
+        tray_size[1] + $wall_thickness - inset,
         0
       ]) {
         rounded_cube(top_cutout_size, flat=true);
@@ -76,13 +71,13 @@ module tile_stack_round(
     if (bottom_cutout) {
       bottom_cutout_size = [
         tray_size[0] * $cutout_fraction,
-        $inset * 2 + $wall_thickness,
+        inset * 2 + $wall_thickness,
         roof_height + $cutout_lid_height +  $bleed * 2,
       ];
   
       translate([
         (tray_size[0] - bottom_cutout_size[0]) / 2, 
-        0 - bottom_cutout_size[1] - $wall_thickness + $inset,
+        0 - bottom_cutout_size[1] - $wall_thickness + inset,
         0
       ]) {
         rounded_cube(bottom_cutout_size, flat=true);

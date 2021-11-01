@@ -1,12 +1,10 @@
 include <../design/honeycomb.scad>
+include <../config/constants.scad>
 
-$wall_thickness = 2;
-$bleed = 0.01;
-$rounding = 3;
-$clearance = 0.5;
+lid_clearance = 0.5;
 
 // Put notches in the corner just inset from the corner
-function inset() = $rounding * 2 + $clearance;
+function inset() = $rounding * 2 + lid_clearance;
 function notch_length() = notch_width() * 2;
 function notch_width() = 5;
 

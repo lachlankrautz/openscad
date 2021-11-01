@@ -6,10 +6,6 @@ include <../../lib/tile_stack.scad>
 
 // Config
 $fn = 50;
-// $fn = 10;
-$padding = 0.5;
-$wall_thickness = 2;
-$bleed = 0.01;
 
 // Discovery
 discovery_tile_count = 14;

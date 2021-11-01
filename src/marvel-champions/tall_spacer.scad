@@ -1,6 +1,4 @@
-$wall_thickness = 2;
 $fn = 50;
-$bleed = 0.1;
 
 depth = 15;
 card_space_width = 98;

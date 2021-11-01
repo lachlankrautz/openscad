@@ -1,4 +1,3 @@
-$wall_thickness = 2;
 $fn = 50;
 
 depth = 15;

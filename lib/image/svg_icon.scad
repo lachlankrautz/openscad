@@ -1,6 +1,6 @@
-$depth = 1;
+include <../config/constants.scad>
 
-module svg_icon(file, depth=$depth, icon_size, target_size) {
+module svg_icon(file, depth=1, icon_size, target_size) {
   assert(file, "File argument missing");
   
   icon_scale = [

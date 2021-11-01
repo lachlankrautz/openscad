@@ -2,7 +2,6 @@ include <../../lib/primitive/rounded_cube.scad>
 
 // Config
 $fn = 50;
-$bleed = 1;
 $rounding = 2;
 
 // Attributes

@@ -5,7 +5,6 @@ include <../../lib/util/util_functions.scad>
 
 // Config
 $fn = 50;
-// $fn = 10;
 
 module arc_prism(width, height, angle, distance_to_angle) {
   /*

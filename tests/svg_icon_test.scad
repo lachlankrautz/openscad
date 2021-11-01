@@ -1,6 +1,5 @@
 include <../lib/image/svg_icon.scad>
 
-$bleed = 1;
 resource_file = "../assets/images/arkham_horror_lcg_clue_token.svg";
 icon_scale = 0.6;
 details_depth = 0.5;

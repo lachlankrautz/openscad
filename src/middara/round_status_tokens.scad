@@ -6,7 +6,6 @@ include <../../lib/tile_stack.scad>
 
 // Config
 $fn = 50;
-// $fn = 10;
 
 tile_map = [
   [6, 10, 10, 0],

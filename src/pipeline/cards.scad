@@ -3,11 +3,7 @@ include <../../lib/compound/notched_cube.scad>
 include <../../lib/tile_stack.scad>
 
 // Config
-// $fn = 10;
 $fn = 50;
-$wall_thickness = 2;
-$padding = 0.5;
-$bleed = 0.01;
 
 padding_size = [
   $padding * 2,

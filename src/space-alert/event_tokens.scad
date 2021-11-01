@@ -4,7 +4,6 @@ include <../../lib/primitive/rounded_cube.scad>
 
 $fn = 50;
 $rounding = 1;
-$bleed = 0.01;
 
 // test = false;
 test = true;

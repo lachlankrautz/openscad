@@ -1,6 +1,5 @@
 include <../util/util_functions.scad>
-
-$wall_thickness = 2;
+include <../config/constants.scad>
 
 function total_wall_size(count = 1) = (count + 1) * $wall_thickness;
 

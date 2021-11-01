@@ -4,8 +4,6 @@ use <../../../assets/fonts/Teutonic.ttf>
 
 // Config
 $fn = 50;
-$bleed = 1;
-$rounding = 2;
 
 size = 9;
 // height = 4;

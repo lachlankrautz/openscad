@@ -3,10 +3,9 @@ include <../../lib/primitive/elephant_foot.scad>
 include <../../lib/image/svg_icon.scad>
 
 // Config
-$wall_thickness = 4;
-$bleed = 1;
-// $fn = 4;
 $fn = 50;
+$wall_thickness = 4;
+
 skip_cubes = false;
 
 // Attributes

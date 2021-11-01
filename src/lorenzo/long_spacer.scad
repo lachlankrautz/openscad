@@ -1,8 +1,6 @@
 width = 23.5;
 full_length = 210;
 short_length = 130;
-// full_length = 20;
-// short_length = 10;
 height = 2;
 rounding = 0.5;
 

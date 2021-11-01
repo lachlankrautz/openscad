@@ -1,4 +1,5 @@
 include <./notched_cube.scad>
+include <../config/constants.scad>
 
 module tile_stack(
   tile_size,
