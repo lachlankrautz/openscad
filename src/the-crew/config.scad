@@ -13,7 +13,7 @@ cards = [
   [standard_usa_card_size],
   [mini_euro_card_size],
 ];
-card_stack_height = 16;
+card_stack_height = 17;
 
 card_tray_size = card_tray_grid_size(cards, card_stack_height);
 token_tray_size = [0, padded_offset(tile_size[1]), 0];

@@ -41,3 +41,6 @@ difference() {
 
   dovetail_lid_cutout(box_size);
 }
+translate([box_size[0] + $wall_thickness * 3, 0, 0]) {
+  // dovetail_lid(box_size, honeycomb_diameter=10);
+}

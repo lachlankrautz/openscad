@@ -8,7 +8,6 @@ include <../layout/grid_utils.scad>
 $fn = 10;
 $wall_thickness = 2;
 $card_padding = 1.5;
-$rounding = 2;
 $bleed = 0.01;
 
 function padded_card_size_grid(cards, height) = add_grid_xyz(cards, [$card_padding * 2, $card_padding * 2, height]);
