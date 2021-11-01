@@ -32,7 +32,7 @@ module tile_stack_round(
       left_cutout_size = [
         inset * 2 + $wall_thickness,
         tray_size[1] * $cutout_fraction,
-        roof_height + $cutout_lid_height + $bleed * 2,
+        roof_height + $lid_height + $bleed * 2,
       ];
   
       translate([-left_cutout_size[0] + inset, (tray_size[1] - left_cutout_size[1]) / 2, 0]) {
@@ -44,7 +44,7 @@ module tile_stack_round(
       right_cutout_size = [
         inset * 2 + $wall_thickness,
         tray_size[1] * $cutout_fraction,
-        roof_height + $cutout_lid_height + $bleed * 2,
+        roof_height + $lid_height + $bleed * 2,
       ];
   
       translate([tray_size[0] - inset, (tray_size[1] - right_cutout_size[1]) / 2, 0]) {
@@ -56,7 +56,7 @@ module tile_stack_round(
       top_cutout_size = [
         tray_size[0] * $cutout_fraction,
         inset * 2 + $wall_thickness,
-        roof_height + $cutout_lid_height + $bleed * 2,
+        roof_height + $lid_height + $bleed * 2,
       ];
   
       translate([
@@ -72,7 +72,7 @@ module tile_stack_round(
       bottom_cutout_size = [
         tray_size[0] * $cutout_fraction,
         inset * 2 + $wall_thickness,
-        roof_height + $cutout_lid_height +  $bleed * 2,
+        roof_height + $lid_height +  $bleed * 2,
       ];
   
       translate([

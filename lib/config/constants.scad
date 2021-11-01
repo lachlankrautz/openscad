@@ -20,8 +20,6 @@ $cutout_fraction = 0.6;
 
 $rounding = 3;
 
-// TODO are both needed?
 $lid_height = 2;
-$cutout_lid_height = 2;
 
 $trapezoid_inset = 1;

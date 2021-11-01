@@ -58,7 +58,7 @@ module notched_cube(
       left_cutout_size = [
         inset_length + box_offset[0],
         cutout_fraction[1],
-        size[2] + $cutout_lid_height + $bleed * 2,
+        size[2] + $lid_height + $bleed * 2,
       ];
 
       translate([
@@ -74,7 +74,7 @@ module notched_cube(
       right_cutout_size = [
         inset_length + box_offset[0],
         cutout_fraction[1],
-        size[2] + $cutout_lid_height + $bleed * 2,
+        size[2] + $lid_height + $bleed * 2,
       ];
 
       translate([
@@ -90,7 +90,7 @@ module notched_cube(
       top_cutout_size = [
         cutout_fraction[0],
         inset_length + box_offset[1],
-        size[2] + $cutout_lid_height + $bleed * 2,
+        size[2] + $lid_height + $bleed * 2,
       ];
 
       translate([
@@ -106,7 +106,7 @@ module notched_cube(
       bottom_cutout_size = [
         cutout_fraction[0],
         inset_length + box_offset[1],
-        size[2] + $cutout_lid_height + $bleed * 2,
+        size[2] + $lid_height + $bleed * 2,
       ];
 
       translate([
