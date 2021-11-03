@@ -16,6 +16,26 @@ function multiply_cube(rect, operand) = [rect[0] * operand, rect[1] * operand, r
 
 function offset_centre_in_box(size, bounding_box) = divide_rect(bounding_box - size, 2);
 
+function point_rotate_size(size, orientation=1) = [
+  size[1],
+  size[0],
+  size[2],
+];
+
+// TODO fix for actual orientation not just one turn
+module point_rotate(size, orientation=1) {
+  assert(orientation >= 0, "Invalid orientation [1, 2, 3, 4] required");
+  assert(orientation < 4, "Invalid orientation [1, 2, 3, 4] required");
+
+  rotated_size = point_rotate_size(size, orientation=1);
+
+  rotate([0, 0, 90 * orientation]) {
+    translate([0, -rotated_size[1], 0]) {
+      children();
+    }
+  }
+}
+
 module offset_cylinder(d, h) {
   translate([d / 2, d / 2, 0]) {
     cylinder(d=d, h=h);

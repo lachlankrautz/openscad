@@ -40,7 +40,16 @@ module card_tray(card_size, height, matrix=[1, 1], honeycomb_diameter=undef) {
  * ]
  * @param height total height of the container
  */
-module card_tray_grid(card_size_grid, height, honeycomb_diameter=undef) {
+module card_tray_grid(
+  card_size_grid,
+  height,
+  left_cutout=true,
+  right_cutout=true,
+  top_cutout=true,
+  bottom_cutout=true,
+  inner_cutout=true,
+  honeycomb_diameter=undef
+) {
   card_offset_grid = accumulated_grid(walled_grid(padded_card_size_grid(card_size_grid, height)));
 
   box_size = [
@@ -50,9 +59,18 @@ module card_tray_grid(card_size_grid, height, honeycomb_diameter=undef) {
   ];
 
   difference() {
-    rounded_cube(box_size, flat_top=true);
+    rounded_cube(box_size, flat_top=true, $rounding=1);
 
-    card_tray_grid_cutout(card_size_grid, height, honeycomb_diameter);
+    card_tray_grid_cutout(
+      card_size_grid,
+      height,
+      left_cutout=left_cutout,
+      right_cutout=right_cutout,
+      top_cutout=top_cutout,
+      bottom_cutout=bottom_cutout,
+      inner_cutout=inner_cutout,
+      honeycomb_diameter=honeycomb_diameter
+    );
   }
 }
 
@@ -73,11 +91,11 @@ module card_tray_grid_cutout(
   right_cutout=true,
   top_cutout=true,
   bottom_cutout=true,
+  inner_cutout=true,
   honeycomb_diameter=undef
 ) {
   // Add padding and set height for cutout
   print_grid(card_size_grid);
-  echo("card padding: ", $card_padding);
   card_cutout_size_grid = padded_card_size_grid(card_size_grid, height);
   print_grid(card_cutout_size_grid);
   normal_grid = max_grid(card_cutout_size_grid);
@@ -90,13 +108,12 @@ module card_tray_grid_cutout(
     for (x = [0:len(card_cutout_size_grid) - 1]) {
       for (y = [0:len(card_cutout_size_grid[x]) - 1]) {
         translate(card_offset_grid[x][y]) {
-          echo("size: ", card_cutout_size_grid[x][y]);
           notched_cube(
             card_cutout_size_grid[x][y],
-            left_cutout = left_cutout,
-            right_cutout = right_cutout,
-            top_cutout = top_cutout,
-            bottom_cutout = bottom_cutout,
+            left_cutout = left_cutout && (x == 0 || inner_cutout),
+            right_cutout = right_cutout && ((x == len(card_cutout_size_grid)-1) || inner_cutout),
+            top_cutout = top_cutout && ((y == len(card_cutout_size_grid[x])-1) || inner_cutout),
+            bottom_cutout = bottom_cutout && (y == 0 || inner_cutout),
             honeycomb_diameter = honeycomb_diameter,
             floor_cutout = !honeycomb_diameter,
             cutout_size = median_grid[x][y],

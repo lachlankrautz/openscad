@@ -23,6 +23,7 @@ module tile_stack_round(
     ];
   
     floor_height = roof_height - tray_size[2] + $bleed;
+    assert(floor_height != undef, "Unable to determine raised floor height");
   
     translate([tray_size[0]/2, tray_size[1]/2, floor_height]) {
       cylinder(tray_size[2], tray_size[0]/2, tray_size[0]/2);

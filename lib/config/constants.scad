@@ -6,6 +6,7 @@ $abs_filament = false;
 
 $wall_thickness = 2;
 $wall_rect = [$wall_thickness, $wall_thickness];
+$wall_cube = [$wall_thickness, $wall_thickness, $wall_thickness];
 $inner_wall_thickness = 1;
 
 $bleed = 0.01;
