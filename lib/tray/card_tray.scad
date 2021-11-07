@@ -11,24 +11,11 @@ function padded_card_size(size, height) = [
   size[2] + height,
 ];
 
-function card_tray_grid_size(cards, height) = accumulated_grid_cube(accumulated_grid(walled_grid(padded_card_size_grid(cards, height))))
+function card_grid_size(cards, height) = accumulated_grid_cube(accumulated_grid(walled_grid(padded_card_size_grid(cards, height))))
    + [$wall_thickness, $wall_thickness, height];
 
-/**
- * Pad around the exact card size and create a tray of the given height.
- *
- * @param card_size [x, y]
- * @param height total height of the container
- */
-module card_tray(card_size, height, matrix=[1, 1], honeycomb_diameter=undef) {
-  // Support being passed a single card size and a matrix of repeat counts
-  // or a matrix of card sizes. Normalise between the two sets of possible arguments.
-  // probably better to have one call the other.
-  card_size_grid = make_grid_of(matrix, card_size);
-
-  card_tray_grid(card_size_grid, height, honeycomb_diameter);
-}
-
+// TODO stil creates a box
+// maybe it shouldn't
 /**
  * Create a box with card cutouts:
  * Pad around the exact card size and create a tray of the given height.
@@ -40,7 +27,7 @@ module card_tray(card_size, height, matrix=[1, 1], honeycomb_diameter=undef) {
  * ]
  * @param height total height of the container
  */
-module card_tray_grid(
+module card_grid(
   card_size_grid,
   height,
   left_cutout=true,

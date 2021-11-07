@@ -15,7 +15,7 @@ cards = [
 ];
 card_stack_height = 17;
 
-card_tray_size = card_tray_grid_size(cards, card_stack_height);
+card_tray_size = card_grid_size(cards, card_stack_height);
 token_tray_size = [0, padded_offset(tile_size[1]), 0];
 
 lid_height = $wall_thickness;

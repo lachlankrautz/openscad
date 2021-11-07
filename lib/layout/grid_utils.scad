@@ -1,6 +1,17 @@
 include <../util/util_functions.scad>
 include <../config/constants.scad>
 
+function padded_list_offset(list, index, key) = index == 0 ? 0 : sum_to(list, index-1, key)
+  + ($padding * 2 + $wall_thickness) * index;
+
+function reverse_padded_list_offset(length, list, index, key) = length - (sum_to(list, index, key)
+  + ($padding * 2 + $wall_thickness) * (index+1));
+
+function sum_to(list, index, key) = sum(slice_to(pick_list(list, key), index));
+
+/**
+ * Make a grid with the given rows and columns all filled with the same item.
+ */
 function make_grid_of(matrix, item) = [for(x=[0:matrix[0]-1]) [for(y=[0:matrix[1]-1]) item]];
 
 // Return a single row from a grid

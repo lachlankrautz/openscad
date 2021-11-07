@@ -1,7 +1,9 @@
-include <../../lib/card_tray.scad>
+include <../../lib/tray/card_tray.scad>
 include <../../lib/config/card_sizes.scad>
 
 // Config
 $fn = 50;
 
-card_tray(standard_usa_card_size, 28, [2, 1]);
+height = 28;
+
+card_grid(make_grid_of([2, 1], standard_sleeved_card_size), height);

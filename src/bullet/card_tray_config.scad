@@ -10,4 +10,4 @@ card_grid_sizes = [
 card_stack_height = 43;
 box_height = card_stack_height + $wall_thickness * 2;
 
-box_size = card_tray_grid_size(card_grid_sizes, box_height);
+box_size = card_grid_size(card_grid_sizes, box_height);
