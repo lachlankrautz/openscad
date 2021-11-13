@@ -1,10 +1,18 @@
 include <../../lib/primitive/rounded_cube.scad>
+include <../../lib/primitive/trapezoid.scad>
 include <../../lib/compound/tile_stack.scad>
 include <../../lib/layout/grid_utils.scad>
 include <../../lib/lid/dovetail_lid.scad>
-include <./config.scad>
+include <./marketing-config.scad>
 
 $fn = 50;
+
+trapezoid_size = [
+  square_size[0] + $padding * 2,
+  $wall_thickness + $bleed * 2,
+  $lid_height + $bleed,
+];
+trapezoid_inset = 0.8;
 
 difference() {
   rounded_cube(box_size, flat_top=true, $rounding=1);
@@ -24,4 +32,33 @@ difference() {
     }
   }
   dovetail_lid_cutout(box_size);
+
+  inset = 4;
+  translate([inset + $wall_thickness, 0, box_size[2] - $lid_height]) {
+    rotate([180, 0, 0]) {
+      translate([0, -trapezoid_size[1], -$lid_height - $bleed]) {
+        linear_extrude($lid_height + $bleed) trapezoid(trapezoid_size - [inset, 0, 0], trapezoid_inset);
+      }
+    }
+    translate([0, box_size[1] - trapezoid_size[1], 0]) {
+      linear_extrude($lid_height + $bleed) trapezoid(trapezoid_size - [inset, 0, 0], trapezoid_inset);
+    }
+  }
+
+  translate([box_size[0] - padded_rect(square_size)[0] - $wall_thickness, 0, box_size[2] - $lid_height]) {
+
+    rotate([180, 0, 0]) {
+      translate([0, -trapezoid_size[1], -$lid_height - $bleed]) {
+        linear_extrude($lid_height + $bleed) trapezoid(trapezoid_size, trapezoid_inset);
+      }
+    }
+    // trapezoid_prism(trapezoid_size, 0.3);
+    /*
+    cube([
+      square_size[0] + $padding * 2,
+      square_size[1],
+      $lid_height+$bleed
+    ]);
+    */
+  }
 }

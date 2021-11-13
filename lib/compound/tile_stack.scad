@@ -10,7 +10,8 @@ module tile_stack(
   top_cutout=false,
   bottom_cutout=false,
   pill=false,
-  lid_height = 0
+  lid_height=0,
+  top_padding=$padding
 ) {
   size = [
     pad(tile_size[0]),
@@ -18,9 +19,7 @@ module tile_stack(
     height,
   ];
 
-  // floor_height = height - stack_height(tile_size[2], tile_count) + $bleed;
-  // TODO do we need bleed?
-  floor_height = height - stack_height(tile_size[2], tile_count) - lid_height;
+  floor_height = height - stack_height(tile_size[2], tile_count, top_padding) - lid_height;
 
   // No need to render any cutout if the size is zero
   if (tile_count > 0) {

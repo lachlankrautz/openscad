@@ -1,4 +1,5 @@
 include <../config/constants.scad>
+include <../util/util_functions.scad>
 
 function padded_rect(size) = size + (
   size[2] == undef
@@ -8,7 +9,7 @@ function padded_rect(size) = size + (
 
 function padded_cube(size) = size + [$padding * 2, $padding * 2, $padding * 2];
 
-function stack_height (size, count=1) = size * count + $padding;
+function stack_height (size, count=1, top_padding=$padding) = size * count + top_padding;
 
 function padded_offset (length, index=1) = (length + $padding * 2 + $wall_thickness) * index;
 
