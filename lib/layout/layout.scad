@@ -20,7 +20,10 @@ function padded_list_length(list) = sum(
   [for(i=[0:len(list)-1]) list[i] + $padding * 2 + $wall_thickness]
 ) + $wall_thickness;
 
-function divide_rect(rect, operand) = [rect[0] / operand, rect[1] / operand];
+function divide_rect(rect, operand) = rect[2] == undef
+  ? [rect[0] / operand, rect[1] / operand]
+  : [rect[0] / operand, rect[1] / operand, rect[2]];
+
 function multiply_rect(rect, operand) = [rect[0] * operand, rect[1] * operand];
 
 function divide_cube(rect, operand) = [rect[0] / operand, rect[1] / operand, rec[2] / operand];

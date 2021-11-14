@@ -24,7 +24,9 @@ standard_card_size = [
 ];
 
 /**
- * Standard USA card size eg Bohnanza
+ * Standard USA card size
+ * - Bohnanza
+ * - Food Chain Magnate
  */
 standard_usa_card_size = [
   56,

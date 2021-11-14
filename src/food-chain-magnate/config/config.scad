@@ -12,7 +12,3 @@ function tile_size(x = 1, y = 1) = [
   square_size[2],
 ];
 
-function align_x(x, width) = x == 0
-  ? 0
-  : virtual_col_widths[x] - width;
-

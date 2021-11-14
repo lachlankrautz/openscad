@@ -1,4 +1,4 @@
-include <./house-tray-config.scad>
+include <./config/house-tray-config.scad>
 include <../../lib/primitive/rounded_cube.scad>
 include <../../lib/compound/tile_stack.scad>
 include <../../lib/lid/dovetail_lid.scad>

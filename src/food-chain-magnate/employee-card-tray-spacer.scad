@@ -4,6 +4,4 @@ include <../../lib/config/card_sizes.scad>
 // Config
 $fn = 50;
 
-height = 28;
-
-card_grid(make_grid_of([2, 1], standard_usa_card_size), height);
+card_tray_top_spacer(standard_usa_card_size, $wall_thickness, [2, 1]);

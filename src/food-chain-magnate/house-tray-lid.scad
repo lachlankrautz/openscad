@@ -1,4 +1,4 @@
-include <./house-tray-config.scad>
+include <./config/house-tray-config.scad>
 include <../../lib/lid/dovetail_lid.scad>
 
 $fn = 50;

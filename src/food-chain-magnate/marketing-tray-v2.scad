@@ -3,7 +3,7 @@ include <../../lib/primitive/trapezoid.scad>
 include <../../lib/compound/tile_stack.scad>
 include <../../lib/layout/grid_utils.scad>
 include <../../lib/lid/dovetail_lid.scad>
-include <./config/marketing-config.scad>
+include <./config/marketing-config-v2.scad>
 
 $fn = 50;
 
@@ -14,7 +14,7 @@ trapezoid_size = [
 ];
 trapezoid_inset = 0.8;
 
-function align_x(x, width) = x == 0
+function align_x(x, width) = x == 0 || x == 2 || x == 3
   ? 0
   : virtual_col_widths[x] - width;
 
@@ -30,13 +30,14 @@ difference() {
           0,
         ]) {
           tile_cutout_with_slant(tile_size_map[x][y], box_size[2]);
-          tile_cutout_with_slant(tile_sizes[1], box_size[2] - square_size[2]);
+          // tile_cutout_with_slant(tile_sizes[1], box_size[2] - square_size[2]);
         }
       }
     }
   }
   dovetail_lid_cutout(box_size);
 
+  /*
   inset = 4;
   translate([inset + $wall_thickness, 0, box_size[2] - $lid_height]) {
     rotate([180, 0, 0]) {
@@ -56,4 +57,5 @@ difference() {
       }
     }
   }
+  */
 }
