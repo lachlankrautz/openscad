@@ -31,6 +31,8 @@ module notched_cube(
   floor_cutout=false,
   cutout_size=undef,
   bounding_box=undef,
+  notch_clearence=0,
+  use_rounded_cube=true
 ) {
   _bounding_box = bounding_box == undef ? size : bounding_box;
   cutout_fraction = cutout_fraction_size(cutout_size == undef ? size : cutout_size);
@@ -51,14 +53,18 @@ module notched_cube(
 
   translate(box_offset) {
     translate([0, 0, floor_height]) {
-      rounded_cube(cutout_size, flat = true, $rounding = cutout_rounding(size, pill));
+      if (use_rounded_cube) {
+        rounded_cube(cutout_size, flat = true, $rounding = cutout_rounding(size, pill));
+      } else {
+        cube(cutout_size);
+      }
     }
 
     if (left_cutout) {
       left_cutout_size = [
         inset_length + box_offset[0],
         cutout_fraction[1],
-        size[2] + $lid_height + $bleed * 2,
+        size[2] + $lid_height + $bleed * 2 + notch_clearence,
       ];
 
       translate([
@@ -74,7 +80,7 @@ module notched_cube(
       right_cutout_size = [
         inset_length + box_offset[0],
         cutout_fraction[1],
-        size[2] + $lid_height + $bleed * 2,
+        size[2] + $lid_height + $bleed * 2 + notch_clearence,
       ];
 
       translate([
@@ -90,7 +96,7 @@ module notched_cube(
       top_cutout_size = [
         cutout_fraction[0],
         inset_length + box_offset[1],
-        size[2] + $lid_height + $bleed * 2,
+        size[2] + $lid_height + $bleed * 2 + notch_clearence,
       ];
 
       translate([
@@ -106,7 +112,7 @@ module notched_cube(
       bottom_cutout_size = [
         cutout_fraction[0],
         inset_length + box_offset[1],
-        size[2] + $lid_height + $bleed * 2,
+        size[2] + $lid_height + $bleed * 2 + notch_clearence,
       ];
 
       translate([

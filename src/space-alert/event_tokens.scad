@@ -1,6 +1,7 @@
 include <../../lib/primitive/disc_bracket.scad>
 include <../../lib/layout/layout.scad>
 include <../../lib/primitive/rounded_cube.scad>
+include <../../lib/util/util_functions.scad>
 
 $fn = 50;
 $rounding = 1;
@@ -8,8 +9,6 @@ $rounding = 1;
 // test = false;
 test = true;
 verbosity = 1;
-
-function flatten(outter_vector) = [for(inner_vector=outter_vector) for(item=inner_vector) item];
 
 poly_padding = 0.3;
 

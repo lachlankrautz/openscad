@@ -13,6 +13,7 @@ $inner_wall_thickness = 1;
 $bleed = 0.01;
 
 $padding = 0.5;
+$top_padding = 0.2;
 $padding_rect = [$padding * 2, $padding * 2];
 
 $card_padding = 1.5;

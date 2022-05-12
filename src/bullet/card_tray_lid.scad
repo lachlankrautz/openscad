@@ -5,6 +5,6 @@ include <./card_tray_config.scad>
 
 $fn = 50;
 
-point_rotate(box_size) {
-  dovetail_lid(point_rotate_size(box_size), honeycomb_diameter=50);
+spin_orientation(box_size) {
+  dovetail_lid(spin_orientation_size(box_size), honeycomb_diameter=50);
 }

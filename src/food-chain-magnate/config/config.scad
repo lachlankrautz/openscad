@@ -1,5 +1,3 @@
-top_padding = 0.1;
-
 square_size = [
   18,
   18,

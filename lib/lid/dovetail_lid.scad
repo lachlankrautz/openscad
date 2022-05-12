@@ -14,10 +14,10 @@ default_bump_radius = 0.5;
 dovetail_tolerance = [length_tolerance, width_tolerance * 2, 0];
 dovetail_cutout_bleed = [$bleed, $bleed * 2, $bleed * 2];
 
-function dovetail_size(box_size) = [
+function dovetail_size(box_size, lid_height) = [
   box_size[0] - $wall_thickness,
   box_size[1] - $inner_wall_thickness * 2,
-  $lid_height,
+  lid_height,
 ];
 
 /**
@@ -25,8 +25,8 @@ function dovetail_size(box_size) = [
  *
  * @param box_size [x, y]
  */
-module dovetail_lid(box_size, honeycomb_diameter = false) {
-  dovetail_size = dovetail_size(box_size);
+module dovetail_lid(box_size, honeycomb_diameter = false, lid_height=$lid_height, elephant_foot_compensation=true) {
+  dovetail_size = dovetail_size(box_size, lid_height);
 
   // Shrink slightly using tolerance values for a better slotting fit
   tolerant_dovetail_size = dovetail_size - dovetail_tolerance;
@@ -35,13 +35,15 @@ module dovetail_lid(box_size, honeycomb_diameter = false) {
     dovetail(tolerant_dovetail_size, honeycomb_diameter=honeycomb_diameter);
 
     // Need to ensure the fit is as clean as possible
-    elephant_foot_compensation_trapezoid(tolerant_dovetail_size);
+    if (elephant_foot_compensation) {
+      elephant_foot_compensation_trapezoid(tolerant_dovetail_size);
+    }
   }
 }
 
-module dovetail_lid_cutout(box_size) {
+module dovetail_lid_cutout(box_size, lid_height=$lid_height) {
   bump_radius = default_bump_radius + bump_tolerance;
-  dovetail_size = dovetail_size(box_size);
+  dovetail_size = dovetail_size(box_size, lid_height);
 
   // Expand slightly with bleed so cutout doesn't leave ghost panels
   dovetail_cutout_size = dovetail_size + dovetail_cutout_bleed;

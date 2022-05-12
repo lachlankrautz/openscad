@@ -8,7 +8,7 @@ mini_euro_card_size = [
 
 /**
  * Standard card size eg MTG
- * Sleeved with either gamegenic gray or mayday green
+ * Sleeved with either gamegenic gray
  */
 standard_sleeved_card_size = [
   67,
@@ -31,4 +31,18 @@ standard_card_size = [
 standard_usa_card_size = [
   56,
   87
+];
+
+/**
+ * Standard USA card size sleeved with mayday chimera (orange)
+ *
+ * WARNING: mayday sleeves vary in dimensions
+ *          be sure to test large prints first
+ *
+ * - Bohnanza
+ * - Food Chain Magnate
+ */
+standard_usa_sleeved_card_size = [
+  59.5,
+  91,
 ];

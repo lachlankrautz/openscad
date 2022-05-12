@@ -9,7 +9,7 @@ function padded_card_size_grid(cards, height) = add_grid_xyz(cards, [$card_paddi
 function padded_card_size(size, height) = [
   size[0] + $card_padding * 2,
   size[1] + $card_padding * 2,
-  size[2] + height,
+  (size[2] == undef ? 0 : size[2]) + height,
 ];
 
 function card_grid_size(cards, height) = accumulated_grid_cube(accumulated_grid(walled_grid(padded_card_size_grid(cards, height))))

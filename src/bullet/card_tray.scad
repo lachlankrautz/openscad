@@ -8,7 +8,7 @@ $fn = 50;
 difference() {
   card_grid(card_grid_sizes, box_size[2], top_cutout=false, bottom_cutout=false, inner_cutout=false);
 
-  point_rotate(box_size) {
-    dovetail_lid_cutout(point_rotate_size(box_size));
+  spin_orientation(box_size) {
+    dovetail_lid_cutout(spin_orientation_size(box_size));
   }
 }

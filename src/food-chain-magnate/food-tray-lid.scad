@@ -25,4 +25,4 @@ scoop_size = [
   box_size[2] - $wall_thickness + $bleed,
 ];
 
-dovetail_lid(point_rotate_size(box_size), honeycomb_diameter=15);
+dovetail_lid(spin_orientation_size(box_size), honeycomb_diameter=15);

@@ -9,7 +9,7 @@ function padded_rect(size) = size + (
 
 function padded_cube(size) = size + [$padding * 2, $padding * 2, $padding * 2];
 
-function stack_height (size, count=1, top_padding=$padding) = size * count + top_padding;
+function stack_height (length, count=1, top_padding=$top_padding) = length * count + top_padding;
 
 function padded_offset (length, index=1) = (length + $padding * 2 + $wall_thickness) * index;
 
@@ -31,21 +31,31 @@ function multiply_cube(rect, operand) = [rect[0] * operand, rect[1] * operand, r
 
 function offset_centre_in_box(size, bounding_box) = divide_rect(bounding_box - size, 2);
 
-function point_rotate_size(size, orientation=1) = [
-  size[1],
-  size[0],
-  size[2],
+function spin_orientation_size(size, orientation=1) = orientation % 2 == 0
+  ? size
+  : [
+    size[1],
+    size[0],
+    size[2],
+  ];
+
+// TODO add support for orientation 3
+function spin_orientation_offset(size, orientation=1) = [
+  orientation == 2 ? -size[0]: 0,
+  orientation == 1 ? -size[0]: (orientation == 2 ? -size[1]: 0),
+  0,
 ];
 
-// TODO fix for actual orientation not just one turn
-module point_rotate(size, orientation=1) {
-  assert(orientation >= 0, "Invalid orientation [1, 2, 3, 4] required");
-  assert(orientation < 4, "Invalid orientation [1, 2, 3, 4] required");
+module spin_orientation(size, orientation=1) {
+  assert(orientation >= 0, "Invalid orientation [0, 1, 2, 3] required");
+  assert(orientation < 3, "Invalid orientation [0, 1, 2, 3] required");
 
-  rotated_size = point_rotate_size(size, orientation=1);
+  rotated_size = spin_orientation_size(size, orientation=1);
+  degrees = 90 * orientation;
+  spin_offset = spin_orientation_offset(size, orientation);
 
   rotate([0, 0, 90 * orientation]) {
-    translate([0, -rotated_size[1], 0]) {
+    translate(spin_offset) {
       children();
     }
   }

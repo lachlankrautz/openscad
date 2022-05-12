@@ -9,8 +9,7 @@ module tile_cutout_with_slant(size, box_height) {
     right_cutout = false,
     top_cutout = false,
     bottom_cutout = false,
-    lid_height=$lid_height,
-    top_padding=top_padding
+    lid_height=$lid_height
   );
 
   padded_size = padded_rect(size);
@@ -80,5 +79,5 @@ box_size = [
     tile_sizes[3][1],
     tile_sizes[6][1],
   ]),
-  stack_height(square_size[2], 2, top_padding) + $wall_thickness * 2 + $lid_height,
+  stack_height(square_size[2], 2) + $wall_thickness * 2 + $lid_height,
 ];

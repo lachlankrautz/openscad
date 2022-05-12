@@ -14,7 +14,7 @@ test_box_size = [
     tile_sizes[1][1],
     tile_sizes[4][1],
   ]),
-  stack_height(square_size[2], 2, top_padding) + $wall_thickness * 2 + $lid_height,
+  stack_height(square_size[2], 2) + $wall_thickness * 2 + $lid_height,
 ];
 
 dovetail_lid(test_box_size, honeycomb_diameter=20);

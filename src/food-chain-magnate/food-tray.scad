@@ -36,7 +36,7 @@ difference() {
     }
   }
 
-  point_rotate(box_size) {
-    dovetail_lid_cutout(point_rotate_size(box_size));
+  spin_orientation(box_size) {
+    dovetail_lid_cutout(spin_orientation_size(box_size));
   }
 }
