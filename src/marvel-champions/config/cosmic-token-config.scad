@@ -8,3 +8,5 @@ tile_size = [
   17,
   3,
 ];
+
+wall_inset_length = 1.5;

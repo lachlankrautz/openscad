@@ -7,7 +7,7 @@ matrix = [
 ];
 
 matrix_counts = [
-  [4, 3],
-  [3, 3],
-  [3, 3],
+  [4 /* damage */, 3 /* stunned */],
+  [3 /* damage */, 3 /* confused */],
+  [3 /* damage */, 3 /* tough */],
 ];

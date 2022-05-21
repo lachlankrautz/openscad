@@ -1,6 +1,6 @@
-include <./modules/cosmic-token-tray-lid.scad>
 include <./config/cosmic-token-hero-tray-config.scad>
+include <../../lib/tray/tile_tray_v2.scad>
 
 $fn = 50;
 
-cosmic_token_tray_lid(tile_size, matrix, matrix_counts);
+tile_tray_lid_v2(tile_size, matrix, matrix_counts, wall_inset_length);

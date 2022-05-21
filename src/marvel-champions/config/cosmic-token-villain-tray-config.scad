@@ -9,9 +9,9 @@ matrix = [
 ];
 
 matrix_counts = [
-  [5, 5],
-  [5, 2],
-  [5, 1],
-  [5, 1],
-  [2, 5],
+  [4 /* threat */, 2, /* big threat */],
+  [4 /* threat */, 1 /* 1st player */],
+  [4 /* threat */, 5 /* accelleration */ ],
+  [4 /* threat */, 3 /* big health */],
+  [4 /* threat */, 5 /* health */],
 ];
