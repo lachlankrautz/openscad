@@ -72,6 +72,7 @@ module dovetail(size, bump_radius = undef, honeycomb_diameter = false) {
 
       // Right bump
       translate([bump_inset, 0, 0]) {
+        // Combine two discs to create a slanted cylinder
         hull() {
           translate([0, 0, 0]) {
             cylinder(r=_bump_radius, h=disc_height);
@@ -84,6 +85,7 @@ module dovetail(size, bump_radius = undef, honeycomb_diameter = false) {
 
       // Left bump
       translate([bump_inset, size[1], 0]) {
+        // Combine two discs to create a slanted cylinder
         hull() {
           translate([0, 0, 0]) {
             cylinder(r=_bump_radius, h=disc_height);

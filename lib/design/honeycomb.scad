@@ -2,7 +2,7 @@ include <../../vendor/honeycomb.scad>
 include <../primitive/rounded_cube.scad>
 include <../config/constants.scad>
 
-function relative_diameter(dimensions, hexagons_per_size=2) = (
+function relative_diameter(dimensions, hexagons_per_side=2) = (
   min(
     dimensions[0],
     dimensions[1]) + $wall_thickness

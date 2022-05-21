@@ -1,24 +1,12 @@
 include <../layout/layout.scad>
 include <../design/honeycomb.scad>
 include <../config/constants.scad>
+include <./functions/notched_cube_functions.scad>
 
-// I have no idea why it needs to be this vaule
-// Seems to be to do with how the cube handles rounding
-magic_pill_number = 0.4;
-
-// TODO review pill feature, it's been changed to include padding so
-// the magic pill number might no longer be needed
-function cutout_rounding (size, pill=false) = pill
-  ? min(size[0], size[1]) / 2  + magic_pill_number:
-  1;
-
-function cutout_fraction_size(length) = length * $cutout_fraction;
-
-function cutout_fraction_rect(rect) = [
-  cutout_fraction_size(rect[0]),
-  cutout_fraction_size(rect[1]),
-];
-
+/**
+ * @param array cutout_size_for_notch_fraction - base the notch fraction off
+ *                                               this size instead of the cutout
+ */
 module notched_cube(
   size,
   floor_height=$wall_thickness,
@@ -29,13 +17,19 @@ module notched_cube(
   honeycomb_diameter=undef,
   pill=false,
   floor_cutout=false,
-  cutout_size=undef,
+  cutout_size_for_notch_fraction=undef,
   bounding_box=undef,
   notch_clearence=0,
-  use_rounded_cube=true
+  use_rounded_cube=true,
+  notch_inset_length=undef
 ) {
   _bounding_box = bounding_box == undef ? size : bounding_box;
-  cutout_fraction = cutout_fraction_size(cutout_size == undef ? size : cutout_size);
+  cutout_notch_size = cutout_notch_size(
+    cutout_size_for_notch_fraction == undef
+      ? size
+      : cutout_size_for_notch_fraction,
+    notch_inset_length
+  );
 
   assert(size[2] > floor_height, "Box height shorter than floor height");
   assert(size[0] <= _bounding_box[0], "Bounding box must be greater than or equal to size");
@@ -63,7 +57,7 @@ module notched_cube(
     if (left_cutout) {
       left_cutout_size = [
         inset_length + box_offset[0],
-        cutout_fraction[1],
+        cutout_notch_size[1],
         size[2] + $lid_height + $bleed * 2 + notch_clearence,
       ];
 
@@ -79,7 +73,7 @@ module notched_cube(
     if (right_cutout) {
       right_cutout_size = [
         inset_length + box_offset[0],
-        cutout_fraction[1],
+        cutout_notch_size[1],
         size[2] + $lid_height + $bleed * 2 + notch_clearence,
       ];
 
@@ -94,7 +88,7 @@ module notched_cube(
 
     if (top_cutout) {
       top_cutout_size = [
-        cutout_fraction[0],
+        cutout_notch_size[0],
         inset_length + box_offset[1],
         size[2] + $lid_height + $bleed * 2 + notch_clearence,
       ];
@@ -110,7 +104,7 @@ module notched_cube(
 
     if (bottom_cutout) {
       bottom_cutout_size = [
-        cutout_fraction[0],
+        cutout_notch_size[0],
         inset_length + box_offset[1],
         size[2] + $lid_height + $bleed * 2 + notch_clearence,
       ];

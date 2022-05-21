@@ -94,7 +94,7 @@ module card_grid_spacer(
             bottom_cutout = bottom_cutout && (y == 0 || inner_cutout),
             honeycomb_diameter = honeycomb_diameter,
             floor_cutout = !honeycomb_diameter,
-            cutout_size = median_grid[x][y],
+            cutout_size_for_notch_fraction = median_grid[x][y],
             bounding_box = normal_grid[x][y]
           );
         }
@@ -145,7 +145,7 @@ module card_tray_grid_cutout(
             bottom_cutout = bottom_cutout && (y == 0 || inner_cutout),
             honeycomb_diameter = honeycomb_diameter,
             floor_cutout = !honeycomb_diameter,
-            cutout_size = median_grid[x][y],
+            cutout_size_for_notch_fraction = median_grid[x][y],
             bounding_box = normal_grid[x][y]
           );
         }
@@ -187,13 +187,13 @@ module card_tray_top_spacer(card_size, height, matrix=[1, 1]) {
   // 5 for spacer padding, 2 for padding cutout size
   join_length = $card_padding * 7 + $wall_thickness + $bleed * 2;
   join_x_size = [
-    cutout_fraction_size(card_size[0]) - $card_padding * 4,
+    cutout_notch_size(card_size[0]) - $card_padding * 4,
     join_length,
     height,
   ];
   join_y_size = [
     join_length,
-    cutout_fraction_size(card_size[1]) - $card_padding * 4,
+    cutout_notch_size(card_size[1]) - $card_padding * 4,
     height,
   ];
 

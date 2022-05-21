@@ -1,5 +1,6 @@
 include <./notched_cube.scad>
 include <../config/constants.scad>
+include <./functions/tile_stack_functions.scad>
 
 module tile_stack(
   tile_size,
@@ -13,19 +14,12 @@ module tile_stack(
   lid_height=0,
   notch_clearence=0,
   top_padding=$top_padding,
-  use_rounded_cube=true
+  use_rounded_cube=true,
+  notch_inset_length=undef
 ) {
-  size = [
-    pad(tile_size[0]),
-    pad(tile_size[1]),
-    height != undef
-      ? height
-      : stack_height(tile_size[2], tile_count, top_padding) + lid_height,
-  ];
+  size = tile_stack_size(tile_size, height, tile_count, top_padding, lid_height);
 
-  floor_height = height != undef
-    ? height - stack_height(tile_size[2], tile_count, top_padding) - lid_height
-    : $floor_thickness;
+  floor_height = tile_stack_floor_height(tile_size, tile_count, top_padding, height, lid_height);
 
   // No need to render any cutout if the size is zero
   if (tile_count > 0) {
@@ -38,7 +32,8 @@ module tile_stack(
       bottom_cutout=bottom_cutout,
       notch_clearence=notch_clearence,
       pill=pill,
-      use_rounded_cube=use_rounded_cube
+      use_rounded_cube=use_rounded_cube,
+      notch_inset_length=notch_inset_length
     );
   }
 }
