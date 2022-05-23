@@ -18,7 +18,7 @@ matrix_counts = [
   [2, 2],
 ];
 
-box_size = box_size(tile_size, matrix, matrix_counts);
+box_size = tile_tray_box_size(tile_size, matrix, matrix_counts);
 
 tile_tray_v2(tile_size, matrix, matrix_counts, wall_inset_length);
 

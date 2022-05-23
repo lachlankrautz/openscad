@@ -1,11 +1,17 @@
 include <../util/util_functions.scad>
+include <./flow_utils.scad>
 include <../config/constants.scad>
+
+// Grids neatly align x and y all rows or columns are offset to the size of the
+// largest item in the row or column. Grids are not space efficient.
 
 function padded_list_offset(list, index, key) = index == 0 ? 0 : sum_to(list, index-1, key)
   + ($padding * 2 + $wall_thickness) * index;
 
 function reverse_padded_list_offset(length, list, index, key) = length - (sum_to(list, index, key)
   + ($padding * 2 + $wall_thickness) * (index+1));
+
+function padded_grid(grid) = add_grid_xy(matrix, [$padding * 2, $padding * 2]);
 
 function sum_to(list, index, key) = sum(slice_to(pick_list(list, key), index));
 
@@ -76,13 +82,20 @@ function median_grid(grid) = [for(x=[0:len(grid)-1]) [for(y=[0:x < 0 ? 0 : len(g
 
 function walled_grid(grid) = add_grid_xy(grid, [$wall_thickness, $wall_thickness]);
 
-function accumulated_grid(grid) = [for(x=[-1:len(grid)-1]) [for(y=[-1:x < 0 ? 0 : len(grid[x])-1]) [
-  x < 0 ? 0 : sum([for(i=[0:x]) max(pick_col(grid, i, 0))]),
-  y < 0 ? 0 : sum([for(i=[0:y]) max(pick_row(grid, i, 1))]),
+function accumulated_grid(grid) = [for(x=[-1:len(grid)-1]) [for(y=[-1:x < 0 ? matrix_max_y_len(grid)-1 : len(grid[x])-1]) [
+  x < 0 ? 0 : sum([for(i=[0:x]) max(filter(pick_col(grid, i, 0)))]),
+  y < 0 ? 0 : sum([for(i=[0:y]) max(filter(pick_row(grid, i, 1)))]),
 ]]];
 
+function filter(list) = [for (n=[0:len(list)-1]) if (list[n] != undef) list[n]];
+
+// TODO rename
+// these grab the hightest x / y values from an accumlation grid
+// they do not actually accumulate the grid
 function accumulated_grid_x(grid) = grid[len(grid)-1][0][0];
-function accumulated_grid_y(grid) = max([for(i=[0:len(grid)-1]) grid[i][len(grid[i])-1][1]]);
+function accumulated_grid_y(grid) = max(
+  [for(i=[0:len(grid)-1]) grid[i][len(grid[i])-1][1]]
+);
 function accumulated_grid_rect(grid) = [
   accumulated_grid_x(grid),
   accumulated_grid_y(grid),
@@ -94,8 +107,16 @@ function accumulated_grid_cube(grid, height=0) = [
 ];
 
 module print_grid(grid) {
-  for(i=[len(grid[0])-1:-1:0]) {
+  max_y = matrix_max_y_len(grid);
+  for(i=[max_y-1:-1:0]) {
     echo(i, grid_row(grid, i));
+  }
+  echo("");
+}
+
+module print_sideways_grid(grid) {
+  for(x=[0:len(grid)-1]) {
+    echo(grid[x]);
   }
   echo("");
 }

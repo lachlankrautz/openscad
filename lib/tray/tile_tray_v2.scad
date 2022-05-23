@@ -1,5 +1,7 @@
 include <../compound/functions/notched_cube_functions.scad>
 include <../util/util_functions.scad>
+include <../layout/grid_utils.scad>
+include <../layout/flow_utils.scad>
 include <../design/square-pattern.scad>
 include <../primitive/rounded_cube.scad>
 
@@ -14,14 +16,28 @@ corner_grip_height = 0.5;
 bump_cylinder_fraction = 0.25;
 bump_drop_height = 0.5;
 bump_diameter = 2;
+$floor_cutout_threshold = 50;
 
 function offset_bump_left() = bump_diameter * bump_cylinder_fraction;
 function offset_bump_right() = bump_diameter - bump_diameter * bump_cylinder_fraction;
 
-function box_size(tile_size, matrix, matrix_counts) = [
-  padded_offset(tile_size[0], len(matrix)) + $wall_thickness,
-  padded_offset(tile_size[1], len(matrix[0])) + $wall_thickness,
-  stack_height(tile_size[2], max(flatten(matrix_counts))) + $wall_thickness,
+// This will fail matricies where smaller count of tiles total larger measurements
+function tile_tray_box_size(matrix, matrix_counts) = _box_size(
+  make_accumulated_flow_matrix(walled_grid(padded_grid(matrix))),
+  _stack_height_matrix(matrix, matrix_counts)
+);
+
+function _box_size(acc_matrix, stack_matrix) = [
+  max(pick_list(flatten(acc_matrix), 0)) + $wall_thickness,
+  max(pick_list(flatten(acc_matrix), 1)) + $wall_thickness,
+  max(flatten(stack_matrix)) + $wall_thickness,
+];
+
+function _stack_height_matrix(matrix, matrix_counts) = [
+  for(x=[0:len(matrix)-1]) [
+    for(y=[0:len(matrix[x])-1])
+      stack_height(matrix[x][y][2], matrix_counts[x][y])
+  ]
 ];
 
 module side_notch(diameter, width, fraction = 1, bleed = 0, trim = false) {
@@ -222,27 +238,25 @@ module corner_grip_cutout(box_size, wall_inset_length) {
   }
 }
 
-module tile_tray_v2(tile_size, matrix, matrix_counts, wall_inset_length) {
-  box_size = box_size(tile_size, matrix, matrix_counts);
+module tile_tray_v2(tile_size, matrix, matrix_counts, wall_inset_length, with_lid=true) {
+  box_size = tile_tray_box_size(matrix, matrix_counts);
+  top_row = matrix_max_y_len(matrix) - 1;
 
   difference() {
     rounded_cube(box_size, flat_top=true, $rounding=1);
 
-    corner_grip_cutout(box_size, wall_inset_length);
-    translate([0, 0, box_size[2] - bump_diameter - bump_drop_height - corner_grip_height]) {
-      lid_side_notches(box_size, wall_inset_length, bleed=$bleed);
-    }
-
+    // Tile stacks
     translate($wall_rect) {
       for(x=[0:len(matrix)-1]) {
         for(y=[0:len(matrix[x])-1]) {
-          translate([padded_offset(tile_size[0], x), padded_offset(tile_size[1], y), 0]) {
+          translate([padded_offset(matrix[x][y][0], x), padded_offset(tile_size[1], y), 0]) {
             tile_stack(
               matrix[x][y],
               matrix_counts[x][y],
               box_size[2],
-              top_cutout = y == len(matrix[x])-1,
-              bottom_cutout= y == 0,
+              top_cutout = y == top_row,
+              bottom_cutout = y == 0,
+              floor_cutout = matrix[x][y][0] > $floor_cutout_threshold,
               use_rounded_cube = false,
               notch_inset_length = wall_inset_length
             );
@@ -250,13 +264,21 @@ module tile_tray_v2(tile_size, matrix, matrix_counts, wall_inset_length) {
         }
       }
     }
+
+    // Snap and grip lid
+    if (with_lid) {
+      corner_grip_cutout(box_size, wall_inset_length);
+      translate([0, 0, box_size[2] - bump_diameter - bump_drop_height - corner_grip_height]) {
+        lid_side_notches(box_size, wall_inset_length, bleed=$bleed);
+      }
+    }
   }
 }
 
 module tile_tray_lid_v2(tile_size, matrix, matrix_counts, wall_inset_length) {
   box_size = [
-    box_size(tile_size, matrix, matrix_counts)[0],
-    box_size(tile_size, matrix, matrix_counts)[1],
+    tile_tray_box_size(matrix, matrix_counts)[0],
+    tile_tray_box_size(matrix, matrix_counts)[1],
     $wall_thickness
   ];
 
