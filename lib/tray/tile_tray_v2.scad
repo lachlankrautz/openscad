@@ -16,7 +16,6 @@ corner_grip_height = 0.5;
 bump_cylinder_fraction = 0.25;
 bump_drop_height = 0.5;
 bump_diameter = 2;
-$floor_cutout_threshold = 50;
 
 function offset_bump_left() = bump_diameter * bump_cylinder_fraction;
 function offset_bump_right() = bump_diameter - bump_diameter * bump_cylinder_fraction;
@@ -39,6 +38,16 @@ function _stack_height_matrix(matrix, matrix_counts) = [
       stack_height(matrix[x][y][2], matrix_counts[x][y])
   ]
 ];
+
+function slice_matrix_y(matrix, start_y, end_y=undef) = [
+  for(x=[0:len(matrix)-1]) if (matrix[x][start_y]) [
+    for(y=[start_y:(end_y == undef ? start_y : end_y)]) matrix[x][y]
+  ]
+];
+
+function calc_row_offset(matrix, y) = y < 0
+  ? 0
+  : tile_tray_box_size(slice_matrix_y(matrix, 0, y), [])[1] - $wall_thickness;
 
 module side_notch(diameter, width, fraction = 1, bleed = 0, trim = false) {
   translate([diameter / 2, width, diameter / 2]) {
@@ -238,28 +247,66 @@ module corner_grip_cutout(box_size, wall_inset_length) {
   }
 }
 
-module tile_tray_v2(tile_size, matrix, matrix_counts, wall_inset_length, with_lid=true) {
+module tile_tray_v2(
+  tile_size, // TODO remove tile_size var
+  matrix,
+  matrix_counts,
+  wall_inset_length,
+  matrix_wall_inset_lengths = undef,
+  with_lid=true,
+  slim_fit=false
+) {
   box_size = tile_tray_box_size(matrix, matrix_counts);
   top_row = matrix_max_y_len(matrix) - 1;
 
   difference() {
-    rounded_cube(box_size, flat_top=true, $rounding=1);
+    // Wrap each row to the minimum width or fill a solid rectange
+    if (slim_fit) {
+      // Build a box by combining each min-width row
+      union() {
+        for (y=[0:len(matrix[0])-1]) {
+          let (
+            sliced_matrix = slice_matrix_y(matrix, y),
+            sliced_matrix_counts = slice_matrix_y(matrix_counts, y),
+            sliced_box_size = tile_tray_box_size(sliced_matrix, sliced_matrix_counts),
+            row_offset = calc_row_offset(matrix, y-1)
+          ) {
+            translate([0, row_offset, 0]) {
+              rounded_cube(sliced_box_size, flat_top=true, $rounding=1);
+            }
+          }
+        }
+      }
+    } else {
+      rounded_cube(box_size, flat_top=true, $rounding=1);
+    }
 
     // Tile stacks
     translate($wall_rect) {
       for(x=[0:len(matrix)-1]) {
         for(y=[0:len(matrix[x])-1]) {
-          translate([padded_offset(matrix[x][y][0], x), padded_offset(tile_size[1], y), 0]) {
-            tile_stack(
-              matrix[x][y],
-              matrix_counts[x][y],
-              box_size[2],
-              top_cutout = y == top_row,
-              bottom_cutout = y == 0,
-              floor_cutout = matrix[x][y][0] > $floor_cutout_threshold,
-              use_rounded_cube = false,
-              notch_inset_length = wall_inset_length
-            );
+          let (
+            sliced_matrix = slice_matrix_y(matrix, y),
+            sliced_matrix_counts = slice_matrix_y(matrix_counts, y),
+            sliced_box_size = tile_tray_box_size(sliced_matrix, sliced_matrix_counts),
+            box_row_height = slim_fit == true
+              ? sliced_box_size[2]
+              : box_size[2]
+          ) {
+            translate([padded_offset(matrix[x][y][0], x), padded_offset(tile_size[1], y), 0]) {
+              tile_stack(
+                matrix[x][y],
+                matrix_counts[x][y],
+                box_row_height,
+                top_cutout = y == top_row,
+                bottom_cutout = y == 0,
+                floor_cutout = matrix[x][y][0] > $floor_cutout_threshold,
+                use_rounded_cube = false,
+                notch_inset_length = matrix_wall_inset_lengths[x][y] != undef
+                  ? matrix_wall_inset_lengths[x][y]
+                  : wall_inset_length
+              );
+            }
           }
         }
       }

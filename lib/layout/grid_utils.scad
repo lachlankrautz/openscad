@@ -11,7 +11,7 @@ function padded_list_offset(list, index, key) = index == 0 ? 0 : sum_to(list, in
 function reverse_padded_list_offset(length, list, index, key) = length - (sum_to(list, index, key)
   + ($padding * 2 + $wall_thickness) * (index+1));
 
-function padded_grid(grid) = add_grid_xy(matrix, [$padding * 2, $padding * 2]);
+function padded_grid(matrix) = add_grid_xy(matrix, [$padding * 2, $padding * 2]);
 
 function sum_to(list, index, key) = sum(slice_to(pick_list(list, key), index));
 

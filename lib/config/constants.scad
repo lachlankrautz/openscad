@@ -18,6 +18,8 @@ $padding_rect = [$padding * 2, $padding * 2];
 
 $card_padding = 1.5;
 
+$floor_cutout_threshold = 50;
+
 $inset = 6;
 $cutout_fraction = 0.6;
 
