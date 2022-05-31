@@ -25,7 +25,7 @@ module elephant_foot_compensation_trapezoid(size, foot_offset=default_foot_offse
   }
 }
 
-module elephant_foot_compensation(size) {
+module elephant_foot_compensation(size, foot_offset=default_foot_offset) {
   bleed_size = size + [$bleed * 2, $bleed * 2, $bleed * 2];
   bleed_offset = [-$bleed, -$bleed, -$bleed];
 

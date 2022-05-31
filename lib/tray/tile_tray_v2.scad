@@ -1,4 +1,5 @@
 include <../compound/functions/notched_cube_functions.scad>
+include <../compound/tile_stack.scad>
 include <../util/util_functions.scad>
 include <../layout/grid_utils.scad>
 include <../layout/flow_utils.scad>
