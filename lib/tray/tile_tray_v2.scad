@@ -46,9 +46,13 @@ function slice_matrix_y(matrix, start_y, end_y=undef) = [
   ]
 ];
 
-function calc_row_offset(matrix, y) = y < 0
+function calc_row_y_offset(matrix, y) = y < 0
   ? 0
   : tile_tray_box_size(slice_matrix_y(matrix, 0, y), [])[1] - $wall_thickness;
+
+function calc_row_x_offset(box_size, row_box_size, centre) = centre
+  ? (box_size[0] - row_box_size[0]) / 2
+  : 0;
 
 module side_notch(diameter, width, fraction = 1, bleed = 0, trim = false) {
   translate([diameter / 2, width, diameter / 2]) {
@@ -255,8 +259,14 @@ module tile_tray_v2(
   wall_inset_length,
   matrix_wall_inset_lengths = undef,
   with_lid=true,
-  slim_fit=false
+  slim_fit=false,
+  centre_rows=false
 ) {
+  assert(tile_size != undef, "Tile size is not defined");
+  assert(matrix != undef, "matrix is not defined");
+  assert(matrix_counts != undef, "matrix_counts is not defined");
+  assert(wall_inset_length != undef, "wall_inset_length not defined");
+
   box_size = tile_tray_box_size(matrix, matrix_counts);
   top_row = matrix_max_y_len(matrix) - 1;
 
@@ -270,9 +280,10 @@ module tile_tray_v2(
             sliced_matrix = slice_matrix_y(matrix, y),
             sliced_matrix_counts = slice_matrix_y(matrix_counts, y),
             sliced_box_size = tile_tray_box_size(sliced_matrix, sliced_matrix_counts),
-            row_offset = calc_row_offset(matrix, y-1)
+            row_y_offset = calc_row_y_offset(matrix, y-1),
+            row_x_offset = calc_row_x_offset(box_size, sliced_box_size, centre_rows)
           ) {
-            translate([0, row_offset, 0]) {
+            translate([row_x_offset, row_y_offset, 0]) {
               rounded_cube(sliced_box_size, flat_top=true, $rounding=1);
             }
           }
@@ -294,7 +305,12 @@ module tile_tray_v2(
               ? sliced_box_size[2]
               : box_size[2]
           ) {
-            translate([padded_offset(matrix[x][y][0], x), padded_offset(tile_size[1], y), 0]) {
+            translate([
+              calc_row_x_offset(box_size, sliced_box_size, centre_rows)
+                + padded_offset(matrix[x][y][0], x),
+              padded_offset(tile_size[1], y),
+              0
+            ]) {
               tile_stack(
                 matrix[x][y],
                 matrix_counts[x][y],

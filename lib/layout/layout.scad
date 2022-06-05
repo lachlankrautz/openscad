@@ -16,6 +16,7 @@ function padded_offset (length, index=1) = (length + $padding * 2 + $wall_thickn
 function offset (size, index=1) = (size + $wall_thickness) * index;
 
 function pad(length) = length + $padding * 2;
+
 function padded_list_length(list) = sum(
   [for(i=[0:len(list)-1]) list[i] + $padding * 2 + $wall_thickness]
 ) + $wall_thickness;
