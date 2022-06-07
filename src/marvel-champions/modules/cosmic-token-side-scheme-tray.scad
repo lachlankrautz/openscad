@@ -3,12 +3,6 @@ include <../../../lib/layout/layout.scad>
 include <../../../lib/tray/tile_tray_v2.scad>
 include <../../../lib/config/card_sizes.scad>
 
-slim_tile_size = [
-  tile_size[0],
-  tile_size[1],
-  tile_size[2] - 0.2 // trying to get the stacks to sit flush since there is no lid
-];
-
 side_scheme_size = [
   standard_sleeved_card_size[1],
   standard_sleeved_card_size[0],

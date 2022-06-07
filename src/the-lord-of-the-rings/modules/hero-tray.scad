@@ -1,4 +1,3 @@
-include <../config/hero-tray-config.scad>
 include <../../../lib/tray/tile_tray_v2.scad>
 include <../../../lib/config/card_sizes.scad>
 include <../../../lib/magnet/magnet.scad>

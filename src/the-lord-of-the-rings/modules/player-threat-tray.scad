@@ -35,7 +35,7 @@ module player_threat_tray() {
   ];
 
   box_size = tile_tray_box_size(matrix, matrix_counts);
-  inset_height = 0.5;
+  inset_height = 0.7;
   inset_size = [
     (box_size[0] - (pad(tile_size[0]) * 2 + $wall_thickness * 5)) / 2,
     pad(tile_size[1]),
@@ -56,10 +56,10 @@ module player_threat_tray() {
 
     translate([0, $wall_thickness * 2 + pad(tile_size[1]), box_size[2] - inset_height]) {
       translate([$wall_thickness, 0, 0]) {
-        rounded_cube(inset_size, flat=true, $rounding=1);
+        cube(inset_size);
       }
       translate([box_size[0] - inset_size[0] - $wall_thickness, 0, 0]) {
-        rounded_cube(inset_size, flat=true, $rounding=1);
+        cube(inset_size);
       }
     }
   }
