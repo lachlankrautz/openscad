@@ -14,13 +14,21 @@ module tile_stack(
   pill=false,
   lid_height=0,
   notch_clearence=0,
+  notch_bottom_clearence=0,
+  notch_style="rounded",
   top_padding=$top_padding,
   use_rounded_cube=true,
   notch_inset_length=undef
 ) {
   size = tile_stack_size(tile_size, height, tile_count, top_padding, lid_height);
 
-  floor_height = tile_stack_floor_height(tile_size, tile_count, top_padding, height, lid_height);
+  floor_height = tile_stack_floor_height(
+    tile_size,
+    tile_count,
+    top_padding,
+    height,
+    lid_height
+  );
 
   // No need to render any cutout if the size is zero
   if (tile_count > 0) {
@@ -33,6 +41,8 @@ module tile_stack(
       bottom_cutout=bottom_cutout,
       floor_cutout=floor_cutout,
       notch_clearence=notch_clearence,
+      notch_bottom_clearence=notch_bottom_clearence,
+      notch_style=notch_style,
       pill=pill,
       use_rounded_cube=use_rounded_cube,
       notch_inset_length=notch_inset_length

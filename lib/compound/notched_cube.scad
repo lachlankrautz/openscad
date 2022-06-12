@@ -20,6 +20,8 @@ module notched_cube(
   cutout_size_for_notch_fraction=undef,
   bounding_box=undef,
   notch_clearence=0,
+  notch_bottom_clearence=0,
+  notch_style="rounded",
   use_rounded_cube=true,
   notch_inset_length=undef
 ) {
@@ -87,34 +89,68 @@ module notched_cube(
     }
 
     if (top_cutout) {
-      top_cutout_size = [
-        cutout_notch_size[0],
-        inset_length + box_offset[1],
-        size[2] + $lid_height + $bleed * 2 + notch_clearence,
-      ];
+      // TODO revisit + refactor notch style complexity
+      if (notch_style == "rounded") {
+        top_cutout_size = [
+          cutout_notch_size[0],
+          inset_length + box_offset[1],
+          size[2] + $lid_height + $bleed * 2 + notch_clearence,
+        ];
 
-      translate([
-        (size[0] - top_cutout_size[0]) / 2,
-        size[1] - $inset,
-        -$bleed
-      ]) {
-        rounded_cube(top_cutout_size, flat = true);
+        translate([
+          (size[0] - top_cutout_size[0]) / 2,
+          size[1] - $inset,
+          -$bleed
+        ]) {
+          rounded_cube(top_cutout_size, flat = true);
+        }
+      } else if (notch_style == "square") {
+        top_cutout_size = [
+          cutout_notch_size[0],
+          $wall_thickness + $padding + $bleed,
+          size[2] + $lid_height + $bleed * 2 + notch_clearence + notch_bottom_clearence,
+        ];
+
+        translate([
+          (size[0] - top_cutout_size[0]) / 2,
+          size[1] - $padding,
+          -$bleed - notch_bottom_clearence
+        ]) {
+          cube(top_cutout_size);
+        }
       }
     }
 
     if (bottom_cutout) {
-      bottom_cutout_size = [
-        cutout_notch_size[0],
-        inset_length + box_offset[1],
-        size[2] + $lid_height + $bleed * 2 + notch_clearence,
-      ];
+      // TODO revisit + refactor notch style complexity
+      if (notch_style == "rounded") {
+        bottom_cutout_size = [
+          cutout_notch_size[0],
+            inset_length + box_offset[1],
+                size[2] + $lid_height + $bleed * 2 + notch_clearence,
+          ];
 
-      translate([
-        (size[0] - bottom_cutout_size[0]) / 2,
-        - bottom_cutout_size[1] + $inset,
-        -$bleed
-      ]) {
-        rounded_cube(bottom_cutout_size, flat = true);
+        translate([
+            (size[0] - bottom_cutout_size[0]) / 2,
+            - bottom_cutout_size[1] + $inset,
+          - $bleed
+          ]) {
+          rounded_cube(bottom_cutout_size, flat = true);
+        }
+      } else if (notch_style == "square") {
+        bottom_cutout_size = [
+          cutout_notch_size[0],
+          $wall_thickness + $padding + $bleed,
+          size[2] + $lid_height + $bleed * 2 + notch_clearence + notch_bottom_clearence,
+        ];
+
+        translate([
+          (size[0] - bottom_cutout_size[0]) / 2,
+          - bottom_cutout_size[1] + $padding,
+          -$bleed - notch_bottom_clearence
+        ]) {
+          cube(bottom_cutout_size);
+        }
       }
     }
 

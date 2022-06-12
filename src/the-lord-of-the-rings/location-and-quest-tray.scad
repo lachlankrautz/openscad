@@ -2,7 +2,5 @@ include <./modules/location-and-quest-tray.scad>
 
 $fn = 50;
 
-location_tile_count = 3;
-quest_tile_count = 5;
-
-location_and_quest_tray(location_tile_count, quest_tile_count);
+// test_window([pad(slim_tile_size[0]) + $wall_thickness * 2, 25, 25], [75, 55, 13])
+location_and_quest_tray(4, 5);

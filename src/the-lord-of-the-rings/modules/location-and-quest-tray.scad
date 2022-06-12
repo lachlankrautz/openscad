@@ -11,112 +11,196 @@ side_scheme_size = [
 
 card_inset_length = 7;
 
-module card_slope(card_size, slope_angle, box_height) {
+module slope(slope_surface_size, slope_angle, base_height) {
   sml_rounding = 1;
-  slope_hypotenuse = card_size[1] * 0.85;
+  slope_hypotenuse = slope_surface_size[1];
   slope_height = slope_hypotenuse * sin(slope_angle);
   slope_length = slope_hypotenuse * cos(slope_angle);
 
   slope_box_size = [
-    pad(card_size[0]) + $wall_thickness * 2,
+    slope_surface_size[0],
     slope_length,
-    slope_height * 2
+    slope_height * 2 // leave plenty of clearence
   ];
 
-  card_cutout_depth = 3;
+  intersection() {
+    rounded_cube(slope_box_size, flat_front=true, flat_back=true, $rounding=sml_rounding);
+
+    union() {
+      translate([0, 0, base_height]) {
+        rotate([slope_angle, 0, 0]) {
+          translate([0, 0, - slope_box_size[2]]) {
+            cube([slope_box_size[0], slope_surface_size[1], slope_box_size[2]]);
+          }
+        }
+      }
+      cube([slope_box_size[0], $rounding * 3, base_height]);
+    }
+  }
+}
+
+module slope_cutout(
+  card_size,
+  slope_length,
+  slope_angle,
+  card_cutout_depth,
+  base_height
+) {
   card_cutout_size = [
     pad(card_size[0]),
     pad(card_size[1]),
     card_cutout_depth + $bleed
   ];
-  card_cutout_rotated_height = card_cutout_size[2] * cos(slope_angle);
 
-  virtual_cutout_length = cutout_notch_size(slope_box_size[1]);
-  recommended_cutout_size = cutout_notch_size(slope_box_size, card_inset_length);
+  translate([0, 0, base_height]) {
+    rotate([slope_angle, 0, 0]) {
+      translate([0, $wall_thickness, - card_cutout_depth]) {
+        cube(card_cutout_size);
+      }
+    }
+  }
+
+  flat_card_cutout_length = slope_length * cos(slope_angle);
+  flat_wall_thickness = $wall_thickness * cos(slope_angle);
+
   bottom_cutout_size = [
-    recommended_cutout_size[0],
-    recommended_cutout_size[1],
-    50
+    card_cutout_size[0] - card_inset_length * 2,
+    flat_card_cutout_length - card_inset_length * 2,
+    100
   ];
 
-  difference() {
-    intersection() {
-      intersection() {
-        translate([0, -sml_rounding]) {
-          rounded_cube(slope_box_size + [0, sml_rounding, 0], $rounding=sml_rounding);
-        }
-        cube(slope_box_size);
-      }
-      union() {
-        translate([0, 0, box_height]) {
-          rotate([slope_angle, 0, 0]) {
-            translate([0, 0, - slope_box_size[2]]) {
-              cube([slope_box_size[0], card_size[1], slope_box_size[2]]);
-            }
-          }
-        }
-        cube([slope_box_size[0], $rounding, box_height]);
-      }
-    }
+  translate([card_inset_length, flat_wall_thickness + card_inset_length, 0]) {
+    rounded_cube(bottom_cutout_size, flat=true);
+  }
+}
 
-    translate([0, 0, box_height]) {
-      rotate([slope_angle, 0, 0]) {
-        translate([$wall_thickness, $wall_thickness, - card_cutout_depth]) {
-          cube(card_cutout_size);
-        }
-      }
-    }
+module tile_slope_cutout(
+  tile_size,
+  length_offset,
+  slope_angle,
+  base_height,
+  clearence=0
+) {
+  cutout_size = tile_stack_size(tile_size);
 
-    centre_offset = [
-      (slope_box_size[0] - bottom_cutout_size[0]) / 2,
-      (slope_box_size[1] - virtual_cutout_length) / 2
-    ];
-    translate(centre_offset) {
-      rounded_cube(bottom_cutout_size, flat=true);
+  translate([0, 0, base_height - cutout_size[2]]) {
+    rotate([slope_angle, 0, 0]) {
+      translate([0, length_offset, 0]) {
+        cube(cutout_size + [0, clearence, $bleed]);
+      }
     }
   }
 }
 
 module location_and_quest_tray(location_tile_count, quest_tile_count) {
   sml_rounding = 1;
-  // Just register the vertical card as a square so it lines up with the right
-  left_card_size = [standard_sleeved_card_size[0], standard_sleeved_card_size[0]];
+
+  // Left measurements
+  left_card_size = standard_sleeved_card_size;
+  front_left_box_width = pad(slim_tile_size[0]) * location_tile_count + $wall_thickness * (location_tile_count+1);
+  top_left_box_width = pad(left_card_size[0]) + $wall_thickness * 2;
+  flow_left_width = max(
+    pad(left_card_size[0]) + $wall_thickness * 2,
+    front_left_box_width
+  );
+  left_overhang = top_left_box_width > front_left_box_width
+    ? 0
+    : (front_left_box_width - top_left_box_width) / 2;
+
+  // Right measurements
   right_card_size = spin_orientation_size(standard_sleeved_card_size);
-
-  left_box_size = tile_tray_box_size(
-    [[left_card_size], [for(i=[0:location_tile_count-1]) [slim_tile_size]]],
-    [[1], [for(i=[0:location_tile_count-1]) [1]]]
+  front_right_box_width = pad(slim_tile_size[0]) * quest_tile_count + $wall_thickness * (quest_tile_count+1);
+  top_right_box_width = pad(right_card_size[0]) + $wall_thickness * 2;
+  flow_right_width = max(
+    pad(right_card_size[0]) + $wall_thickness * 2,
+    front_right_box_width
   );
+  right_overhang = top_right_box_width > front_right_box_width
+    ? 0
+    : (front_right_box_width - top_right_box_width) / 2;
 
-  right_box_size = tile_tray_box_size(
-    [for(i=[0:quest_tile_count-1]) [slim_tile_size]],
-    [for(i=[0:quest_tile_count-1]) [1]]
-  );
-
-  box_size = [
-    left_box_size[0] + right_box_size[0] - $wall_thickness,
-    right_box_size[1],
-    right_box_size[2],
-  ];
-
-  // TODO join left and right?
-  join_size = [
-    pad(left_card_size[0]) + pad(right_card_size[0]) + $wall_thickness * 3,
-    $wall_thickness * 2,
-    box_size[2]
+  front_box_size = [
+    max(
+      left_overhang + top_left_box_width + pad(slim_tile_size[0]) + top_right_box_width + right_overhang,
+      front_left_box_width + front_right_box_width
+    ),
+    pad(tile_size[1]) + $wall_thickness * 2,
+    stack_height(slim_tile_size[2]) + $wall_thickness
   ];
 
   difference() {
     union() {
-      rounded_cube(box_size, flat_top=true, $rounding=sml_rounding);
-      translate([0, box_size[1] - sml_rounding * 2, 0]) {
-        rounded_cube(join_size, flat_top=true, $rounding=sml_rounding);
-      }
-      translate([0, box_size[1], 0]) {
-        card_slope(left_card_size, 20, box_size[2]);
-      }
-      translate([left_box_size[0] - $wall_thickness, box_size[1], 0]) {
-        card_slope(right_card_size, 20, box_size[2]);
+      rounded_cube(front_box_size + [0, $bleed, 0], flat_top=true, flat_back=true, $rounding=sml_rounding);
+
+      slope_angle = 20;
+      slope_length = right_card_size[1] * 0.85;
+
+      left_offset = left_overhang + $wall_thickness;
+      middle_offset = front_box_size[0]
+        - top_right_box_width
+        - right_overhang
+        - pad(slim_tile_size[0]);
+      right_offset = front_box_size[0]
+        - top_right_box_width
+        - right_overhang
+        + $wall_thickness;
+
+      translate([0, front_box_size[1], 0]) {
+        difference() {
+          slope(
+            [front_box_size[0], slope_length],
+            slope_angle,
+            front_box_size[2]
+          );
+
+          // Left card slope cutout
+          translate([left_offset, 0, 0]) {
+            slope_cutout(
+              left_card_size,
+              slope_length,
+              slope_angle,
+              2,
+              front_box_size[2]
+            );
+          }
+
+          translate([middle_offset, 0, 0]) {
+            cutout_length = pad(slim_tile_size[0]);
+            // No padding so the top edge is flush
+            tile_slope_offset = slope_length - slim_tile_size[1];
+
+            tile_slope_cutout(
+              slim_tile_size,
+              tile_slope_offset,
+              slope_angle,
+              front_box_size[2],
+              clearence=10
+            );
+
+            image_cutout = [10, 10];
+            slope_cutout(
+              [
+                slim_tile_size[0],
+                slope_length - slim_tile_size[1] - $wall_thickness * 3
+              ],
+              0,
+              slope_angle,
+              image_inset_height,
+              front_box_size[2]
+            );
+          }
+
+          // Right card slope cutout
+          translate([right_offset, 0, 0]) {
+            slope_cutout(
+              right_card_size,
+              slope_length,
+              slope_angle,
+              4,
+              front_box_size[2]
+            );
+          }
+        }
       }
     }
 
@@ -125,23 +209,27 @@ module location_and_quest_tray(location_tile_count, quest_tile_count) {
       tile_tray_row_v2(
         [for(i=[0:location_tile_count-1]) slim_tile_size],
         [for(i=[0:location_tile_count-1]) 1],
-        box_size[0],
-        box_size[2],
+        flow_left_width,
+        front_box_size[2],
         wall_inset_length,
-        bottom_cutout=true
+        bottom_cutout=true,
+        orientation="centre",
+        notch_style="square"
       );
     }
 
     // Right token slots
-    translate([left_box_size[0] - $wall_thickness, 0, 0]) {
+    translate([front_box_size[0] - flow_right_width, 0, 0]) {
       translate($wall_rect) {
         tile_tray_row_v2(
           [for(i=[0:quest_tile_count-1]) slim_tile_size],
           [for(i=[0:quest_tile_count-1]) 1],
-          box_size[0],
-          box_size[2],
+          flow_right_width,
+          front_box_size[2],
           wall_inset_length,
-          bottom_cutout=true
+          bottom_cutout=true,
+          orientation="centre",
+          notch_style="square"
         );
       }
     }

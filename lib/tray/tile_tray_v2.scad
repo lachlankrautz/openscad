@@ -259,36 +259,40 @@ module tile_tray_row_v2(
   box_row_height,
   wall_inset_length,
   row_wall_inset_lengths = undef,
-  centre_row=false,
   top_cutout=false,
-  bottom_cutout=false
+  bottom_cutout=false,
+  orientation="left",
+  notch_style="rounded"
 ) {
   row_width = sum(pick_list(row_tiles, 0))
     + $wall_thickness * (len(row_tiles) + 1)
     + $padding * len(row_tiles) * 2;
 
-  centre_offset = centre_row
+  row_orientation_offset = orientation == "centre"
     ? (box_width - row_width) / 2
-    : 0;
+    : (orientation == "right" ? box_width - row_width: 0);
 
-  for (x = [0:len(row_tiles)-1]) {
-    translate([
-      centre_offset + padded_offset(row_tiles[x][0], x),
-      0,
-      0
-    ]) {
-      tile_stack(
-        row_tiles[x],
-        row_tile_counts[x],
-        box_row_height,
-        top_cutout = top_cutout,
-        bottom_cutout = bottom_cutout,
-        floor_cutout = row_tiles[x][0] > $floor_cutout_threshold,
-        use_rounded_cube = false,
-        notch_inset_length = row_wall_inset_lengths[x] != undef
-          ? row_wall_inset_lengths[x]
-          : wall_inset_length
-      );
+  translate([row_orientation_offset, 0, 0]) {
+    for (x = [0:len(row_tiles)-1]) {
+      translate([
+        padded_offset(row_tiles[x][0], x),
+        0,
+        0
+      ]) {
+        tile_stack(
+          row_tiles[x],
+          row_tile_counts[x],
+          box_row_height,
+          top_cutout = top_cutout,
+          bottom_cutout = bottom_cutout,
+          floor_cutout = row_tiles[x][0] > $floor_cutout_threshold,
+          use_rounded_cube = false,
+          notch_inset_length = row_wall_inset_lengths[x] != undef
+            ? row_wall_inset_lengths[x]
+            : wall_inset_length,
+          notch_style=notch_style
+        );
+      }
     }
   }
 }

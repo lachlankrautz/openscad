@@ -15,6 +15,8 @@ module rounded_cube(
   flat=false, 
   flat_top=false, 
   flat_bottom=false,
+  flat_back=false,
+  flat_front=false,
   side_rounding=-1,
   hollow=false
 ) {
@@ -29,53 +31,67 @@ module rounded_cube(
   top_height = _flat_top ? 0: _rounding;
   bottom_height = _flat_bottom ? 0: _rounding;
 
-  cube_size = [
-    size[0] - _rounding * 2,
-    size[1] - _rounding * 2,
-    size[2] - (top_height + bottom_height)
+  intersection_size = size;
+  intersection_offset = [
+    0,
+    flat_front ? side_rounding : 0,
+    0
   ];
 
-  difference() {
-    if (_flat_top && _flat_bottom) {
-      linear_extrude(cube_size[2]) {
-        rounded_square([size[0], size[1]]);
-      }
-    } else {
-      minkowski() {
-        translate([_rounding, _rounding, bottom_height]) {
-          if (_side_rounding != _rounding) {
-            linear_extrude(cube_size[2]) {
-              rounded_square([cube_size[0], cube_size[1]], $rounding=_side_rounding);
-            }
-          } else {
-            cube(cube_size);
-          }
-        }
+  cube_size = [
+    intersection_size[0] - _rounding * 2,
+    intersection_size[1]
+      - (flat_back ? 0 : _rounding)
+      - (flat_front ? 0 : _rounding),
+    intersection_size[2] - (top_height + bottom_height)
+  ];
 
-        if (_flat_top) {
-          difference() {
-            sphere(_rounding);
-            cylinder(_rounding, _rounding, _rounding);
-          }
-        } else if (_flat_bottom) {
-          difference() {
-            sphere(_rounding);
-            translate ([0, 0, -_rounding]) {
-              cylinder(_rounding, _rounding, _rounding);
-            }
+  intersection() {
+    translate(intersection_offset) {
+      difference() {
+        if (_flat_top && _flat_bottom) {
+          linear_extrude(cube_size[2]) {
+            rounded_square([size[0], size[1]]);
           }
         } else {
-          sphere(_rounding);
+          minkowski() {
+            translate([_rounding, _rounding, bottom_height]) {
+              if (_side_rounding != _rounding) {
+                linear_extrude(cube_size[2]) {
+                  rounded_square([cube_size[0], cube_size[1]], $rounding = _side_rounding);
+                }
+              } else {
+                cube(cube_size);
+              }
+            }
+
+            if (_flat_top) {
+              difference() {
+                sphere(_rounding);
+                cylinder(_rounding, _rounding, _rounding);
+              }
+            } else if (_flat_bottom) {
+              difference() {
+                sphere(_rounding);
+                translate([0, 0, - _rounding]) {
+                  cylinder(_rounding, _rounding, _rounding);
+                }
+              }
+            } else {
+              sphere(_rounding);
+            }
+          }
+        }
+        // end first difference item
+
+        if (hollow) {
+          inner_cube_size = size - [$wall_thickness * 2, $wall_thickness * 2, 0] + [0, 0, $bleed * 2];
+          translate([$wall_thickness, $wall_thickness, - $bleed]) {
+            rounded_cube(inner_cube_size, flat = true, hollow = false, $rounding = $rounding);
+          }
         }
       }
     }
-    // end first difference item
-
-    if (hollow) {
-      inner_cube_size = size - [$wall_thickness * 2, $wall_thickness * 2, 0] + [0, 0, $bleed * 2];
-      translate([$wall_thickness, $wall_thickness, -$bleed]) {
-        rounded_cube(inner_cube_size, flat=true, hollow=false, $rounding=$rounding);
-      }
-    }
+    cube(intersection_size);
   }
 }

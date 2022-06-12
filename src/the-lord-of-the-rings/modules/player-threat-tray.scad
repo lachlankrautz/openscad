@@ -4,8 +4,6 @@ include <../../../lib/tray/tile_tray_v2.scad>
 include <../../../lib/image/svg_icon.scad>
 include <../../../lib/config/card_sizes.scad>
 
-$fn = 50;
-
 side_scheme_size = [
   standard_sleeved_card_size[1],
   standard_sleeved_card_size[0],
@@ -35,13 +33,12 @@ module player_threat_tray() {
   ];
 
   box_size = tile_tray_box_size(matrix, matrix_counts);
-  inset_height = 0.7;
   inset_size = [
     (box_size[0] - (pad(tile_size[0]) * 2 + $wall_thickness * 5)) / 2,
     pad(tile_size[1]),
-    inset_height + $bleed,
+    image_inset_height + $bleed,
   ];
-  echo("inset size: ", inset_size);
+
   difference() {
     tile_tray_v2(
       slim_tile_size,
@@ -54,7 +51,7 @@ module player_threat_tray() {
       $top_padding = 0
     );
 
-    translate([0, $wall_thickness * 2 + pad(tile_size[1]), box_size[2] - inset_height]) {
+    translate([0, $wall_thickness * 2 + pad(tile_size[1]), box_size[2] - image_inset_height]) {
       translate([$wall_thickness, 0, 0]) {
         cube(inset_size);
       }
