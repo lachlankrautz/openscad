@@ -1,7 +1,6 @@
 include <../config/token-config.scad>
 include <../../../lib/layout/layout.scad>
 include <../../../lib/tray/tile_tray_v2.scad>
-include <../../../lib/image/svg_icon.scad>
 include <../../../lib/config/card_sizes.scad>
 
 side_scheme_size = [
@@ -11,10 +10,7 @@ side_scheme_size = [
 ];
 
 image_cutout_depth = 1;
-fellowship_file = "../../assets/images/the-lord-of-the-rings/fellowship.svg";
 fraction = 6;
-fellowship_size = [851, 216];
-fellowship_target_size = [fellowship_size[0] / 100 * fraction, fellowship_size[1] / 100 * fraction];
 
 module player_threat_tray() {
   matrix = [

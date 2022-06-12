@@ -24,7 +24,12 @@ module slope(slope_surface_size, slope_angle, base_height) {
   ];
 
   intersection() {
-    rounded_cube(slope_box_size, flat_front=true, flat_back=true, $rounding=sml_rounding);
+    intersection() {
+      translate([0, -sml_rounding, 0]) {
+        rounded_cube(slope_box_size + [0, sml_rounding, 0], $rounding=sml_rounding);
+      }
+      cube(slope_box_size);
+    }
 
     union() {
       translate([0, 0, base_height]) {
@@ -130,7 +135,10 @@ module location_and_quest_tray(location_tile_count, quest_tile_count) {
 
   difference() {
     union() {
-      rounded_cube(front_box_size + [0, $bleed, 0], flat_top=true, flat_back=true, $rounding=sml_rounding);
+      intersection() {
+        rounded_cube(front_box_size + [0, sml_rounding + $bleed, 0], flat_top=true, $rounding=sml_rounding);
+        cube(front_box_size + [0, $bleed, 0]);
+      }
 
       slope_angle = 20;
       slope_length = right_card_size[1] * 0.85;
