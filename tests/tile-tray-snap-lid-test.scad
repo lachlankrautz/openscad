@@ -20,7 +20,7 @@ matrix_counts = [
 
 box_size = tile_tray_box_size(tile_size, matrix, matrix_counts);
 
-tile_tray_v2(tile_size, matrix, matrix_counts, wall_inset_length);
+tile_tray_v2(matrix, matrix_counts, wall_inset_length);
 
 translate([0, box_size[1], 10.2]) {
   rotate([180, 0, 0]) {

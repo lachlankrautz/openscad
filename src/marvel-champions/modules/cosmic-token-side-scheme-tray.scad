@@ -27,7 +27,6 @@ module side_scheme_tray(threat_tiles) {
   ];
 
   tile_tray_v2(
-    slim_tile_size,
     matrix,
     matrix_counts,
     wall_inset_length,

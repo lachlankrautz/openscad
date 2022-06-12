@@ -107,13 +107,13 @@ module notched_cube(
       } else if (notch_style == "square") {
         top_cutout_size = [
           cutout_notch_size[0],
-          $wall_thickness + $padding + $bleed,
+          $wall_thickness + $padding * 2 + $bleed,
           size[2] + $lid_height + $bleed * 2 + notch_clearence + notch_bottom_clearence,
         ];
 
         translate([
           (size[0] - top_cutout_size[0]) / 2,
-          size[1] - $padding,
+          size[1] - $padding * 2,
           -$bleed - notch_bottom_clearence
         ]) {
           cube(top_cutout_size);
@@ -140,13 +140,13 @@ module notched_cube(
       } else if (notch_style == "square") {
         bottom_cutout_size = [
           cutout_notch_size[0],
-          $wall_thickness + $padding + $bleed,
+          $wall_thickness + $padding * 2 + $bleed,
           size[2] + $lid_height + $bleed * 2 + notch_clearence + notch_bottom_clearence,
         ];
 
         translate([
           (size[0] - bottom_cutout_size[0]) / 2,
-          - bottom_cutout_size[1] + $padding,
+          - bottom_cutout_size[1] + $padding * 2,
           -$bleed - notch_bottom_clearence
         ]) {
           cube(bottom_cutout_size);

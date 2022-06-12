@@ -2,7 +2,7 @@ include <../compound/functions/notched_cube_functions.scad>
 include <../compound/tile_stack.scad>
 include <../util/util_functions.scad>
 include <../layout/grid_utils.scad>
-include <../layout/flow_utils.scad>
+include <../layout/flow-utils.scad>
 include <../design/square-pattern.scad>
 include <../primitive/rounded_cube.scad>
 
@@ -22,10 +22,18 @@ function offset_bump_left() = bump_diameter * bump_cylinder_fraction;
 function offset_bump_right() = bump_diameter - bump_diameter * bump_cylinder_fraction;
 
 // This will fail matricies where smaller count of tiles total larger measurements
-function tile_tray_box_size(matrix, matrix_counts) = _box_size(
-  make_accumulated_flow_matrix(walled_grid(padded_grid(matrix))),
-  _stack_height_matrix(matrix, matrix_counts)
-);
+function tile_tray_box_size(matrix, matrix_counts, minimum_box_width=0) =
+  let(
+    reccomended_box_size = _box_size(
+      make_accumulated_flow_matrix(walled_grid(padded_grid(matrix))),
+      _stack_height_matrix(matrix, matrix_counts)
+    )
+  )
+  [
+    max(reccomended_box_size[0], minimum_box_width),
+    reccomended_box_size[1],
+    reccomended_box_size[2],
+  ];
 
 function _box_size(acc_matrix, stack_matrix) = [
   max(pick_list(flatten(acc_matrix), 0)) + $wall_thickness,
@@ -46,6 +54,7 @@ function slice_matrix_y(matrix, start_y, end_y=undef) = [
   ]
 ];
 
+// TODO check why "y - 1" is usually passed, seems wrong
 function calc_row_y_offset(matrix, y) = y < 0
   ? 0
   : tile_tray_box_size(slice_matrix_y(matrix, 0, y), [])[1] - $wall_thickness;
@@ -297,25 +306,27 @@ module tile_tray_row_v2(
   }
 }
 
-// TODO refactor to use the above row module
-// the row is a better building block - make everything row based
 module tile_tray_v2(
-  tile_size, // TODO remove tile_size var
   matrix,
   matrix_counts,
   wall_inset_length,
   matrix_wall_inset_lengths = undef,
+  minimum_box_width=0,
   with_lid=true,
   slim_fit=false,
-  centre_rows=false
+  centre_rows=false,
+  notch_style="rounded"
 ) {
-  assert(tile_size != undef, "Tile size is not defined");
   assert(matrix != undef, "matrix is not defined");
   assert(matrix_counts != undef, "matrix_counts is not defined");
   assert(wall_inset_length != undef, "wall_inset_length not defined");
 
-  box_size = tile_tray_box_size(matrix, matrix_counts);
+  box_size = tile_tray_box_size(matrix, matrix_counts, minimum_box_width);
   top_row = matrix_max_y_len(matrix) - 1;
+
+  rows = row_list_from_matrix(matrix);
+  row_counts = row_list_from_matrix(matrix_counts);
+  row_list_inset_lengths = row_list_from_matrix(matrix_wall_inset_lengths);
 
   difference() {
     // Wrap each row to the minimum width or fill a solid rectange
@@ -342,35 +353,26 @@ module tile_tray_v2(
 
     // Tile stacks
     translate($wall_rect) {
-      for(x=[0:len(matrix)-1]) {
-        for(y=[0:len(matrix[x])-1]) {
-          let (
-            sliced_matrix = slice_matrix_y(matrix, y),
-            sliced_matrix_counts = slice_matrix_y(matrix_counts, y),
-            sliced_box_size = tile_tray_box_size(sliced_matrix, sliced_matrix_counts),
-            box_row_height = slim_fit == true
-              ? sliced_box_size[2]
-              : box_size[2]
-          ) {
-            translate([
-              calc_row_x_offset(box_size, sliced_box_size, centre_rows)
-                + padded_offset(matrix[x][y][0], x),
-              padded_offset(tile_size[1], y),
-              0
-            ]) {
-              tile_stack(
-                matrix[x][y],
-                matrix_counts[x][y],
-                box_row_height,
-                top_cutout = y == top_row,
-                bottom_cutout = y == 0,
-                floor_cutout = matrix[x][y][0] > $floor_cutout_threshold,
-                use_rounded_cube = false,
-                notch_inset_length = matrix_wall_inset_lengths[x][y] != undef
-                  ? matrix_wall_inset_lengths[x][y]
-                  : wall_inset_length
-              );
-            }
+      for (y = [0:len(rows)-1]) {
+        let (
+          row_tiles = rows[y],
+          row_tile_counts = row_counts[y],
+          row_inset_lenghts = row_list_inset_lengths[y],
+          row_offset = calc_row_y_offset(matrix, y-1)
+        ) {
+          translate([0, row_offset, 0]) {
+            tile_tray_row_v2(
+              row_tiles,
+              row_tile_counts,
+              box_size[0],
+              box_size[2],
+              wall_inset_length,
+              row_inset_lenghts,
+              top_cutout = y == top_row,
+              bottom_cutout = y == 0,
+              orientation= centre_rows ? "centre" : "left",
+              notch_style=notch_style
+            );
           }
         }
       }

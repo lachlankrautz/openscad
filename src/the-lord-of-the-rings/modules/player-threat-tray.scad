@@ -10,7 +10,6 @@ side_scheme_size = [
 ];
 
 image_cutout_depth = 1;
-fraction = 6;
 
 module player_threat_tray() {
   matrix = [
@@ -37,14 +36,14 @@ module player_threat_tray() {
 
   difference() {
     tile_tray_v2(
-      slim_tile_size,
       matrix,
       matrix_counts,
       wall_inset_length,
       with_lid=false,
       slim_fit=false,
       centre_rows=true,
-      $top_padding = 0
+      $top_padding = 0,
+      notch_style="square"
     );
 
     translate([0, $wall_thickness * 2 + pad(tile_size[1]), box_size[2] - image_inset_height]) {

@@ -75,7 +75,8 @@ module hero_resources_long_tray(hero_count = 3, resource_count = 3) {
               bottom_cutout = true,
               floor_cutout = row[i][0] > $floor_cutout_threshold,
               use_rounded_cube = false,
-              notch_inset_length = wall_inset_length
+              notch_inset_length = wall_inset_length,
+              notch_style="square"
             );
           }
         }

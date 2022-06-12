@@ -16,28 +16,39 @@ module vertical_magnet_cutout (diameter, height) {
   }
 }
 
-function translation_left(box_size, diameter, height, floor_compensation = 0) = [
-  -$bleed,
-  (box_size[1] - magnet_cutout_diameter(diameter)) / 2,
-  (box_size[2] - floor_compensation - magnet_cutout_diameter(diameter)) / 2 + floor_compensation,
-];
+function translation_left(box_size, height) =
+  -$bleed;
 
-function translation_right(box_size, diameter, height, floor_compensation = 0) = [
-  box_size[0] - magnet_cutout_height(height) + $bleed,
-  (box_size[1] - magnet_cutout_diameter(diameter)) / 2,
-  (box_size[2] - floor_compensation - magnet_cutout_diameter(diameter)) / 2 + floor_compensation,
-];
+function translation_right(box_size, height) =
+  box_size[0] - magnet_cutout_height(height) + $bleed;
+
+function translation_front(box_size, diameter, side_inset) =
+  side_inset;
+
+function translation_back(box_size, diameter, side_inset) =
+  (box_size[1] - magnet_cutout_diameter(diameter)) -side_inset;
+
+function translation_z(box_size, diameter, floor_inset) =
+    (box_size[2] - floor_inset - magnet_cutout_diameter(diameter)) / 2 + floor_inset;
 
 module vertical_magnet_sockets(
   box_size,
   diameter,
   height,
-  positions=["left"],
-  floor_compensation = 0
+  sides=["left"],
+  floor_inset = 0,
+  side_inset = 0
 ) {
-  for(i=[0:len(positions)-1]) {
-    let (position=positions[i]) {
-      vertical_magnet_socket(box_size, diameter, height, position, floor_compensation);
+  for(i=[0:len(sides)-1]) {
+    let (side=sides[i]) {
+      vertical_magnet_socket(
+        box_size,
+        diameter,
+        height,
+        side,
+        floor_inset,
+        side_inset
+      );
     }
   }
 };
@@ -46,18 +57,31 @@ module vertical_magnet_socket(
   box_size,
   diameter,
   height,
-  position="left",
-  floor_compensation = 0
+  side="left",
+  floor_inset = 0,
+  side_inset = 0
 ) {
-  assert(position == "left" || position == "right", "valid positions: (left | right)");
+  assert(side == "left" || side == "right", "valid sides: (left | right)");
 
   _height = height + $bleed;
 
-  translation = position == "left"
-    ? translation_left(box_size, diameter, _height, floor_compensation)
-    : translation_right(box_size, diameter, _height, floor_compensation);
+  translation_front = [
+    side == "left" ? translation_left(box_size, height) : translation_right(box_size, height),
+    translation_front(box_size, diameter, side_inset),
+    translation_z(box_size, diameter, floor_inset)
+  ];
 
-  translate(translation) {
+  translation_back = [
+    side == "left" ? translation_left(box_size, height) : translation_right(box_size, height),
+    translation_back(box_size, diameter, side_inset),
+    translation_z(box_size, diameter, floor_inset)
+  ];
+
+  translate(translation_front) {
+    vertical_magnet_cutout(diameter, _height);
+  }
+
+  translate(translation_back) {
     vertical_magnet_cutout(diameter, _height);
   }
 }

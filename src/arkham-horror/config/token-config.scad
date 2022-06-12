@@ -21,5 +21,3 @@ slim_tile_size = [
 ];
 
 image_inset_height = 0.7;
-
-sml_rounding = 1;
