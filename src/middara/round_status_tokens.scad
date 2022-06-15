@@ -1,8 +1,8 @@
 include <../../lib/primitive/rounded_cube.scad>
 include <../../lib/layout/layout.scad>
-include <../../lib/tile_stack_round.scad>
+include <../../lib/compound/tile_stack_round.scad>
+include <../../lib/compound/tile_stack.scad>
 include <../../lib/util/util_functions.scad>
-include <../../lib/tile_stack.scad>
 
 // Config
 $fn = 50;

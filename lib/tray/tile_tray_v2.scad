@@ -24,15 +24,15 @@ function offset_bump_right() = bump_diameter - bump_diameter * bump_cylinder_fra
 // This will fail matricies where smaller count of tiles total larger measurements
 function tile_tray_box_size(matrix, matrix_counts, minimum_box_width=0) =
   let(
-    reccomended_box_size = _box_size(
+    recommended_box_size = _box_size(
       make_accumulated_flow_matrix(walled_grid(padded_grid(matrix))),
       _stack_height_matrix(matrix, matrix_counts)
     )
   )
   [
-    max(reccomended_box_size[0], minimum_box_width),
-    reccomended_box_size[1],
-    reccomended_box_size[2],
+    max(recommended_box_size[0], minimum_box_width),
+    recommended_box_size[1],
+    recommended_box_size[2],
   ];
 
 function _box_size(acc_matrix, stack_matrix) = [

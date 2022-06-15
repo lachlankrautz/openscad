@@ -2,6 +2,8 @@ include <../config/token-config.scad>
 include <../../../lib/layout/layout.scad>
 include <../../../lib/tray/tile_tray_v2.scad>
 include <../../../lib/config/card_sizes.scad>
+include <../../../lib/config/magnet-sizes.scad>
+include <../../../lib/magnet/magnet.scad>
 
 side_scheme_size = [
   standard_sleeved_card_size[1],
@@ -13,11 +15,11 @@ image_cutout_depth = 1;
 
 module player_threat_tray() {
   matrix = [
-    [slim_tile_size, slim_tile_size],
-    [slim_tile_size, slim_tile_size],
-    [slim_tile_size],
-    [slim_tile_size],
-    [slim_tile_size],
+    [cardboard_glued_tile, cardboard_glued_tile],
+    [cardboard_glued_tile, cardboard_glued_tile],
+    [cardboard_glued_tile],
+    [cardboard_glued_tile],
+    [cardboard_glued_tile],
   ];
   matrix_counts = [
     [1, 1],
@@ -27,9 +29,11 @@ module player_threat_tray() {
     [1],
   ];
 
-  box_size = tile_tray_box_size(matrix, matrix_counts);
+  recommended_box_width = tile_tray_box_size(matrix, matrix_counts)[0];
+  padded_box_width = recommended_box_width + $wall_thickness * 2;
+  box_size = tile_tray_box_size(matrix, matrix_counts, padded_box_width);
   inset_size = [
-    (box_size[0] - (pad(tile_size[0]) * 2 + $wall_thickness * 5)) / 2,
+    (recommended_box_width - (pad(tile_size[0]) * 2 + $wall_thickness * 5)) / 2,
     pad(tile_size[1]),
     image_inset_height + $bleed,
   ];
@@ -39,6 +43,7 @@ module player_threat_tray() {
       matrix,
       matrix_counts,
       wall_inset_length,
+      minimum_box_width = padded_box_width,
       with_lid=false,
       slim_fit=false,
       centre_rows=true,
@@ -47,12 +52,21 @@ module player_threat_tray() {
     );
 
     translate([0, $wall_thickness * 2 + pad(tile_size[1]), box_size[2] - image_inset_height]) {
-      translate([$wall_thickness, 0, 0]) {
+      translate([$wall_thickness * 2, 0, 0]) {
         cube(inset_size);
       }
-      translate([box_size[0] - inset_size[0] - $wall_thickness, 0, 0]) {
+      translate([box_size[0] - inset_size[0] - $wall_thickness * 2, 0, 0]) {
         cube(inset_size);
       }
     }
+
+    vertical_magnet_sockets(
+      box_size,
+      small_magnet_diameter,
+      small_magnet_height,
+      ["left", "right"],
+      sml_rounding,
+      sml_rounding * 2
+    );
   }
 }
