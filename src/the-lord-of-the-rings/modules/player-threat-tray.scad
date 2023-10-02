@@ -5,21 +5,15 @@ include <../../../lib/config/card_sizes.scad>
 include <../../../lib/config/magnet-sizes.scad>
 include <../../../lib/magnet/magnet.scad>
 
-side_scheme_size = [
-  standard_sleeved_card_size[1],
-  standard_sleeved_card_size[0],
-  1.8,
-];
-
 image_cutout_depth = 1;
 
 module player_threat_tray() {
   matrix = [
-    [cardboard_glued_tile, cardboard_glued_tile],
-    [cardboard_glued_tile, cardboard_glued_tile],
-    [cardboard_glued_tile],
-    [cardboard_glued_tile],
-    [cardboard_glued_tile],
+    [slim_tile_size, slim_tile_size],
+    [slim_tile_size, slim_tile_size],
+    [slim_tile_size],
+    [slim_tile_size],
+    [slim_tile_size],
   ];
   matrix_counts = [
     [1, 1],
@@ -33,8 +27,8 @@ module player_threat_tray() {
   padded_box_width = recommended_box_width + $wall_thickness * 2;
   box_size = tile_tray_box_size(matrix, matrix_counts, padded_box_width);
   inset_size = [
-    (recommended_box_width - (pad(tile_size[0]) * 2 + $wall_thickness * 5)) / 2,
-    pad(tile_size[1]),
+    (recommended_box_width - (pad(slim_tile_size[0]) * 2 + $wall_thickness * 5)) / 2,
+    pad(slim_tile_size[1]),
     image_inset_height + $bleed,
   ];
 
@@ -51,7 +45,7 @@ module player_threat_tray() {
       notch_style="square"
     );
 
-    translate([0, $wall_thickness * 2 + pad(tile_size[1]), box_size[2] - image_inset_height]) {
+    translate([0, $wall_thickness * 2 + pad(slim_tile_size[1]), box_size[2] - image_inset_height]) {
       translate([$wall_thickness * 2, 0, 0]) {
         cube(inset_size);
       }

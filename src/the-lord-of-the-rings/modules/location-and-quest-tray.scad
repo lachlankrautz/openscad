@@ -129,7 +129,7 @@ module location_and_quest_tray(location_tile_count, quest_tile_count) {
       left_overhang + top_left_box_width + pad(slim_tile_size[0]) + top_right_box_width + right_overhang,
       front_left_box_width + front_right_box_width
     ),
-    pad(tile_size[1]) + $wall_thickness * 2,
+    pad(slim_tile_size[1]) + $wall_thickness * 2,
     stack_height(slim_tile_size[2]) + $wall_thickness
   ];
 

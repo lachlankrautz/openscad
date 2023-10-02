@@ -6,9 +6,9 @@ include <./config/token-config.scad>
 $fn = 50;
 
 matrix = [
-  [cardboard_glued_tile, cardboard_glued_tile],
-  [cardboard_glued_tile, cardboard_glued_tile],
-  [cardboard_glued_tile, cardboard_glued_tile],
+  [slim_tile_size, slim_tile_size],
+  [slim_tile_size, slim_tile_size],
+  [slim_tile_size, slim_tile_size],
 ];
 
 matrix_counts = [
