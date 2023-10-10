@@ -2,6 +2,10 @@ include <../util/util_functions.scad>
 include <./flow-utils.scad>
 include <../config/constants.scad>
 
+// DEPENDS ON:
+// - $padding
+// - $wall_thickness
+
 // Grids neatly align x and y all rows or columns are offset to the size of the
 // largest item in the row or column. Grids are not space efficient.
 
