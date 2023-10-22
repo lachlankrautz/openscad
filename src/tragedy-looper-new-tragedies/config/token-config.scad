@@ -6,19 +6,24 @@ wall_inset_length = 1.5;
 tile_height = 3;
 wall_thickness = 2;
 
+// type: point
+// [length, width]
+LENGTH=0;
+WIDTH=1;
+
 // type: tile
 // ["circle", [diameter], height]
-// ["square", [length, width], height]
+// ["rectangle", [length, width], height]
 // ["oval", [length, width, rounding], height]
 TILE_TYPE = 0;
 TILE_SIZE = 1;
 TILE_HEIGHT = 2;
 TILE_CIRCLE = "circle";
 TILE_CIRCLE_DIAMETER = 0;
-TILE_SQUARE = "square";
-TILE_SQUARE_LENGTH_X = 0;
-TILE_SQUARE_WIDTH_Y = 1;
-TILE_OVAL = "square";
+TILE_RECTANGLE = "rectangle";
+TILE_RECTANGLE_LENGTH_X = 0;
+TILE_RECTANGLE_WIDTH_Y = 1;
+TILE_OVAL = "rectangle";
 TILE_OVAL_LENGTH_X = 0;
 TILE_OVAL_WIDTH_Y = 1;
 TILE_OVAL_ROUNDING = 2;
@@ -27,24 +32,31 @@ TILE_OVAL_ROUNDING = 2;
 // [
 //   "tile_stack"(const),
 //   tile_type(tile_type),
-//   spacing_box([x, y]),
 //   stack_count(number),
-//   position("top", "left", "bottom", "right", "centre")
-//   wall_inset_length(number)
 // ]
 TILE_STACK_TYPE = 0;
 TILE_STACK_TILE = 1;
-TILE_STACK_SPACING_BOX = 2;
-TILE_STACK_COUNT = 3;
+TILE_STACK_COUNT = 2;
+
+// type: posistioned tile stack: extends tile stack
+// [
+//   "positioned_tile_stack"(const),
+//   tile_type(tile_type),
+//   stack_count(number),
+//   spacing_box([x, y]),
+//   position("top", "left", "bottom", "right", "centre"),
+//   ? cutout_map
+// ]
+TILE_STACK_SPACING_BOX = 3;
 TILE_STACK_POSITION = 4;
 TILE_STACK_CUTOUT_MAP = 5;
 
 // type: cutout_map
 // [
-//   "cutout_map"
-//   left(cutout | undef)
-//   top(cutout | undef)
-//   right(cutout | undef)
+//   "cutout_map",
+//   left(cutout | undef),
+//   top(cutout | undef),
+//   right(cutout | undef),
 //   bottom(cutout | undef)
 // ]
 TILE_STACK_CUTOUT_MAP_TYPE = 0;
@@ -81,6 +93,21 @@ large_mask_tile = ["circle", [large_diameter], tile_height];
 POSITION = 0;
 ITEM = 1;
 
+module print_grid(grid) {
+  max_y = grid_biggest_column(grid);
+  for(i=[max_y-1:-1:0]) {
+    echo(i, grid_row(grid, i));
+  }
+  echo("");
+}
+
+module print_grid_code_orientation(grid) {
+  for(x=[0:len(grid)-1]) {
+    echo(grid[x]);
+  }
+  echo("");
+}
+
 // input : nested list
 // output : list with the outer level nesting removed
 function flatten(outter_vector) = [for(inner_vector=outter_vector) for(item=inner_vector) item];
@@ -90,7 +117,6 @@ function flatten(outter_vector) = [for(inner_vector=outter_vector) for(item=inne
 function sum(array) = len(array) == 0
   ? 0
   : [for(item=array) 1] * array;
-//echo("sum: ", sum([1, 2, 3, 4]));
 
 // take a number of elements from an array
 // take([1, 2, 3, 4], 2) => [1, 2]
@@ -98,28 +124,48 @@ function take(array, count) = count == 0
   ? []
   : [for(i=[0:count-1]) array[i]];
 
+// fill an array of count with item
+// fill(item, 3) -> [item, item, item]
+function fill(item, count) = [for(i=[0:count-1]) item];
+
+// fill a grid of [xSize, ySize] with item
+// fill_grid(item, [2, 2]) -> [[item, item], [item, item]]
+function fill_grid(item, dimensions) = [for(x=[0:dimensions[LENGTH]-1]) [for(y=[0:dimensions[WIDTH]-1]) item]];
+
+// Map to just the given index of a list of arrays
+//
+// list = [
+//   [1, 2],
+//   [3, 4],
+// ];
+// pick_list(list, 0) -> [1, 3]
+// pick_list(list, 1) -> [2, 4]
+function pick_list(list, index) = list == undef || len(list) == 0
+  ? []
+  : [for(i=[0:len(list)-1]) list[i][index]];
+
 // slice an array
 // slice([1, 2, 3, 4], 0, 2) => [1, 2, 3]
 function slice(array, start, end) = [for(i=[start:end]) array[i]];
-//echo("slice: ", slice([1, 2, 3, 4], 0, 2));
 
-// get the height of a grid - maximum from the height of each column
-// grid_height([
-//   [ [1, 1], [2, 2] ],
-//   [ [3, 3], [4, 4], [5, 5], [6, 6] ]
-// ], 1) => 4
-function grid_height(matrix) = max([for(x=[0:len(matrix)-1]) len(matrix[x])]);
-//echo("height: ", grid_height([[[1, 1], [2, 2] ], [[3, 3], [4, 4], [5, 5], [6, 6]]]));
+// cumulatively sum a list
+// [1, 2, 3] -> [1, 3, 6]
+function cum_sum_list(list) = [for(i=[0:len(list)-1]) sum(slice(list, 0, i))];
 
-// get the width of a grid which is always just the lenth of the first row
-// grid_width([
-//   [ [1, 1], [2, 2] ],
-//   [ [3, 3], [4, 4], [5, 5], [6, 6] ]
-// ], 1) => 2
-// grid_width([]) => 0
-function grid_width(grid) = len(grid) == 0 ? 0 : len(grid[0]);
-//echo("width: ", grid_width([[[1, 1], [2, 2]], [[3, 3], [4, 4], [5, 5], [6, 6]]]));
-//echo("width: ", grid_width([]));
+// get the size of the tallest collumn
+// grid_biggest_column([
+//   [ x, x,
+//   [ x, x, x, x ]
+// ]) => 4
+function grid_biggest_column(matrix) = max([for(x=[0:len(matrix)-1]) len(matrix[x])]);
+
+// get the size of the widest row (always the first row)
+// grid_biggest_row([
+//   [ x, x,
+//   [ x, x, x, x ]
+// ]) => 2
+// grid_biggest_row([]) => 0
+function grid_biggest_row(grid) = len(grid) == 0 ? 0 : len(grid[0]);
 
 // get a grid row as an array
 // grid_row([
@@ -127,7 +173,6 @@ function grid_width(grid) = len(grid) == 0 ? 0 : len(grid[0]);
 //   [ [3, 3], [4, 4] ]
 // ], 1) => [ [2, 2], [4, 4] ]
 function grid_row(grid, row) = [for(col=grid) col[row]];
-//echo("row: ", grid_row([[[1, 1], [2, 2]], [[3, 3], [4, 4]]], 1));
 
 // get a grid column as an array
 // grid_column([
@@ -138,85 +183,137 @@ function grid_row(grid, row) = [for(col=grid) col[row]];
 //   [ [1, 1], [2, 2] ],
 //   [ [3, 3], [4, 4], [5, 5], [6, 6] ]
 // ], 0) => [ [1, 1], [2, 2], undef, undef]
-function grid_column(grid, col) = let(height=grid_height(grid)) [for(i=[0:height-1]) grid[col][i]];
-//echo("column: ", grid_column([[[1, 1], [2, 2]], [[3, 3], [4, 4], [5, 5], [6, 6]]], 1));
-//echo("column: ", grid_column([[[1, 1], [2, 2]], [[3, 3], [4, 4], [5, 5], [6, 6]]], 0));
+function grid_column(grid, col) = let(height=grid_biggest_column(grid)) [for(i=[0:height-1]) grid[col][i]];
 
 // get the length(x) of a tile type
 // tile_length_x(["circle", [5], 4]) -> 5
-// tile_length_x(["square", [5, 10], 4]) -> 5
+// tile_length_x(["rectangle", [5, 10], 4]) -> 5
 // tile_length_x(["oval", [5, 10, 1], 4]) -> 5
-function tile_length_x(tile) = tile[TILE_SIZE][TILE_SQUARE_LENGTH_X];
-//echo("tile length(x): ", tile_length_x(["circle", [5], 4]));
-//echo("tile length(x): ", tile_length_x(["square", [5, 10]]));
-//echo("tile length(x): ", tile_length_x(["oval", [5, 10, 1], 4]));
+function tile_length_x(tile) = tile[TILE_SIZE][TILE_RECTANGLE_LENGTH_X];
 
 // get the width(y) of a tile type
 // tile_length_x(["circle", [5], 4]) -> 5
-// tile_length_x(["square", [5, 10], 4]) -> 10
+// tile_length_x(["rectangle", [5, 10], 4]) -> 10
 // tile_length_x(["oval", [5, 10, 1], 4]) -> 10
 function tile_width_y(tile) = tile[TILE_TYPE] == TILE_CIRCLE
   ? tile[TILE_SIZE][TILE_CIRCLE_DIAMETER]
-  : tile[TILE_SIZE][TILE_SQUARE_WIDTH_Y];
-//echo("tile width(y): ", tile_width_y(["circle", [5], 4]));
-//echo("tile width(y): ", tile_width_y(["square", [5, 10]]));
-//echo("tile width(y): ", tile_width_y(["oval", [5, 10, 1], 4]));
+  : tile[TILE_SIZE][TILE_RECTANGLE_WIDTH_Y];
 
 // get the total height of a tile stack -> (count * tile height)
 // tile_stack_height([
 //   "tile_stack",
-//   ["square", [5, 10], 2],
-//   [5, 10],
+//   ["rectangle", [5, 10], 2],
 //   4,
+//   [5, 10],
 //   "centre",
 //   5
 // ]) -> 8
 function tile_stack_height(tile_stack) = tile_stack[TILE_STACK_COUNT] * tile_stack[TILE_STACK_TILE][TILE_HEIGHT];
-//echo("tile stack heigth: ", tile_stack_height(["tile_stack", ["square", [5, 10], 2], [5, 10], 4, "centre", 5]));
 
 // sum the thickness of all walls in a list
 // sum_walls_in_list([1, 1, 1], 2) -> list of three items has 4 walls of width 2 -> (3 + 1) * 2 -> 8
 function sum_walls_in_list(list, wall_thickness) = wall_thickness * (len(list) + 1);
 //echo("sum walls in list: ", sum_walls_in_list([1, 1, 1], 2));
 
-// map a list of tile stacks to the length of each stack
-// [stack, stack, stack] -> [x, x, x]
-// demo_tile_stack = ["tile_stack", ["square", [5, 10], 2], [5, 10], 4, "centre", 5];
-// map_tile_stack_length_x([demo_stack, demo_stack, demo_stack]) -> [5, 5, 5]
-function map_tile_stack_length_x(tile_stacks) = [for(tile_stack=tile_stacks) tile_length_x(tile_stack[TILE_STACK_TILE])];
-//demo_tile_stack = ["tile_stack", ["square", [5, 10], 2], [5, 10], 4, "centre", 5];
-//echo("map tile stack length x: ", map_tile_stack_length_x([demo_tile_stack, demo_tile_stack, demo_tile_stack]));
+// [tile, tile, tile] -> [x, x, x]
+function map_tiles_to_tile_lengths(tiles) = [for(tile=tiles) tile_length_x(tile)];
 
-// map a list of tile stacks to the width of each stack
-// [stack, stack, stack] -> [y, y, y]
-// demo_tile_stack = ["tile_stack", ["square", [5, 10], 2], [5, 10], 4, "centre", 5];
-// map_tile_stack_width_y([demo_stack, demo_stack, demo_stack]) -> [10, 10, 10]
-function map_tile_stack_width_y(tile_stacks) = [for(tile_stack=tile_stacks) tile_width_y(tile_stack[TILE_STACK_TILE])];
-//demo_tile_stack = ["tile_stack", ["square", [5, 10], 2], [5, 10], 4, "centre", 5];
-//echo("map tile stack width y: ", map_tile_stack_width_y([demo_tile_stack, demo_tile_stack, demo_tile_stack]));
+// [tile, tile, tile] -> [y, y, y]
+function map_tiles_to_tile_widths(tiles) = [for(tile=tiles) tile_width_y(tile)];
 
-// map a list of tile stacks to the height of each stack
-// [stack, stack, stack] -> [h, h, h]
-// demo_tile_stack = ["tile_stack", ["square", [5, 10], 2], [5, 10], 4, "centre", 5];
-// map_tile_stack_height([demo_stack, demo_stack, demo_stack]) -> [8, 8, 8]
-function map_tile_stack_height(tile_stacks) = [for(tile_stack=tile_stacks) tile_stack_height(tile_stack)];
-//demo_tile_stack = ["tile_stack", ["square", [5, 10], 2], [5, 10], 4, "centre", 5];
-//echo("map tile stack height: ", map_tile_stack_height([demo_tile_stack, demo_tile_stack, demo_tile_stack]));
+// [tile_stack, tile_stack, tile_stack] -> [tile, tile, tile]
+function map_tile_stacks_to_tiles(tile_stacks) =
+pick_list(tile_stacks, TILE_STACK_TILE);
 
-// map a list of tile stacks to the length of each stack's spacing box
-// [stack, stack, stack] -> [y, y, y]
-// demo_tile_stack = ["tile_stack", ["square", [5, 10], 2], [7, 12], 4, "centre", 5];
-// map_tile_stack_spacing_box_length_x([demo_stack, demo_stack, demo_stack]) -> [7, 7, 7]
-function map_tile_stack_spacing_box_length_x(tile_stacks) = [for(tile_stack=tile_stacks) tile_stack[TILE_STACK_SPACING_BOX][0]];
-//demo_stack = ["tile_stack", ["square", [5, 10], 2], [7, 12], 4, "centre", 5];
-//echo("map tile stack spacing box length x: ", map_tile_stack_spacing_box_length_x([demo_stack, demo_stack, demo_stack]));
+// [tile_stack, tile_stack, tile_stack] -> [z, z, z]
+function map_tile_stacks_to_heights(tile_stacks) =
+  [for(tile_stack=tile_stacks) tile_stack_height(tile_stack)];
 
+// [tile_stack, tile_stack, tile_stack] -> [x, x, x]
+function map_tile_stacks_to_tile_lengths(tile_stacks) =
+let(tiles = map_tile_stacks_to_tiles(tile_stacks))
+map_tiles_to_tile_lengths(tiles);
+
+// [tile_stack, tile_stack, tile_stack] -> [y, y, y]
+function map_tile_stacks_to_tile_widths(tile_stacks) =
+let(tiles = map_tile_stacks_to_tiles(tile_stacks))
+map_tiles_to_tile_widths(tiles);
+
+// [tile_stack, tile_stack, tile_stack] -> [box, box, box]
+function map_tile_stacks_to_spacing_boxes(tile_stacks) =
+  [for(tile_stack=tile_stacks) tile_stack[TILE_STACK_SPACING_BOX]];
+
+// [tile_stack, tile_stack, tile_stack] -> [x, x, x]
+function map_tile_stacks_to_spacing_box_lengths(tile_stacks) =
+let(tiles = map_tile_stacks_to_spacing_boxes(tile_stacks))
+pick_list(tiles, 0);
+
+// [tile_stack, tile_stack, tile_stack] -> [y, y, y]
+function map_tile_stacks_to_spacing_box_widths(tile_stacks) =
+let(tiles = map_tile_stacks_to_spacing_boxes(tile_stacks))
+pick_list(tiles, 1);
+
+// [[tile_stack, tile_stack], [tile_stack, tile_stack]]
+// -> [[positioned_tile_stack, positioned_tile_stack], [positioned_tile_stack, positioned_tile_stack]]
+function make_positioned_tile_stacks_grid(tile_stacks_grid, wall_thickness) =
+let(
+  // TODO none of this is working but it is close...
+  spacing_box=[tile_length_x(tile), tile_width_y(tile)],
+  tallest=grid_biggest_column(tile_stacks_grid),
+  widest=grid_biggest_row(tile_stacks_grid),
+  // spacing_grid=fill_grid(spacing_box, [widest, tallest]),
+  // cum_sum_rows_lengths=[for(row=tile_stacks_grid) cum_sum_list(pick_list(row, LENGTH))],
+  tile_stack_columns=tile_stacks_grid,
+  tile_stack_rows=[for(y=[0:tallest-1]) grid_row(tile_stacks_grid, y)],
+  // make a list of rows with cum sum length
+  // make a list of cols with cum sum width
+  cutout_map=undef
+)
+  [for(x=[0:len(tile_stacks_grid)-1])
+    [for(y=[0:len(tile_stacks_grid[x])-1])
+    let(tile_stack=tile_stacks_grid[x][y])
+      [
+      "positioned_tile_stack",
+      tile_stack[TILE_STACK_TILE],
+      tile_stack[TILE_STACK_COUNT],
+        [
+        undef, // TODO should be max length of all items in the column
+        undef, // TODO should be max width of all items in the row
+        ],
+      undef,
+      cutout_map,
+      ]]];
+
+//////////////////
+//////////////////
+
+// TODO is this used?
+// length of the longest stack in the list
+// max_tile_stack_length_x([
+//   ["tile_stack", ["rectangle", [5, 12], 2], 4, [5, 10], "centre", 5],
+//   ["tile_stack", ["rectangle", [8, 14], 2], 4, [5, 10], "centre", 5],
+//   ["tile_stack", ["rectangle", [7, 15], 2], 4, [5, 10], "centre", 5],
+// ]) -> 8
 function max_tile_stack_length_x(tile_stacks) = max(map_tile_stack_length_x(tile_stacks));
+//echo("max tile stack length: ", max_tile_stack_length_x([["tile_stack", ["rectangle", [5, 12], 2], 4, [5, 10], "centre", 5], ["tile_stack", ["rectangle", [8, 14], 2], 4, [5, 10], "centre", 5], ["tile_stack", ["rectangle", [7, 15], 2], 4, [5, 10], "centre", 5]]));
 
+// TODO is this used?
+// width of the widest stack in the list
+// map_tile_stack_width_y([
+//   ["tile_stack", ["rectangle", [5, 12], 2], 4, [5, 10], "centre", 5],
+//   ["tile_stack", ["rectangle", [8, 14], 2], 4, [5, 10], "centre", 5],
+//   ["tile_stack", ["rectangle", [7, 15], 2], 4, [5, 10], "centre", 5],
+// ]) -> 15
 function max_tile_stack_width_y(tile_stacks) = max(map_tile_stack_width_y(tile_stacks));
+//echo("max tile stack width: ", max_tile_stack_width_y([["tile_stack", ["rectangle", [5, 12], 2], 4, [5, 10], "centre", 5], ["tile_stack", ["rectangle", [8, 14], 2], 4, [5, 10], "centre", 5], ["tile_stack", ["rectangle", [7, 15], 2], 4, [5, 10], "centre", 5]]));
 
+// TODO rename
+// TODO compose from better functions
+// TODO these are terrible
+// TODO it's atrocious
 function tile_stacks_length_x(tile_stacks, wall_thickness) = sum_walls_in_list(tile_stacks, wall_thickness)
   + sum(map_tile_stack_spacing_box_length_x(tile_stacks));
+//echo("tile stacks length x: ", tile_stacks_length_x([["tile_stack", ["rectangle", [5, 12], 2], 4, [5, 10], "centre", 5], ["tile_stack", ["rectangle", [8, 14], 2], 4, [5, 10], "centre", 5], ["tile_stack", ["rectangle", [7, 15], 2], 4, [5, 10], "centre", 5]], 2));
 
 function tile_stack_grid_length_x(tile_stack_grid, wall_thickness) = sum_walls_in_list(tile_stack_grid, wall_thickness)
   + sum([for(tile_stacks=tile_stack_grid) tile_stacks_length_x(tile_stacks, wall_thickness)]);
@@ -231,11 +328,12 @@ function tile_stack_grid_box_size(tile_stack_grid, wall_thickness) = [
   tile_stack_grid_length_x(tile_stack_grid, wall_thickness),
   tile_stack_grid_width_y(tile_stack_grid, wall_thickness),
   tile_stack_grid_height(tile_stack_grid, wall_thickness),
-];
+  ];
 
 //function position_grid(grid) = let()
 //  [for(y=[0:len(grid)-1]) [for(x=[0:len(grid[y])]) [[x, y], grid[y][x]]]];
 
+// [tile, [2, 3, 5], "top", []] -> [tile_stack, tile_stack, tile_stack]
 function make_tile_stacks(tile, stack_counts, position, cutout_map) = [for(stack_count=stack_counts) [
   "tile_stack",
   tile,
@@ -249,47 +347,32 @@ function make_tile_stacks(tile, stack_counts, position, cutout_map) = [for(stack
   ]];
 
 function make_tile_stacks_spacing_box(tile_stacks, centre_stacks_length_x, centre_stacks_width_y) = [
-  centre_stacks_length_x
+    centre_stacks_length_x
     ? max_tile_stack_length_x(tile_stacks)
     : undef,
-  centre_stacks_width_y
+    centre_stacks_width_y
     ? max_tile_stack_width_y(tile_stacks)
     : undef,
-];
+  ];
 
 function space_tile_stacks(tile_stacks, centre_stacks_length_x, centre_stacks_width_y) =
-  let(spacing_box=make_tile_stacks_spacing_box(tile_stacks, centre_stacks_length_x, centre_stacks_width_y))
+let(spacing_box=make_tile_stacks_spacing_box(tile_stacks, centre_stacks_length_x, centre_stacks_width_y))
   [for(tile_stack=tile_stacks) [
-    tile_stack[0],
-    tile_stack[1],
+  tile_stack[0],
+  tile_stack[1],
     [
       spacing_box[0] == undef ? tile_stack[TILE_STACK_SPACING_BOX][0] : spacing_box[0],
       spacing_box[1] == undef ? tile_stack[TILE_STACK_SPACING_BOX][1] : spacing_box[1],
     ],
-    tile_stack[3],
-    tile_stack[4],
-    tile_stack[5],
+  tile_stack[3],
+  tile_stack[4],
+  tile_stack[5],
   ]];
 
 // rewrite this accumulated sum
 function map_tile_stacks_spacing_boxes(tile_stacks) = [for(tile_stack=tile_stacks) tile_stack[TILE_STACK_SPACING_BOX]];
 
 function map_tile_stack_grid_spacing_boxes(tile_stack_grid) = [for(tile_stacks=tile_stack_grid) map_tile_stacks_spacing_boxes(tile_stacks)];
-
-module print_grid(grid) {
-  max_y = grid_height(grid);
-  for(i=[max_y-1:-1:0]) {
-    echo(i, grid_row(grid, i));
-  }
-  echo("");
-}
-
-module print_grid_code_orientation(grid) {
-  for(x=[0:len(grid)-1]) {
-    echo(grid[x]);
-  }
-  echo("");
-}
 
 module positioned_tile_stack(positioned_tile_stack) {
   translate(positioned_tile_stack[POSITION]) {
