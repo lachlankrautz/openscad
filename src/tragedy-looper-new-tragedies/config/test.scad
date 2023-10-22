@@ -1,5 +1,11 @@
 include <./token-config.scad>
 
+// is_grid
+assert(is_grid([1, 2, 3, 4]) == false, "is not grid");
+assert(is_grid([[1, 2, 3], 4]) == false, "is not grid");
+assert(is_grid("not a grid") == false, "is not grid");
+assert(is_grid([[1, 2], [3, 4]]), "is grid");
+
 // flatten
 assert(flatten([[1, 2, 3], [4, 5, 6]]) == [1, 2, 3, 4, 5, 6], "flatten list of lists");
 
@@ -14,6 +20,43 @@ assert(fill(5, 3) == [5, 5, 5], "fill list");
 
 // fill_grid
 assert(fill_grid(5, [2, 2]) == [[5, 5], [5, 5]], "fill grid");
+
+// fill_grid_gaps
+assert(fill_grid_gaps(10, [[1, 2, 3], [1], [1, 2]]) == [[1, 2, 3], [1, 10, 10], [1, 2, 10]], "fill grid gaps");
+
+// map_dimension_grid_to_uniform_spacing
+assert(map_dimension_grid_to_uniform_spacing([
+    [[1, 7], [2, 4], [1, 1]],
+    [[1, 6], [3, 4]],
+    [[3, 4], [2, 5]],
+    [[2, 4], [6, 3]],
+    [[5, 2], [5, 2]],
+  ]) == [
+    [[2, 7], [2, 5], [2, 1]],
+    [[3, 7], [3, 5], [3, 1]],
+    [[3, 7], [3, 5], [3, 1]],
+    [[6, 7], [6, 5], [6, 1]],
+    [[5, 7], [5, 5], [5, 1]],
+  ], "uniform spacing");
+
+// map_dimension_grid_to_cum_sum
+assert(map_dimension_grid_to_cum_sum([
+    [[1, 7], [2, 4], [1, 1]],
+    [[1, 6], [3, 4]],
+    [[3, 4], [2, 5]],
+    [[2, 4], [6, 3]],
+    [[5, 2], [5, 2]],
+]) == [
+    [[1, 7], [3, 4], [4, 1]],
+    [[1, 13], [4, 8], [4, 1]],
+    [[3, 17], [5, 13], [5, 1]],
+    [[2, 21], [8, 16], [8, 1]],
+    [[5, 23], [10, 18], [10, 1]],
+], "cumulative sum");
+
+// TODO test tile stacks to dimensions
+// map_tile_stacks_grid_to_tile_dimensions
+assert(map_tile_stacks_grid_to_tile_dimensions([]) == [], "tile stacks to dimensions");
 
 // pick_list
 assert(pick_list(undef, LENGTH) == [], "pick x");
@@ -37,6 +80,20 @@ assert(grid_biggest_row([[1, 2, 3], [1, 2], [1, 2, 3, 4, 5]]) == 3, "biggest row
 // grid_row
 assert(grid_row([[1, 2, 3], [1, 2], [1, 2, 3, 4, 5]], 1) == [2, 2, 2], "grid row");
 assert(grid_row([[1, 2, 3], [1, 2], [1, 2, 3, 4, 5]], 2) == [3, undef, 3], "grid row");
+
+
+// grid_rows
+assert(grid_rows([
+    [1, 2, 3],
+    [1, 2],
+    [1, 2, 3, 4, 5]
+  ]) == [
+    [1, 1, 1],
+    [2, 2, 2],
+    [3, undef, 3],
+    [undef, undef, 4],
+    [undef, undef, 5]
+  ], "grid rows");
 
 // grid_column
 assert(grid_column([[1, 2, 3], [1, 2], [1, 2, 3, 4, 5]], 2) == [1, 2, 3, 4, 5], "grid column");
