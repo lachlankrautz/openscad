@@ -1,5 +1,7 @@
 include <./token-config.scad>
 
+wall_thickness = 2;
+
 // is_grid
 assert(is_grid([1, 2, 3, 4]) == false, "is not grid");
 assert(is_grid([[1, 2, 3], 4]) == false, "is not grid");
@@ -47,11 +49,11 @@ assert(map_dimension_grid_to_cum_sum([
     [[2, 4], [6, 3]],
     [[5, 2], [5, 2]],
 ]) == [
-    [[1, 7], [3, 4], [4, 1]],
-    [[1, 13], [4, 8], [4, 1]],
-    [[3, 17], [5, 13], [5, 1]],
-    [[2, 21], [8, 16], [8, 1]],
-    [[5, 23], [10, 18], [10, 1]],
+    [[2, 7], [2, 12], [2, 13]],
+    [[5, 7], [5, 12], [5, 13]],
+    [[8, 7], [8, 12], [8, 13]],
+    [[14, 7], [14, 12], [14, 13]],
+    [[19, 7], [19, 12], [19, 13]],
 ], "cumulative sum");
 
 // TODO test tile stacks to dimensions
@@ -115,6 +117,9 @@ assert(tile_stack_height(["tile_stack", ["rectangle", [5, 10], 2], 4, [5, 10], "
 // sum_walls_in_list
 assert(sum_walls_in_list([1, 1, 1, 1], 2) == 10, "walls in list");
 
+// wall_index_offset
+assert(wall_index_offset([2, 3], 2) == [6, 8], "wall index offset");
+
 // map_tiles_to_tile_lengths
 assert(map_tiles_to_tile_lengths([["rectangle", [5, 10], 2],["rectangle", [5, 10], 2],]) == [5, 5], "map tiles to tile lengths");
 
@@ -143,4 +148,43 @@ assert(map_tile_stacks_to_spacing_box_lengths([["tile_stack", ["rectangle", [5, 
 assert(map_tile_stacks_to_spacing_box_widths([["tile_stack", ["rectangle", [5, 10], 2], 4, [5, 10]]]) == [10], "map tile stacks to spacing boxes");
 
 // make_positioned_tile_stacks_grid
-// TODO omg how though?
+assert(make_positioned_tile_stacks_grid([
+  [
+    ["tile_stack", ["rectangle", [5, 10], 2], 4, [5, 10]],
+    ["tile_stack", ["rectangle", [5, 10], 2], 4, [5, 10]],
+    ["tile_stack", ["rectangle", [5, 10], 2], 4, [5, 10]]
+  ],
+  [
+    ["tile_stack", ["rectangle", [5, 10], 2], 4, [5, 10]],
+    ["tile_stack", ["rectangle", [5, 10], 2], 4, [5, 10]],
+    ["tile_stack", ["rectangle", [5, 10], 2], 4, [5, 10]]
+  ],
+  [
+    ["tile_stack", ["rectangle", [5, 10], 2], 4, [5, 10]],
+    ["tile_stack", ["rectangle", [5, 10], 2], 4, [5, 10]],
+    ["tile_stack", ["rectangle", [5, 10], 2], 4, [5, 10]]
+  ],
+], wall_thickness) == [
+  [["positioned_tile_stack", ["rectangle", [5, 10], 2], 4, [5, 10], [0, 0], [0, 0], "top", undef], ["positioned_tile_stack", ["rectangle", [5, 10], 2], 4, [5, 10], [0, 10], [0, 1], "top", undef], ["positioned_tile_stack", ["rectangle", [5, 10], 2], 4, [5, 10], [0, 20], [0, 2], "top", undef]],
+  [["positioned_tile_stack", ["rectangle", [5, 10], 2], 4, [5, 10], [5, 0], [1, 0], "top", undef], ["positioned_tile_stack", ["rectangle", [5, 10], 2], 4, [5, 10], [5, 10], [1, 1], "top", undef], ["positioned_tile_stack", ["rectangle", [5, 10], 2], 4, [5, 10], [5, 20], [1, 2], "top", undef]],
+  [["positioned_tile_stack", ["rectangle", [5, 10], 2], 4, [5, 10], [10, 0], [2, 0], "top", undef], ["positioned_tile_stack", ["rectangle", [5, 10], 2], 4, [5, 10], [10, 10], [2, 1], "top", undef], ["positioned_tile_stack", ["rectangle", [5, 10], 2], 4, [5, 10], [10, 20], [2, 2], "top", undef]],
+], "make positioned tile stacks grid");
+
+// tile_stack_grid_box_size
+assert(tile_stack_grid_box_size([
+  [
+    ["tile_stack", ["rectangle", [5, 10], 2], 4, [5, 10]],
+    ["tile_stack", ["rectangle", [5, 10], 2], 4, [5, 10]],
+    ["tile_stack", ["rectangle", [5, 10], 2], 4, [5, 10]]
+  ],
+  [
+    ["tile_stack", ["rectangle", [5, 10], 2], 4, [5, 10]],
+    ["tile_stack", ["rectangle", [5, 10], 2], 4, [5, 10]],
+    ["tile_stack", ["rectangle", [5, 10], 2], 4, [5, 10]]
+  ],
+  [
+    ["tile_stack", ["rectangle", [5, 10], 2], 4, [5, 10]],
+    ["tile_stack", ["rectangle", [5, 10], 2], 4, [5, 10]],
+    ["tile_stack", ["rectangle", [5, 10], 2], 4, [5, 10]]
+  ],
+], wall_thickness) == [10, 10, 10], "tile stack grid box size");

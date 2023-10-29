@@ -44,12 +44,16 @@ TILE_STACK_COUNT = 2;
 //   tile_type(tile_type),
 //   stack_count(number),
 //   spacing_box([x, y]),
-//   position("top", "left", "bottom", "right", "centre"),
+//   position([x, y])
+//   index([x, y])
+//   orientation("top", "left", "bottom", "right", "centre"),
 //   ? cutout_map
 // ]
 TILE_STACK_SPACING_BOX = 3;
 TILE_STACK_POSITION = 4;
-TILE_STACK_CUTOUT_MAP = 5;
+TILE_STACK_INDEX = 5;
+TILE_STACK_ORIENTATION = 6;
+TILE_STACK_CUTOUT_MAP = 7;
 
 // type: cutout_map
 // [
@@ -164,7 +168,10 @@ let(
   max_row_widths_y=[for(row=grid_rows(solid_grid)) max(pick_list(row, WIDTH))]
 )
   [for(x=[0:len(solid_grid)-1])
-    [for(y=[0:len(solid_grid[0])-1]) [max_column_lengths_x[x], max_row_widths_y[y]]]];
+    [for(y=[0:len(solid_grid[0])-1]) [
+      max_column_lengths_x[x], 
+      max_row_widths_y[y]
+    ]]];
 
 // map a dimensions grid to cumulative sums
 // - each x is the total x offset along the row
@@ -174,11 +181,22 @@ function map_dimension_grid_to_cum_sum(dimensions_grid) =
 assert(is_grid(dimensions_grid), dimensions_grid)
 let(
   solid_grid=fill_grid_gaps([0, 0], dimensions_grid),
-  max_column_lengths_x=[for(column=solid_grid) cum_sum_list(pick_list(column, LENGTH))],
-  max_row_widths_y=[for(row=grid_rows(solid_grid)) cum_sum_list(pick_list(row, WIDTH))]
+  cum_sum_column_lengths_x=cum_sum_list([for(column=solid_grid) max(pick_list(column, LENGTH))]),
+  cum_sum_row_widths_y=cum_sum_list([for(row=grid_rows(solid_grid)) max(pick_list(row, WIDTH))])
 )
   [for(x=[0:len(solid_grid)-1])
-    [for(y=[0:len(solid_grid[0])-1]) [max_column_lengths_x[x][y], max_row_widths_y[y][x]]]];
+    [for(y=[0:len(solid_grid[x])-1]) [
+      cum_sum_column_lengths_x[x], 
+      cum_sum_row_widths_y[y]
+    ]]];
+
+function unshift_dimensions_grid(grid) =
+assert(is_grid(grid), grid)
+  [for(x=[0:len(grid)-1])
+    [for(y=[0:len(grid[x])-1]) [
+      x == 0 ? 0 : grid[x-1][y][LENGTH],
+      y == 0 ? 0 : grid[x][y-1][WIDTH],
+    ]]];
 
 // Map to just the given index of a list of arrays
 //
@@ -274,6 +292,14 @@ function tile_stack_height(tile_stack) = tile_stack[TILE_STACK_COUNT] * tile_sta
 function sum_walls_in_list(list, wall_thickness) = wall_thickness * (len(list) + 1);
 //echo("sum walls in list: ", sum_walls_in_list([1, 1, 1], 2));
 
+// get the [x, y] offset for wall thickness in a grid
+function wall_index_offset(index, wall_thickness) = 
+assert(is_list(index))
+[
+  wall_thickness * (index[LENGTH] + 1),
+  wall_thickness * (index[WIDTH] + 1),
+];
+
 // [tile, tile, tile] -> [x, x, x]
 function map_tiles_to_tile_lengths(tiles) = [for(tile=tiles) tile_length_x(tile)];
 
@@ -312,20 +338,36 @@ function map_tile_stacks_to_spacing_box_widths(tile_stacks) =
 let(tiles = map_tile_stacks_to_spacing_boxes(tile_stacks))
 pick_list(tiles, WIDTH);
 
+// [
+//   [tile_stack, tile_stack, tile_stack],
+//   [tile_stack, tile_stack, tile_stack],
+//   [tile_stack, tile_stack, tile_stack],
+// ] -> [x, y, z]
+function tile_stack_grid_box_size(tile_stacks_grid, wall_thickness) = 
+assert(is_grid(tile_stacks_grid), tile_stacks_grid)
+let(
+  solid_grid=fill_grid_gaps(["tile_stack", undef, 0], tile_stacks_grid),
+  dimension_grid=map_tile_stacks_grid_to_tile_dimensions(solid_grid),
+  cum_sum_grid=map_dimension_grid_to_cum_sum(dimension_grid),
+  max_size_x=(cum_sum_grid),
+  max_size_y=(cum_sum_grid),
+  max_cell=cum_sum_grid[max_size_x][max_size_y]
+) 
+[
+  max_cell[LENGTH],
+  max_cell[WIDTH],
+  // TODO find max height
+  10,
+];
+
 // [[tile_stack, tile_stack], [tile_stack, tile_stack]]
 // -> [[positioned_tile_stack, positioned_tile_stack], [positioned_tile_stack, positioned_tile_stack]]
 function make_positioned_tile_stacks_grid(tile_stacks_grid, wall_thickness) =
 let(
-  solid_tile_stacks_grid=fill_grid_gaps(["tile_stack", undef, 0], tile_stack_grid),
-  // TODO none of this is working but it is close...
-  tallest=5, //grid_biggest_column(tile_stacks_grid),
-  widest=5, // grid_biggest_row(tile_stacks_grid),
-  // spacing_grid=fill_grid(spacing_box, [widest, tallest]),
-  // cum_sum_rows_lengths=[for(row=tile_stacks_grid) cum_sum_list(pick_list(row, LENGTH))],
-  tile_stack_columns=tile_stacks_grid,
-  tile_stack_rows=[for(y=[0:tallest-1]) grid_row(tile_stacks_grid, y)],
-  // make a list of rows with cum sum length
-  // make a list of cols with cum sum width
+  solid_grid=fill_grid_gaps(["tile_stack", undef, 0], tile_stacks_grid),
+  dimension_grid=map_tile_stacks_grid_to_tile_dimensions(solid_grid),
+  spacing_boxes_grid=map_dimension_grid_to_uniform_spacing(dimension_grid),
+  positioning_grid=unshift_dimensions_grid(map_dimension_grid_to_cum_sum(dimension_grid)),
   cutout_map=undef
 )
   [for(x=[0:len(tile_stacks_grid)-1])
@@ -335,13 +377,31 @@ let(
       "positioned_tile_stack",
       tile_stack[TILE_STACK_TILE],
       tile_stack[TILE_STACK_COUNT],
-        [
-        undef, // TODO should be max length of all items in the column
-        undef, // TODO should be max width of all items in the row
-        ],
-      undef,
+      spacing_boxes_grid[x][y],
+      positioning_grid[x][y],
+      [x, y],
+      "top",
       cutout_map,
       ]]];
+
+module tile_stacks_grid_wells(tile_stacks_grid, wall_thickness) {
+  list = flatten(tile_stacks_grid);
+  for(tile_stack=list) {
+    let(
+      tile=tile_stack[TILE_STACK_TILE],
+      wall_offset=wall_index_offset(tile_stack[TILE_STACK_INDEX], wall_thickness),
+      position=tile_stack[TILE_STACK_POSITION] + wall_offset
+    ) {
+      translate(position) {
+        cube([
+          tile_length_x(tile),
+          tile_width_y(tile),
+          tile_stack_height(tile_stack)
+        ]);
+      }
+    }
+  }
+}
 
 //////////////////
 //////////////////
@@ -353,7 +413,7 @@ let(
 //   ["tile_stack", ["rectangle", [8, 14], 2], 4, [5, 10], "centre", 5],
 //   ["tile_stack", ["rectangle", [7, 15], 2], 4, [5, 10], "centre", 5],
 // ]) -> 8
-function max_tile_stack_length_x(tile_stacks) = max(map_tile_stack_length_x(tile_stacks));
+// function max_tile_stack_length_x(tile_stacks) = max(map_tile_stack_length_x(tile_stacks));
 //echo("max tile stack length: ", max_tile_stack_length_x([["tile_stack", ["rectangle", [5, 12], 2], 4, [5, 10], "centre", 5], ["tile_stack", ["rectangle", [8, 14], 2], 4, [5, 10], "centre", 5], ["tile_stack", ["rectangle", [7, 15], 2], 4, [5, 10], "centre", 5]]));
 
 // TODO is this used?
@@ -363,85 +423,79 @@ function max_tile_stack_length_x(tile_stacks) = max(map_tile_stack_length_x(tile
 //   ["tile_stack", ["rectangle", [8, 14], 2], 4, [5, 10], "centre", 5],
 //   ["tile_stack", ["rectangle", [7, 15], 2], 4, [5, 10], "centre", 5],
 // ]) -> 15
-function max_tile_stack_width_y(tile_stacks) = max(map_tile_stack_width_y(tile_stacks));
+// function max_tile_stack_width_y(tile_stacks) = max(map_tile_stack_width_y(tile_stacks));
 //echo("max tile stack width: ", max_tile_stack_width_y([["tile_stack", ["rectangle", [5, 12], 2], 4, [5, 10], "centre", 5], ["tile_stack", ["rectangle", [8, 14], 2], 4, [5, 10], "centre", 5], ["tile_stack", ["rectangle", [7, 15], 2], 4, [5, 10], "centre", 5]]));
 
 // TODO rename
 // TODO compose from better functions
 // TODO these are terrible
 // TODO it's atrocious
-function tile_stacks_length_x(tile_stacks, wall_thickness) = sum_walls_in_list(tile_stacks, wall_thickness)
-  + sum(map_tile_stack_spacing_box_length_x(tile_stacks));
+// function tile_stacks_length_x(tile_stacks, wall_thickness) = sum_walls_in_list(tile_stacks, wall_thickness)
+//   + sum(map_tile_stack_spacing_box_length_x(tile_stacks));
 //echo("tile stacks length x: ", tile_stacks_length_x([["tile_stack", ["rectangle", [5, 12], 2], 4, [5, 10], "centre", 5], ["tile_stack", ["rectangle", [8, 14], 2], 4, [5, 10], "centre", 5], ["tile_stack", ["rectangle", [7, 15], 2], 4, [5, 10], "centre", 5]], 2));
 
-function tile_stack_grid_length_x(tile_stack_grid, wall_thickness) = sum_walls_in_list(tile_stack_grid, wall_thickness)
-  + sum([for(tile_stacks=tile_stack_grid) tile_stacks_length_x(tile_stacks, wall_thickness)]);
+// function tile_stack_grid_length_x(tile_stack_grid, wall_thickness) = sum_walls_in_list(tile_stack_grid, wall_thickness)
+//   + sum([for(tile_stacks=tile_stack_grid) tile_stacks_length_x(tile_stacks, wall_thickness)]);
 
-function tile_stack_grid_width_y(tile_stack_grid, wall_thickness) = sum_walls_in_list(tile_stack_grid, wall_thickness) +
-  sum([for(tile_stacks=tile_stack_grid) max_tile_stack_width_y(tile_stacks)]);
+// function tile_stack_grid_width_y(tile_stack_grid, wall_thickness) = sum_walls_in_list(tile_stack_grid, wall_thickness) +
+//   sum([for(tile_stacks=tile_stack_grid) max_tile_stack_width_y(tile_stacks)]);
 
-function tile_stack_grid_height(tile_stack_grid, wall_thickness) = wall_thickness * 2
-  + max(map_tile_stack_height(flatten(tile_stack_grid)));
-
-function tile_stack_grid_box_size(tile_stack_grid, wall_thickness) = [
-  tile_stack_grid_length_x(tile_stack_grid, wall_thickness),
-  tile_stack_grid_width_y(tile_stack_grid, wall_thickness),
-  tile_stack_grid_height(tile_stack_grid, wall_thickness),
-  ];
+// function tile_stack_grid_height(tile_stack_grid, wall_thickness) = wall_thickness * 2
+//   + max(map_tile_stack_height(flatten(tile_stack_grid)));
 
 //function position_grid(grid) = let()
 //  [for(y=[0:len(grid)-1]) [for(x=[0:len(grid[y])]) [[x, y], grid[y][x]]]];
 
 // [tile, [2, 3, 5], "top", []] -> [tile_stack, tile_stack, tile_stack]
-function make_tile_stacks(tile, stack_counts, position, cutout_map) = [for(stack_count=stack_counts) [
-  "tile_stack",
-  tile,
-    [
-    tile_length_x(tile),
-    tile_width_y(tile),
-    ],
-  stack_count,
-  position,
-  cutout_map,
-  ]];
+// function make_tile_stacks(tile, stack_counts, position, cutout_map) = [for(stack_count=stack_counts) [
+//   "tile_stack",
+//   tile,
+//     [
+//     tile_length_x(tile),
+//     tile_width_y(tile),
+//     ],
+//   stack_count,
+//   position,
+//   cutout_map,
+//   ]];
 
-function make_tile_stacks_spacing_box(tile_stacks, centre_stacks_length_x, centre_stacks_width_y) = [
-    centre_stacks_length_x
-    ? max_tile_stack_length_x(tile_stacks)
-    : undef,
-    centre_stacks_width_y
-    ? max_tile_stack_width_y(tile_stacks)
-    : undef,
-  ];
+// function make_tile_stacks_spacing_box(tile_stacks, centre_stacks_length_x, centre_stacks_width_y) = [
+//     centre_stacks_length_x
+//     ? max_tile_stack_length_x(tile_stacks)
+//     : undef,
+//     centre_stacks_width_y
+//     ? max_tile_stack_width_y(tile_stacks)
+//     : undef,
+//   ];
 
-function space_tile_stacks(tile_stacks, centre_stacks_length_x, centre_stacks_width_y) =
-let(spacing_box=make_tile_stacks_spacing_box(tile_stacks, centre_stacks_length_x, centre_stacks_width_y))
-  [for(tile_stack=tile_stacks) [
-  tile_stack[0],
-  tile_stack[1],
-    [
-      spacing_box[0] == undef ? tile_stack[TILE_STACK_SPACING_BOX][0] : spacing_box[0],
-      spacing_box[1] == undef ? tile_stack[TILE_STACK_SPACING_BOX][1] : spacing_box[1],
-    ],
-  tile_stack[3],
-  tile_stack[4],
-  tile_stack[5],
-  ]];
+// function space_tile_stacks(tile_stacks, centre_stacks_length_x, centre_stacks_width_y) =
+// let(spacing_box=make_tile_stacks_spacing_box(tile_stacks, centre_stacks_length_x, centre_stacks_width_y))
+//   [for(tile_stack=tile_stacks) [
+//   tile_stack[0],
+//   tile_stack[1],
+//     [
+//       spacing_box[0] == undef ? tile_stack[TILE_STACK_SPACING_BOX][0] : spacing_box[0],
+//       spacing_box[1] == undef ? tile_stack[TILE_STACK_SPACING_BOX][1] : spacing_box[1],
+//     ],
+//   tile_stack[3],
+//   tile_stack[4],
+//   tile_stack[5],
+//   ]];
 
 // rewrite this accumulated sum
-function map_tile_stacks_spacing_boxes(tile_stacks) = [for(tile_stack=tile_stacks) tile_stack[TILE_STACK_SPACING_BOX]];
+// function map_tile_stacks_spacing_boxes(tile_stacks) = [for(tile_stack=tile_stacks) tile_stack[TILE_STACK_SPACING_BOX]];
 
-function map_tile_stack_grid_spacing_boxes(tile_stack_grid) = [for(tile_stacks=tile_stack_grid) map_tile_stacks_spacing_boxes(tile_stacks)];
+// function map_tile_stack_grid_spacing_boxes(tile_stack_grid) = [for(tile_stacks=tile_stack_grid) map_tile_stacks_spacing_boxes(tile_stacks)];
 
-module positioned_tile_stack(positioned_tile_stack) {
-  translate(positioned_tile_stack[POSITION]) {
-    tile_stack(positioned_tile_stack[ITEM]);
-  }
-}
+// module positioned_tile_stack(positioned_tile_stack) {
+//   translate(positioned_tile_stack[POSITION]) {
+//     tile_stack(positioned_tile_stack[ITEM]);
+//   }
+// }
 
-module tile_stack(tile_stack) {
-  cube([10, 10, 10]);
-}
+// module tile_stack(tile_stack) {
+//   cube([10, 10, 10]);
+// }
 
 //heart_tile_row = space_tile_stacks(concat(make_tile_stacks(heart_tile, [5, 5, 5, 5]), make_tile_stacks(large_heart_tile, [5, 5])), false, true);
 //demo_grid = [heart_tile_row, heart_tile_row];
