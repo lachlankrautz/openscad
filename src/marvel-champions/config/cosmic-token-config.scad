@@ -9,6 +9,13 @@ tile_size = [
   3,
 ];
 
+// variant tile that is slightly taller
+tall_tile_size = [
+  17,
+  17,
+  3.3,
+];
+
 slim_tile_size = [
   tile_size[0],
   tile_size[1],
