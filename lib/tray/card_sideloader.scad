@@ -10,7 +10,7 @@ module card_sideloader(card_size, card_count, wall_thickness, padding, bleed = 0
     _rounding = 5,
     stack_height = card_stack_height(card_count),
     padded_card_box_size = [
-      stack_height + padding,
+      stack_height + padding / 2, // stacked cards can compress and don't need as much padding
       card_size[1] + padding,
       card_size[0] + padding,
     ],
