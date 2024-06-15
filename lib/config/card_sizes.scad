@@ -7,8 +7,17 @@ mini_euro_card_size = [
 ];
 
 /**
+ * Mini european size eg The crew tasks
+ * Sleeved with Mayday (blue)
+ */
+mini_euro_sleeved_card_size = [
+  47,
+  70,
+];
+
+/**
  * Standard card size eg MTG
- * Sleeved with either gamegenic gray
+ * Sleeved with either gamegenic gray or TODO find mayday colour and double check size
  */
 standard_sleeved_card_size = [
   67,
