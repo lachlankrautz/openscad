@@ -122,7 +122,7 @@ function flatten(outter_vector) = [for(inner_vector=outter_vector) for(item=inne
 // sum elements of an array
 // sum([1, 2, 3, 4] => 10
 function sum(array) =
-  assert(is_list(array), array)
+  // assert(is_list(array), array)
   len(array) == 0
     ? 0
     : [for(item=array) 1] * array;
@@ -144,13 +144,13 @@ function fill_grid(item, dimensions) = [for(x=[0:dimensions[LENGTH]-1]) [for(y=[
 // fill a grid's empty spaces with item
 // should leave all lists in a grid the same length
 function fill_grid_gaps(item, grid) = 
-assert(is_grid(grid), grid)
-let(max_size_x=grid_biggest_row(grid), max_size_y=grid_biggest_column(grid))
-  [for(x=[0:max_size_x-1]) [for(y=[0:max_size_y-1]) grid[x][y] == undef ? item : grid[x][y]]];
+// assert(is_grid(grid), grid)
+  let(max_size_x=grid_biggest_row(grid), max_size_y=grid_biggest_column(grid))
+    [for(x=[0:max_size_x-1]) [for(y=[0:max_size_y-1]) grid[x][y] == undef ? item : grid[x][y]]];
 
 // map a grid of tile stacks to the dimensions of those tiles
 function map_tile_stacks_grid_to_tile_dimensions(tile_stacks_grid) =
-assert(is_grid(tile_stacks_grid), tile_stacks_grid)
+// assert(is_grid(tile_stacks_grid), tile_stacks_grid)
   [for(column=tile_stacks_grid)
     [for(tile_stack=column) 
     let(tile=tile_stack[TILE_STACK_TILE]) 
@@ -161,7 +161,7 @@ assert(is_grid(tile_stacks_grid), tile_stacks_grid)
 // - each y is the max width of each y in the row
 // this evenly spaces out all cells the in the grid
 function map_dimension_grid_to_uniform_spacing(dimensions_grid) =
-assert(is_grid(dimensions_grid), dimensions_grid)
+// assert(is_grid(dimensions_grid), dimensions_grid)
 let(
   solid_grid=fill_grid_gaps([0, 0], dimensions_grid),
   max_column_lengths_x=[for(column=solid_grid) max(pick_list(column, LENGTH))],
@@ -178,7 +178,7 @@ let(
 // - each y is the total y offset along the column
 // this absolutely positions items within a grid
 function map_dimension_grid_to_cum_sum(dimensions_grid) =
-assert(is_grid(dimensions_grid), dimensions_grid)
+// assert(is_grid(dimensions_grid), dimensions_grid)
 let(
   solid_grid=fill_grid_gaps([0, 0], dimensions_grid),
   cum_sum_column_lengths_x=cum_sum_list([for(column=solid_grid) max(pick_list(column, LENGTH))]),
@@ -191,7 +191,7 @@ let(
     ]]];
 
 function unshift_dimensions_grid(grid) =
-assert(is_grid(grid), grid)
+// assert(is_grid(grid), grid)
   [for(x=[0:len(grid)-1])
     [for(y=[0:len(grid[x])-1]) [
       x == 0 ? 0 : grid[x-1][y][LENGTH],
@@ -232,7 +232,8 @@ function grid_biggest_column(matrix) = max([for(x=[0:len(matrix)-1]) len(matrix[
 // ]) => 2
 // grid_biggest_row([]) => 0
 function grid_biggest_row(grid) =
-assert(is_grid(grid), grid) len(grid);
+// assert(is_grid(grid), grid)
+  len(grid);
 
 // get a grid row as an array
 // grid_row([
@@ -240,12 +241,12 @@ assert(is_grid(grid), grid) len(grid);
 //   [ [3, 3], [4, 4] ]
 // ], 1) => [ [2, 2], [4, 4] ]
 function grid_row(grid, row_y) =
-assert(is_grid(grid), grid)
-[for(col=grid) col[row_y]];
+// assert(is_grid(grid), grid)
+  [for(col=grid) col[row_y]];
 
 // get a grid as a list of rows instead of a list of columns
 function grid_rows(grid) =
-assert(is_grid(grid), grid)
+// assert(is_grid(grid), grid)
 let(max_y=grid_biggest_column(grid))
   [for(row_y=[0:max_y-1]) grid_row(grid, row_y)];
 
@@ -259,7 +260,7 @@ let(max_y=grid_biggest_column(grid))
 //   [ [3, 3], [4, 4], [5, 5], [6, 6] ]
 // ], 0) => [ [1, 1], [2, 2], undef, undef]
 function grid_column(grid, col) =
-assert(is_grid(grid), grid)
+// assert(is_grid(grid), grid)
 let(height=grid_biggest_column(grid)) [for(i=[0:height-1]) grid[col][i]];
 
 // get the length(x) of a tile type
@@ -344,7 +345,7 @@ pick_list(tiles, WIDTH);
 //   [tile_stack, tile_stack, tile_stack],
 // ] -> [x, y, z]
 function tile_stack_grid_box_size(tile_stacks_grid, wall_thickness) = 
-assert(is_grid(tile_stacks_grid), tile_stacks_grid)
+// assert(is_grid(tile_stacks_grid), tile_stacks_grid)
 let(
   solid_grid=fill_grid_gaps(["tile_stack", undef, 0], tile_stacks_grid),
   dimension_grid=map_tile_stacks_grid_to_tile_dimensions(solid_grid),
@@ -374,15 +375,17 @@ let(
     [for(y=[0:len(tile_stacks_grid[x])-1])
     let(tile_stack=tile_stacks_grid[x][y])
       [
-      "positioned_tile_stack",
-      tile_stack[TILE_STACK_TILE],
-      tile_stack[TILE_STACK_COUNT],
-      spacing_boxes_grid[x][y],
-      positioning_grid[x][y],
-      [x, y],
-      "top",
-      cutout_map,
-      ]]];
+        "positioned_tile_stack",
+        tile_stack[TILE_STACK_TILE],
+        tile_stack[TILE_STACK_COUNT],
+        spacing_boxes_grid[x][y],
+        positioning_grid[x][y],
+        [x, y],
+        "top",
+        cutout_map,
+      ]
+    ]
+  ];
 
 module tile_stacks_grid_wells(tile_stacks_grid, wall_thickness) {
   list = flatten(tile_stacks_grid);

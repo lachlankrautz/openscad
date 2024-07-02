@@ -6,6 +6,7 @@ base_game_fear_card_count = 15;
 base_game_minor_power_count = 36;
 base_game_blight_count = 2;
 
+base_and_branch_spirit_card_count = 60;
 horizons_spirit_card_count = 25;
 
 branch_minor_power_count = 31;
