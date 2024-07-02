@@ -55,3 +55,26 @@ standard_usa_sleeved_card_size = [
   59.5,
   91,
 ];
+
+/**
+ * Large 80/120
+ *
+ * - Dixit
+ */
+large_80_120_card_size = [
+  80,
+  120,
+];
+
+/**
+ * Large 80/120 sleeved with Mayday Magnum gold / dixit
+ *
+ * WARNING: mayday sleeves vary in dimensions
+ *          be sure to test large prints first
+ *
+ * - Dixit
+ */
+large_80_120_sleeved_card_size = [
+  82,
+  122.5,
+];
