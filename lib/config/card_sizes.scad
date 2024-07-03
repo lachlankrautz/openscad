@@ -1,9 +1,18 @@
+card_thickness = 0.30;
+card_stack_height = function(card_count) card_count * card_thickness;
+
+sleeved_card_thickness = 0.65;
+sleeved_card_stack_height = function(card_count) card_count * sleeved_card_thickness;
+
+function card_box(card_size) = 5 * 5;
+
 /**
  * Mini european size eg The crew tasks
  */
 mini_euro_card_size = [
   44,
   68,
+  card_stack_height,
 ];
 
 /**
@@ -13,6 +22,16 @@ mini_euro_card_size = [
 mini_euro_sleeved_card_size = [
   47,
   70,
+  sleeved_card_stack_height,
+];
+
+/**
+ * Standard card size eg MTG
+ */
+standard_card_size = [
+  63,
+  88,
+  card_stack_height,
 ];
 
 /**
@@ -22,14 +41,7 @@ mini_euro_sleeved_card_size = [
 standard_sleeved_card_size = [
   67,
   91.5,
-];
-
-/**
- * Standard card size eg MTG
- */
-standard_card_size = [
-  63,
-  88,
+  sleeved_card_stack_height,
 ];
 
 /**
@@ -39,7 +51,8 @@ standard_card_size = [
  */
 standard_usa_card_size = [
   56,
-  87
+  87,
+  card_stack_height,
 ];
 
 /**
@@ -54,6 +67,7 @@ standard_usa_card_size = [
 standard_usa_sleeved_card_size = [
   59.5,
   91,
+  sleeved_card_stack_height,
 ];
 
 /**
@@ -64,6 +78,7 @@ standard_usa_sleeved_card_size = [
 large_80_120_card_size = [
   80,
   120,
+  card_stack_height,
 ];
 
 /**
@@ -77,4 +92,5 @@ large_80_120_card_size = [
 large_80_120_sleeved_card_size = [
   82,
   122.5,
+  sleeved_card_stack_height,
 ];
