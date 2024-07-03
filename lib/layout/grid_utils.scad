@@ -27,16 +27,6 @@ function make_grid_of(matrix, item) = [for(x=[0:matrix[0]-1]) [for(y=[0:matrix[1
 // Return a single row from a grid
 function grid_row(grid, row) = [for(i=[0:len(grid)-1]) grid[i][row]];
 
-// Map to just the given index of a list of arrays
-//
-// list = [
-//   [1, 2],
-//   [3, 4],
-// ];
-// pick_list(list, 0) -> [1, 3]
-// pick_list(list, 1) -> [2, 4]
-function pick_list(list, index) = [for(i=[0:len(list)-1]) list[i][index]];
-
 // Map to just the given index of a grid row
 //
 // grid = [
