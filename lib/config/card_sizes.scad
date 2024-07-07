@@ -83,6 +83,7 @@ standard_sleeved_card_size = [
  * Standard USA card size
  * - Bohnanza
  * - Food Chain Magnate
+ * - The Crew
  */
 standard_usa_card_size = [
   56,
@@ -98,6 +99,7 @@ standard_usa_card_size = [
  *
  * - Bohnanza
  * - Food Chain Magnate
+ * - The Crew
  */
 standard_usa_sleeved_card_size = [
   59.5,

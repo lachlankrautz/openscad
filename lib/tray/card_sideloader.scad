@@ -6,6 +6,12 @@ include <../util/util_functions.scad>
 // 250gsm -> 0.23mm
 default_indent_depth = 0.35;
 
+// possible minimumn possible wall thickness
+default_wall_thickness = 1.5;
+
+// aiming for snug fit
+default_card_padding = 2; 
+
 function card_stack_padding_size(padding) = [
   // stacked cards can compress and do not need padding
   0, 
@@ -30,15 +36,19 @@ function sideloader_box_total_wall_thickness_size(list_length, wall_thickness) =
 
 function sideloader_natural_box_size(
   card_stack_list, 
-  display_indent_length, 
+  create_display_indent,
+  display_indent_depth, 
   wall_thickness,
   padding
 ) = 
   assert(is_card_stack_list(card_stack_list), card_stack_list)
+  assert(is_bool(create_display_indent), create_display_indent)
+  assert(is_num(display_indent_depth), display_indent_depth)
   let(
+    _display_indent_depth = create_display_indent ? display_indent_depth : 0,
     padded_cube_size_list = [for(card_stack=card_stack_list) sideloader_card_cube_size(card_stack, padding)],
     total_wall_size = sideloader_box_total_wall_thickness_size(len(card_stack_list), wall_thickness),
-    indent_size = [display_indent_length, 0, 0],
+    indent_size = [_display_indent_depth, 0, 0],
     combined_padded_cube_size_list = [
       sum(pick_list(padded_cube_size_list, 0)),
       max(pick_list(padded_cube_size_list, 1)),
@@ -52,13 +62,22 @@ function sideloader_natural_box_size(
 function sideloader_box_size(
   card_stack_list, 
   fit_to_box_size, 
-  display_indent_length, 
+  create_display_indent,
+  display_indent_depth, 
   wall_thickness,
   padding
 ) = 
   assert(is_card_stack_list(card_stack_list), card_stack_list)
+  assert(is_bool(create_display_indent), create_display_indent)
+  assert(is_num(display_indent_depth), display_indent_depth)
   let(
-    natural_box_size = sideloader_natural_box_size(card_stack_list, display_indent_length, wall_thickness, padding)
+    natural_box_size = sideloader_natural_box_size(
+      card_stack_list, 
+      create_display_indent, 
+      display_indent_depth, 
+      wall_thickness, 
+      padding
+    )
   )
   [
     max(natural_box_size[0], fit_to_box_size[2]),
@@ -66,50 +85,36 @@ function sideloader_box_size(
     max(natural_box_size[2], fit_to_box_size[0]),
   ];
 
-function sideloader_card_stack_cutout_size(
-  card_stack,
-  display_indent_length, 
-  wall_thickness,
-  padding,
-) = 
-  assert(is_card_stack(card_stack), card_stack)
-  let(
-    padded_card_stack_size = sideloader_card_cube_size(card_stack, padding),
-    card_cutout=[
-      padded_card_stack_size[0],
-      padded_card_stack_size[1],
-      padded_card_stack_size[2] + wall_thickness + $bleed,
-    ]
-  )
-  card_cutout;
-
 function sideloader_cutout_with_offsets_list(
   card_stack_list, 
-  fit_to_box_size,
-  display_indent_length, 
+  create_display_indent,
+  display_indent_depth, 
   wall_thickness,
   padding
 ) = 
   assert(is_card_stack_list(card_stack_list), card_stack_list)
-  assert(is_cube_size(fit_to_box_size), fit_to_box_size)
+  assert(is_bool(create_display_indent), create_display_indent)
+  assert(is_num(display_indent_depth), display_indent_depth)
   let(
-    natural_box_size = sideloader_natural_box_size(card_stack_list, display_indent_length, wall_thickness, padding),
-    box_size = sideloader_box_size(card_stack_list, fit_to_box_size, display_indent_length, wall_thickness, padding), 
-    cutout_list = [for(card_stack=card_stack_list) sideloader_card_stack_cutout_size(
-      card_stack,
-      display_indent_length,
-      wall_thickness,
+    natural_box_size = sideloader_natural_box_size(
+      card_stack_list, 
+      create_display_indent, 
+      display_indent_depth,
+      wall_thickness, 
       padding
-    )],
+    ),
+    cutout_clearance_height = wall_thickness + $bleed,
+
+    padded_card_stack_list = [for(card_stack=card_stack_list) sideloader_card_cube_size(card_stack, padding)],
+    cutout_list = [for(i=list_range(padded_card_stack_list)) padded_card_stack_list[i] + [0, 0, cutout_clearance_height]],
     spacing_offset_list = unshift(cum_sum_list(add_to_each(pick_list(cutout_list, 0), wall_thickness)), 0),
     cutout_with_offset_list = [for(i=list_range(cutout_list)) 
       [
         cutout_list[i],
         [
-          box_size[0] - natural_box_size[0] // stick to the indent face (where the image will be)
-            + spacing_offset_list[i], // space out each cutout in the list
-          (box_size[1] - natural_box_width(cutout_list[i], wall_thickness)) / 2, // in the middle
-          box_size[2] - cutout_list[i][2], // stick to the top
+          spacing_offset_list[i], // space out each cutout in the list
+          (natural_box_size[1] - natural_box_width(cutout_list[i], wall_thickness)) / 2, // in the middle
+          natural_box_size[2] - natural_box_height(padded_card_stack_list[i], wall_thickness), // stick to the top
         ]
       ]
     ]
@@ -134,6 +139,25 @@ function natural_box_width(size, wall_thickness) =
   assert(is_num(wall_thickness), wall_thickness)
   size[1] + wall_thickness * 2;
 
+function natural_box_height(size, wall_thickness) = 
+  assert(is_cube_size(size), size)
+  assert(is_num(wall_thickness), wall_thickness)
+  size[2] + wall_thickness * 2;
+
+function is_alignment(value) = value == "centre" || value == "left" || value == "right";
+
+function get_cutout_width_offset_with_alignment(box_size, natural_box_size, alignment) = 
+  assert(is_cube_size(box_size), box_size)
+  assert(is_cube_size(natural_box_size), natural_box_size)
+  assert(is_alignment(alignment), alignment)
+  alignment == "centre" 
+    ? (box_size[1] - natural_box_size[1]) / 2
+    : alignment == "left"
+      ? 0
+      : alignment == "right"
+        ? box_size[1] - natural_box_size[1]
+          : undef;
+
 module card_sideloader_stacked(
   card_stack_list,
 
@@ -144,36 +168,57 @@ module card_sideloader_stacked(
   create_access_cutout = false,
 
   fit_to_box_size = [0, 0, 0],
+  fit_width_alignment = "centre",
 
-  wall_thickness = $wall_thickness,
-  padding = $padding,
+  wall_thickness = default_wall_thickness,
+  padding = default_card_padding,
 ) {
   assert(is_card_stack_list(card_stack_list), card_stack_list);
+  assert(is_alignment(fit_width_alignment), fit_width_alignment);
   let(
     cutout_depth = 20,
     _rounding = 5,
-    _display_indent_depth = create_display_indent ? display_indent_depth : 0,
 
-    natural_box_size = sideloader_natural_box_size(card_stack_list, _display_indent_depth, wall_thickness, padding),
-    box_size = sideloader_box_size(card_stack_list, fit_to_box_size, _display_indent_depth, wall_thickness, padding), 
-    cutout_with_offset_list = sideloader_cutout_with_offsets_list(
+    natural_box_size = sideloader_natural_box_size(
       card_stack_list, 
-      fit_to_box_size,
-      _display_indent_depth, 
+      create_display_indent, 
+      display_indent_depth, 
       wall_thickness, 
       padding
     ),
-    smallest_cutout_with_offset = smallest_cutout_with_offset(cutout_with_offset_list)
+    box_size = sideloader_box_size(card_stack_list, fit_to_box_size, create_display_indent, display_indent_depth, wall_thickness, padding), 
+    fit_box_cutout_adjustment = [
+      box_size[0] - natural_box_size[0], // stick to the indent face (where the image will be)
+      get_cutout_width_offset_with_alignment(box_size, natural_box_size, fit_width_alignment),
+      box_size[2] - natural_box_size[2], // stick to the top
+    ],
+    cutout_with_offset_list = sideloader_cutout_with_offsets_list(
+      card_stack_list, 
+      create_display_indent, 
+      display_indent_depth, 
+      wall_thickness, 
+      padding
+    ),
+
+    // access cutout
+    smallest_cutout_with_offset = smallest_cutout_with_offset(cutout_with_offset_list),
+    access_cutout_width = natural_box_width(smallest_cutout_with_offset[0], wall_thickness)/2,
+    access_cutout_offset = (natural_box_size[1] - access_cutout_width) / 2
   ) {
+    // echo("fit box adjustment", fit_box_cutout_adjustment);
     difference() {
       // box
       rounded_cube(box_size, $rounding=1);
 
       // card cutouts
       translate([wall_thickness, wall_thickness, wall_thickness]) {
-        for (item=cutout_with_offset_list) let(item_cutout=item[0], item_offset=item[1]) {
-          translate(item_offset) {
-            cube(item_cutout);
+        // adjust for fit box size difference
+        translate(fit_box_cutout_adjustment) {
+          for (item=cutout_with_offset_list) let(item_cutout=item[0], item_offset=item[1]) {
+            echo("offset: ", item_offset);
+            translate(item_offset) {
+              cube(item_cutout);
+            }
           }
         }
       }
@@ -203,15 +248,14 @@ module card_sideloader_stacked(
       if (create_access_cutout) {
         translate([
           box_size[0] + $bleed,
-          box_size[1]/4
-            + smallest_cutout_with_offset[1][1] / 2, 
+          access_cutout_offset + fit_box_cutout_adjustment[1],
           box_size[2] - cutout_depth
         ]) {
           rotate([0, -90, 0]) {
             rounded_cube(
               [
                 cutout_depth + _rounding,
-                natural_box_width(smallest_cutout_with_offset[0], wall_thickness)/2,
+                access_cutout_width,
                 box_size[0] + $bleed * 2,
               ],
               flat_top=true,
@@ -232,8 +276,8 @@ module card_sideloader(
   display_indent_margin = 2,
   create_access_cutout = false,
   fit_to_box_size = [0, 0, 0],
-  wall_thickness = $wall_thickness,
-  padding = $padding,
+  wall_thickness = default_wall_thickness,
+  padding = default_card_padding,
 ) {
   card_sideloader_stacked(
     [card_stack],
