@@ -210,13 +210,13 @@ function pick_list(list, index) = list == undef || len(list) == 0
   ? []
   : [for(i=[0:len(list)-1]) list[i][index]];
 
-// slice an array
-// slice([1, 2, 3, 4], 0, 2) => [1, 2, 3]
-function slice(array, start, end) = [for(i=[start:end]) array[i]];
+// "slice" function originally defined here has
+// moved or graduated to util_functions.scad because it was 
+// generally good
 
-// cumulatively sum a list
-// [1, 2, 3] -> [1, 3, 6]
-function cum_sum_list(list) = [for(i=[0:len(list)-1]) sum(slice(list, 0, i))];
+// "cum_sum_list" function originally defined here has
+// moved or graduated to util_functions.scad because it was 
+// generally good
 
 // get the size of the tallest collumn
 // grid_biggest_column([

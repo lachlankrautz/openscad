@@ -5,8 +5,10 @@ include <../../lib/config/card_sizes.scad>
 
 $fn = 50;
 
-card_sideloader(
-  [standard_sleeved_card_size, challenge_card_count],
+challenge_card_stack = [standard_sleeved_card_size, challenge_card_count];
+
+card_sideloader_stacked(
+  [challenge_card_stack],
   create_display_indent=true,
   create_access_cutout=true,
   wall_thickness=wall_thickness,
