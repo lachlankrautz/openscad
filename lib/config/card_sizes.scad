@@ -1,5 +1,10 @@
 include <./assert_helpers.scad>
 
+// TODO collect stack heights of many more sizes and ensure the sizing functions
+//      actually fit the known data
+//      currently the stacks get too loose at high numbers and nearly too tight
+//      at lower numbers
+
 // TODO this value for non sleeved cards is a placeholder
 //      do not rely on it
 card_thickness = 0.30;
