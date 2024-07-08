@@ -16,9 +16,11 @@ card_border_size = [
   card_stack_height + $lid_height - $bleed,
 ];
 
+default_trapezoid_inset = 1;
+
 card_border_offset = [
   $wall_thickness + length_tolerance,
-  $trapezoid_inset + 10,
+  default_trapezoid_inset + 10,
   0,
 ];
 card_cutout_offset = card_border_offset + [
@@ -43,7 +45,13 @@ rotate([0, 180, 0]) {
         }
 
         translate(card_border_offset) {
-          rounded_cube(card_border_size, flat=true, hollow=true, $rounding=1);
+          rounded_cube(
+            card_border_size, 
+            flat=true, 
+            hollow=true, 
+            hollow_wall_thickness=$wall_thickness, 
+            $rounding=1
+          );
         }
       }
 

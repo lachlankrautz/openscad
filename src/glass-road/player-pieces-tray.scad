@@ -21,7 +21,7 @@ include <./config/player-pieces-config.scad>
 difference() {
   rounded_cube(box_size, flat_top=true, $rounding=1);
 
-  translate($wall_rect) {
+  translate([$wall_thickness, $wall_thickness]) {
     tile_stack(
       terrain_tile_size,
       terrain_tile_count,

@@ -352,7 +352,7 @@ module tile_tray_v3(
     }
 
     // Tile stacks
-    translate($wall_rect) {
+    translate([$wall_thickness, $wall_thickness]) {
       for (y = [0:len(rows)-1]) {
         let (
           row_tiles = rows[y],

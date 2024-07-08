@@ -3,12 +3,16 @@ include <../design/honeycomb.scad>
 include <../config/constants.scad>
 include <./functions/notched_cube_functions.scad>
 
+// TODO has foor height ever been set?
+//      if not delete the var and just use wall_thickness, floor is a wall
+
 /**
  * @param array cutout_size_for_notch_fraction - base the notch fraction off
  *                                               this size instead of the cutout
  */
 module notched_cube(
   size,
+  wall_thickness,
   floor_height=$wall_thickness,
   left_cutout=false,
   right_cutout=false,
@@ -25,6 +29,9 @@ module notched_cube(
   use_rounded_cube=true,
   notch_inset_length=undef
 ) {
+  assert(is_cube_size(size), size);
+  assert(is_num(wall_thickness), wall_thickness);
+
   _bounding_box = bounding_box == undef ? size : bounding_box;
   cutout_notch_size = cutout_notch_size(
     cutout_size_for_notch_fraction == undef
@@ -38,7 +45,7 @@ module notched_cube(
   assert(size[1] <= _bounding_box[1], "Bounding box must be greater than or equal to size");
 
   honeycomb_base = honeycomb_diameter != undef;
-  inset_length = $inset * 2 + $wall_thickness;
+  inset_length = $inset * 2 + wall_thickness;
   box_offset = offset_centre_in_box(size, _bounding_box);
 
   cutout_size = [
@@ -155,7 +162,7 @@ module notched_cube(
     }
 
     // clearences to help place things inside without hitting the other cutouts
-    frame_thickness = honeycomb_base ? $wall_thickness : ($wall_thickness * 3);
+    frame_thickness = honeycomb_base ? wall_thickness : (wall_thickness * 3);
 
     left_clearance = (left_cutout ? $inset : 0) + frame_thickness;
     right_clearance = (right_cutout ? $inset : 0) + frame_thickness;
@@ -171,7 +178,7 @@ module notched_cube(
     if (honeycomb_base || floor_cutout) {
       translate([left_clearance, bottom_clearance, - $bleed]) {
         if (honeycomb_base) {
-          negative_honeycomb_cube(floor_cutout_size, honeycomb_diameter);
+          negative_honeycomb_cube(floor_cutout_size, wall_thickness, honeycomb_diameter);
         } else if (floor_cutout) {
           rounded_cube(floor_cutout_size, flat = true);
         }

@@ -1,20 +1,26 @@
 include <./assert_helpers.scad>
 
-// TODO collect stack heights of many more sizes and ensure the sizing functions
-//      actually fit the known data
-//      currently the stacks get too loose at high numbers and nearly too tight
-//      at lower numbers
-
-// TODO this value for non sleeved cards is a placeholder
-//      do not rely on it
-card_thickness = 0.30;
+// 10 cards -> 3mm -> 0.3
+// 20 cards -> 6mm
+// 30 cards -> 9mm
+// 40 cards -> 12mm
+// 50 cards -> 15.5mm -> 0.31
+// 60 cards -> 18.8mm -> 0.31333
+// 70 cards -> 22mm -> 0.314285
+// 80 cards -> 25mm
+// 90 cards -> 29mm -> 0.32222 per card -> 0.323
+// taking the worst case since they are all so close
+card_thickness = 0.323; 
 card_stack_height = function(card_count) card_count * card_thickness;
 
 // 15 small cards -> 11mm -> 0.733r per card
-// 36 cards -> 24mm -> 0.66r per card
 // 22 cards -> 15mm -> 0.68 per card
-sleeved_card_thickness = 0.65;
-sleeved_card_stack_height = function(card_count) card_count * sleeved_card_thickness;
+// 36 cards -> 24mm -> 0.66r per card
+// 60 cards -> 35mm -> 0.5833 per card -> 0.584
+// put these numbers into: https://mycurvefit.com/
+// to get card thickness maths, it probably should be much simpler
+function sleeved_card_thickness(card_count) = -349.9101 + (0.8433182 - -349.9101)/(1 + (card_count/32688540)^0.5466091);
+sleeved_card_stack_height = function(card_count) round(card_count * sleeved_card_thickness(card_count));
 
 function is_card_size(card_size) = is_num(card_size[0]) 
   && is_num(card_size[1]) 

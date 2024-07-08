@@ -1,7 +1,8 @@
 include <../design/honeycomb.scad>
 include <../primitive/trapezoid.scad>
 include <../util/elephant_foot_compensation.scad>
-include <../config/constants.scad>
+include <../config/minimum_constants.scad>
+include <../config/assert_helpers.scad>
 
 // TODO review all of these constants
 // are they needed by other components?
@@ -14,19 +15,43 @@ default_bump_radius = 0.5;
 dovetail_tolerance = [length_tolerance, width_tolerance * 2, 0];
 dovetail_cutout_bleed = [$bleed, $bleed * 2, $bleed * 2];
 
-function dovetail_size(box_size, lid_height) = [
-  box_size[0] - $wall_thickness,
-  box_size[1] - $inner_wall_thickness * 2,
-  lid_height,
-];
+default_trapezoid_inset = 1;
+
+function dovetail_size(
+  box_size, 
+  lid_height, 
+  wall_thickness, 
+  inner_wall_thickness
+) = 
+  assert(is_cube_size(box_size), box_size)
+  assert(is_num(lid_height), lid_height)
+  assert(is_num(wall_thickness), wall_thickness)
+  assert(is_num(inner_wall_thickness), inner_wall_thickness)
+  [
+    box_size[0] - wall_thickness,
+    box_size[1] - inner_wall_thickness * 2,
+    lid_height,
+  ];
 
 /**
  * Draw a lid for the given box size
  *
  * @param box_size [x, y]
  */
-module dovetail_lid(box_size, honeycomb_diameter = false, lid_height=$lid_height, elephant_foot_compensation=true) {
-  dovetail_size = dovetail_size(box_size, lid_height);
+module dovetail_lid(
+  box_size, 
+  lid_height, 
+  wall_thickness,
+  inner_wall_thickness,
+  honeycomb_diameter=0, 
+  elephant_foot_compensation=true
+) {
+  assert(is_cube_size(box_size), box_size);
+  assert(is_num(lid_height), lid_height);
+  assert(is_num(wall_thickness), wall_thickness);
+  assert(is_num(inner_wall_thickness), inner_wall_thickness);
+
+  dovetail_size = dovetail_size(box_size, lid_height, wall_thickness, inner_wall_thickness);
 
   // Shrink slightly using tolerance values for a better slotting fit
   tolerant_dovetail_size = dovetail_size - dovetail_tolerance;
@@ -41,9 +66,19 @@ module dovetail_lid(box_size, honeycomb_diameter = false, lid_height=$lid_height
   }
 }
 
-module dovetail_lid_cutout(box_size, lid_height=$lid_height) {
+module dovetail_lid_cutout(
+  box_size, 
+  lid_height,
+  wall_thickness,
+  inner_wall_thickness,
+) {
+  assert(is_cube_size(box_size), box_size);
+  assert(is_num(lid_height), lid_height);
+  assert(is_num(wall_thickness), wall_thickness);
+  assert(is_num(inner_wall_thickness), inner_wall_thickness);
+
   bump_radius = default_bump_radius + bump_tolerance;
-  dovetail_size = dovetail_size(box_size, lid_height);
+  dovetail_size = dovetail_size(box_size, lid_height, wall_thickness, inner_wall_thickness);
 
   // Expand slightly with bleed so cutout doesn't leave ghost panels
   dovetail_cutout_size = dovetail_size + dovetail_cutout_bleed;
@@ -53,14 +88,25 @@ module dovetail_lid_cutout(box_size, lid_height=$lid_height) {
     (box_size[1] - dovetail_cutout_size[1]) / 2, // put in the middle using the difference
     box_size[2] - dovetail_cutout_size[2] + $bleed, // cut off the top of the tray box, move up to bleed over the roof
   ]) {
-    // dovetail(dovetail_cutout_size, bump_radius=bump_radius);
-    dovetail(dovetail_cutout_size);
+    dovetail(dovetail_cutout_size, wall_thickness);
   }
 }
 
-module dovetail(size, bump_radius = undef, honeycomb_diameter = false) {
+module dovetail(
+  size, 
+  wall_thickness,
+  bump_radius=undef, 
+  honeycomb_diameter=0
+) {
+  assert(is_cube_size(size), size);
+  assert(is_num(wall_thickness), wall_thickness);
+
   honeycomb = honeycomb_diameter > 0;
-  honeycomb_size = honeycomb_inset_size(size - [$wall_thickness * 2, $wall_thickness * 2, 0], $trapezoid_inset + $wall_thickness / 2);
+  honeycomb_size = honeycomb_inset_size(
+    size - [wall_thickness * 2, wall_thickness * 2, 0], 
+    default_trapezoid_inset + wall_thickness / 2,
+    wall_thickness
+  );
 
   _bump_radius = bump_radius ? bump_radius: default_bump_radius;
   bump_inset = 1.5;
@@ -68,7 +114,7 @@ module dovetail(size, bump_radius = undef, honeycomb_diameter = false) {
 
   difference() {
     union() {
-      trapezoid_prism(size, $trapezoid_inset);
+      trapezoid_prism(size, default_trapezoid_inset);
 
       // Right bump
       translate([bump_inset, 0, 0]) {
@@ -77,7 +123,7 @@ module dovetail(size, bump_radius = undef, honeycomb_diameter = false) {
           translate([0, 0, 0]) {
             cylinder(r=_bump_radius, h=disc_height);
           }
-          translate([0, $trapezoid_inset, size[2] - disc_height]) {
+          translate([0, default_trapezoid_inset, size[2] - disc_height]) {
             cylinder(r=_bump_radius, h=disc_height);
           }
         }
@@ -90,7 +136,7 @@ module dovetail(size, bump_radius = undef, honeycomb_diameter = false) {
           translate([0, 0, 0]) {
             cylinder(r=_bump_radius, h=disc_height);
           }
-          translate([0, -$trapezoid_inset, size[2] - disc_height]) {
+          translate([0, -default_trapezoid_inset, size[2] - disc_height]) {
             cylinder(r=_bump_radius, h=disc_height);
           }
         }
@@ -103,7 +149,7 @@ module dovetail(size, bump_radius = undef, honeycomb_diameter = false) {
         (size[1] - honeycomb_size[1]) / 2,
         -$bleed
       ]) {
-        negative_honeycomb_cube(honeycomb_size, honeycomb_diameter);
+        negative_honeycomb_cube(honeycomb_size, wall_thickness, honeycomb_diameter);
       }
     }
   }

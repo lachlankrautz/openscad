@@ -1,6 +1,7 @@
 include <../primitive/rounded_cube.scad>
 include <../config/card_sizes.scad>
 include <../util/util_functions.scad>
+include <../lid/dovetail_lid.scad>
 
 // 80gsm -> 0.065mm
 // 250gsm -> 0.23mm
@@ -8,6 +9,8 @@ default_indent_depth = 0.35;
 
 // possible minimumn possible wall thickness
 default_wall_thickness = 1.5;
+default_inner_wall_thickness = 1;
+default_lid_height = 2;
 
 // aiming for snug fit
 default_card_padding = 2; 
@@ -103,10 +106,9 @@ function sideloader_cutout_with_offsets_list(
       wall_thickness, 
       padding
     ),
-    cutout_clearance_height = wall_thickness + $bleed,
 
     padded_card_stack_list = [for(card_stack=card_stack_list) sideloader_card_cube_size(card_stack, padding)],
-    cutout_list = [for(i=list_range(padded_card_stack_list)) padded_card_stack_list[i] + [0, 0, cutout_clearance_height]],
+    cutout_list = [for(i=list_range(padded_card_stack_list)) padded_card_stack_list[i] + [0, 0, wall_thickness]],
     spacing_offset_list = unshift(cum_sum_list(add_to_each(pick_list(cutout_list, 0), wall_thickness)), 0),
     cutout_with_offset_list = [for(i=list_range(cutout_list)) 
       [
@@ -161,15 +163,23 @@ function get_cutout_width_offset_with_alignment(box_size, natural_box_size, alig
 module card_sideloader_stacked(
   card_stack_list,
 
+  // display indent
   create_display_indent = false,
   display_indent_depth = default_indent_depth,
   display_indent_margin = 2,
 
+  // cutout
   create_access_cutout = false,
 
+  // box fitting
   fit_to_box_size = [0, 0, 0],
   fit_width_alignment = "centre",
 
+  // token pocket
+  create_remaining_space_token_pocket = false,
+  token_pocket_lid_height = default_lid_height,
+
+  // base settings
   wall_thickness = default_wall_thickness,
   padding = default_card_padding,
 ) {
@@ -215,10 +225,52 @@ module card_sideloader_stacked(
         // adjust for fit box size difference
         translate(fit_box_cutout_adjustment) {
           for (item=cutout_with_offset_list) let(item_cutout=item[0], item_offset=item[1]) {
-            echo("offset: ", item_offset);
             translate(item_offset) {
-              cube(item_cutout);
+              cube(item_cutout + [0, 0, $bleed]);
             }
+          }
+        }
+      }
+
+      // remaining space token pocket with lid
+      if (create_remaining_space_token_pocket) {
+        let(
+          remaining_width = box_size[1] - natural_box_size[1],
+          pocket_size = [
+            box_size[0] - wall_thickness * 2,
+            remaining_width - wall_thickness * 2,
+            box_size[2] - wall_thickness - token_pocket_lid_height,
+          ]
+        ) {
+          echo("pocket size: ", pocket_size);
+
+          // TODO narrow the pocket width to account for the dovetail at the top
+          //      maybe only narrow near the top
+
+          echo("remaining: ", remaining_width);
+          echo("pocket size: ", pocket_size[1]);
+          echo("inner wall: ", default_inner_wall_thickness);
+          echo("centre: ", (remaining_width - pocket_size[1]) / 2);
+
+          translate([0, natural_box_size[1], 0]) {
+            translate([
+              wall_thickness, 
+              0, 
+              wall_thickness
+            ]) {
+              cube(pocket_size + [0, 0, $bleed]);
+            }
+            // cube([box_size[0],remaining_width,box_size[2]]);
+            dovetail_lid_cutout(
+              [
+                box_size[0],
+                remaining_width,
+                box_size[2],
+              ],
+              token_pocket_lid_height,
+              wall_thickness,
+              default_inner_wall_thickness
+            );
           }
         }
       }
@@ -276,17 +328,21 @@ module card_sideloader(
   display_indent_margin = 2,
   create_access_cutout = false,
   fit_to_box_size = [0, 0, 0],
+  fit_width_alignment = "centre",
+  create_remaining_space_token_pocket = false,
   wall_thickness = default_wall_thickness,
   padding = default_card_padding,
 ) {
   card_sideloader_stacked(
     [card_stack],
-    create_display_indent,
-    display_indent_depth,
-    display_indent_margin,
-    create_access_cutout,
-    fit_to_box_size,
-    wall_thickness,
-    padding
+    create_display_indent=create_display_indent,
+    display_indent_depth=display_indent_depth,
+    display_indent_margin=display_indent_margin,
+    create_access_cutout=create_access_cutout,
+    fit_to_box_size=fit_to_box_size,
+    fit_width_alignment=fit_width_alignment,
+    create_remaining_space_token_pocket=create_remaining_space_token_pocket,
+    wall_thickness=wall_thickness,
+    padding=padding
   );
 }

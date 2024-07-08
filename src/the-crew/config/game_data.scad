@@ -10,4 +10,4 @@ deep_sea_mission_card_count = 96;
 
 // box
 box_inner_width = 123;
-box_inner_padding = 2;
+box_inner_padding = 1;

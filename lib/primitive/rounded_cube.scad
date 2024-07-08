@@ -1,5 +1,5 @@
 include <./rounded_square.scad>
-include <../config/constants.scad>
+include <../config/rounding.scad>
 
 // Render a rounded cube
 // flat_top: do not round the top edges
@@ -16,7 +16,8 @@ module rounded_cube(
   flat_top=false, 
   flat_bottom=false,
   side_rounding=-1,
-  hollow=false
+  hollow=false,
+  hollow_wall_thickness=0
 ) {
   _flat = flat || (flat_top && flat_bottom);
   _flat_top = flat_top || flat;
@@ -72,9 +73,9 @@ module rounded_cube(
     // end first difference item
 
     if (hollow) {
-      inner_cube_size = size - [$wall_thickness * 2, $wall_thickness * 2, 0] + [0, 0, $bleed * 2];
-      translate([$wall_thickness, $wall_thickness, - $bleed]) {
-        rounded_cube(inner_cube_size, flat = true, hollow = false, $rounding = $rounding);
+      inner_cube_size = size - [hollow_wall_thickness * 2, hollow_wall_thickness * 2, 0] + [0, 0, $bleed * 2];
+      translate([hollow_wall_thickness, hollow_wall_thickness, - $bleed]) {
+        rounded_cube(inner_cube_size, flat=true, hollow=false, $rounding=$rounding);
       }
     }
   }

@@ -28,7 +28,7 @@ scoop_size = [
 difference() {
   rounded_cube(box_size, flat_top=true, $rounding=1);
 
-  translate($wall_cube) {
+  translate([$wall_thickness, $wall_thickness, $wall_thickness]) {
     for(i=[0:food_type_count-1]) {
       translate([offset(scoop_size[0], i), 0, 0]) {
         scoop(scoop_size, edge="bottom", $rounding=1);

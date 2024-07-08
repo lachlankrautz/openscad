@@ -1,4 +1,4 @@
-include <../config/constants.scad>
+include <../config/minimum_constants.scad>
 
 default_foot_offset = 0.25;
 

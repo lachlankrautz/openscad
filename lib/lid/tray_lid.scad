@@ -73,6 +73,8 @@ module tray_lid_notches(
   }
 }
 
+
+// TODO is this even used anywhere?
 /**
  * Draw a lid for the given tray size
  *
@@ -82,6 +84,7 @@ module tray_lid_notches(
 module tray_lid(
   tray_size,
   matrix,
+  wall_thickness,
   notch_height = 4,
   honeycomb_diameter=false,
   top=true,
@@ -89,10 +92,12 @@ module tray_lid(
   bottom=true,
   left=true
 ) {
+  assert(is_num(wall_thickenss), wall_thickness);
+
   lid_size = [
     tray_size[0],
     tray_size[1],
-    $wall_thickness,
+    wall_thickness,
   ];
   _notch_height = notch_height + $bleed;
   honeycomb = honeycomb_diameter > 0;
@@ -102,8 +107,8 @@ module tray_lid(
   notch_width = notch_width();
 
   honeycomb_size = [
-    lid_size[0] - (notch_width + $wall_thickness) * 2,
-    lid_size[1] - (notch_width + $wall_thickness) * 2,
+    lid_size[0] - (notch_width + wall_thickness) * 2,
+    lid_size[1] - (notch_width + wall_thickness) * 2,
     lid_size[2] + $bleed * 2,
   ];
 
@@ -111,13 +116,13 @@ module tray_lid(
     rounded_cube(lid_size, flat=true);
 
     if (honeycomb) {
-      translate([notch_width + $wall_thickness, notch_width + $wall_thickness, - $bleed]) {
-        negative_honeycomb_cube(honeycomb_size, honeycomb_diameter);
+      translate([notch_width + wall_thickness, notch_width + wall_thickness, - $bleed]) {
+        negative_honeycomb_cube(honeycomb_size, wall_thickness, honeycomb_diameter);
       }
     }
   }
 
-  translate([0, 0, $wall_thickness - $bleed]) {
+  translate([0, 0, wall_thickness - $bleed]) {
     tray_lid_notches(
       tray_size,
       matrix,

@@ -2,9 +2,11 @@ include <../primitive/scoop_tray.scad>
 include <../lid/dovetail_lid.scad>
 include <../config/constants.scad>
 
+default_trapezoid_inset = 1;
+
 module dovetail_scoop_tray(size, matrix=[1, 1], radius=0, rounded=false) {
   // Adjust the scoop tray to allow for wider walls used by dovetail lids
-  virtual_adjustment = [0, ($inner_wall_thickness + $trapezoid_inset - $wall_thickness) * 2, 0];
+  virtual_adjustment = [0, ($inner_wall_thickness + default_trapezoid_inset - $wall_thickness) * 2, 0];
   virtual_scoop_tray_size = size - virtual_adjustment;
 
   difference() {

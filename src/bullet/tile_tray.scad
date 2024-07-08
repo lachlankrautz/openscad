@@ -9,7 +9,7 @@ include <./tile_tray_config.scad>
 difference() {
   rounded_cube(box_size, flat_top=true, $rounding=1);
 
-  translate($wall_rect) {
+  translate([$wall_thickness, $wall_thickness]) {
     for (i=[0:len(token_stack_counts)-1]) {
       translate([padded_offset(tile_size[0], i), 0, 0]) {
         tile_stack(

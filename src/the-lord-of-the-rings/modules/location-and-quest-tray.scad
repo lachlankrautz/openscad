@@ -213,7 +213,7 @@ module location_and_quest_tray(location_tile_count, quest_tile_count) {
     }
 
     // Left token slots
-    translate($wall_rect) {
+    translate([$wall_thickness, $wall_thickness]) {
       tile_tray_row_v2(
         [for(i=[0:location_tile_count-1]) slim_tile_size],
         [for(i=[0:location_tile_count-1]) 1],
@@ -228,7 +228,7 @@ module location_and_quest_tray(location_tile_count, quest_tile_count) {
 
     // Right token slots
     translate([front_box_size[0] - flow_right_width, 0, 0]) {
-      translate($wall_rect) {
+      translate([$wall_thickness, $wall_thickness]) {
         tile_tray_row_v2(
           [for(i=[0:quest_tile_count-1]) slim_tile_size],
           [for(i=[0:quest_tile_count-1]) 1],
