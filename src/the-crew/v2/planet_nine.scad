@@ -25,13 +25,17 @@ card_stack_list = [
 
 usable_box_width = box_inner_width - box_inner_padding;
 
-difference() {
-  card_sideloader_stacked(
-    card_stack_list,
-    fit_to_box_size = [0, usable_box_width, 0], 
-    fit_width_alignment = "left",
-    create_remaining_space_token_pocket = true,
-    create_display_indent=true,
-    create_access_cutout=true
-  );
-}
+// card_sideloader_stacked(
+//   card_stack_list,
+//   fit_to_box_size = [0, usable_box_width, 0], 
+//   fit_width_alignment = "left",
+//   create_remaining_space_token_pocket = true,
+//   create_display_indent=true,
+//   create_access_cutout=true
+// );
+
+card_sideloader_stacked_pocket_lid(
+  card_stack_list,
+  fit_to_box_size=[0, usable_box_width, 0],
+  create_test_box=true
+);

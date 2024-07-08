@@ -160,6 +160,73 @@ function get_cutout_width_offset_with_alignment(box_size, natural_box_size, alig
         ? box_size[1] - natural_box_size[1]
           : undef;
 
+module card_sideloader_stacked_pocket_lid(
+  card_stack_list,
+
+  // display indent
+  display_indent_depth = default_indent_depth,
+
+  // box fitting
+  fit_to_box_size = [0, 0, 0],
+
+  // token pocket
+  token_pocket_lid_height = default_lid_height,
+
+  // base settings
+  wall_thickness = default_wall_thickness,
+  padding = default_card_padding,
+
+  create_test_box = false
+) {
+  let(
+    natural_box_size = sideloader_natural_box_size(
+      card_stack_list, 
+      true, 
+      display_indent_depth, 
+      wall_thickness, 
+      padding
+    ),
+    box_size = sideloader_box_size(
+      card_stack_list, 
+      fit_to_box_size, 
+      true, 
+      display_indent_depth, 
+      wall_thickness, 
+      padding
+    ), 
+
+    // pocket
+    remaining_width = box_size[1] - natural_box_size[1] + wall_thickness,
+    dovetail_size = [
+      box_size[0],
+      remaining_width,
+      box_size[2],
+    ],
+    dovetail_test_size = [dovetail_size[0], dovetail_size[1], token_pocket_lid_height * 3]
+  ) {
+    dovetail_lid(
+      dovetail_size,
+      token_pocket_lid_height,
+      wall_thickness,
+      default_inner_wall_thickness
+    );
+
+    if (create_test_box) {
+      translate([dovetail_test_size[0] + 10, 0, 0]) {
+        difference() {
+          cube(dovetail_test_size);
+          dovetail_lid_cutout(
+            dovetail_test_size,
+            token_pocket_lid_height,
+            wall_thickness,
+            default_inner_wall_thickness
+          );
+        }
+      }
+    }
+  }
+}
+
 module card_sideloader_stacked(
   card_stack_list,
 
@@ -213,9 +280,21 @@ module card_sideloader_stacked(
     // access cutout
     smallest_cutout_with_offset = smallest_cutout_with_offset(cutout_with_offset_list),
     access_cutout_width = natural_box_width(smallest_cutout_with_offset[0], wall_thickness)/2,
-    access_cutout_offset = (natural_box_size[1] - access_cutout_width) / 2
+    access_cutout_offset = (natural_box_size[1] - access_cutout_width) / 2,
+
+    // pocket
+    remaining_width = box_size[1] - natural_box_size[1] + wall_thickness,
+    pocket_size = [
+      box_size[0] - wall_thickness * 2,
+      remaining_width - wall_thickness * 2 - default_inner_wall_thickness,
+      box_size[2] - wall_thickness - token_pocket_lid_height,
+    ],
+    dovetail_size = [
+      box_size[0],
+      remaining_width,
+      box_size[2],
+    ]
   ) {
-    // echo("fit box adjustment", fit_box_cutout_adjustment);
     difference() {
       // box
       rounded_cube(box_size, $rounding=1);
@@ -234,44 +313,20 @@ module card_sideloader_stacked(
 
       // remaining space token pocket with lid
       if (create_remaining_space_token_pocket) {
-        let(
-          remaining_width = box_size[1] - natural_box_size[1],
-          pocket_size = [
-            box_size[0] - wall_thickness * 2,
-            remaining_width - wall_thickness * 2,
-            box_size[2] - wall_thickness - token_pocket_lid_height,
-          ]
-        ) {
-          echo("pocket size: ", pocket_size);
-
-          // TODO narrow the pocket width to account for the dovetail at the top
-          //      maybe only narrow near the top
-
-          echo("remaining: ", remaining_width);
-          echo("pocket size: ", pocket_size[1]);
-          echo("inner wall: ", default_inner_wall_thickness);
-          echo("centre: ", (remaining_width - pocket_size[1]) / 2);
-
-          translate([0, natural_box_size[1], 0]) {
-            translate([
-              wall_thickness, 
-              0, 
-              wall_thickness
-            ]) {
-              cube(pocket_size + [0, 0, $bleed]);
-            }
-            // cube([box_size[0],remaining_width,box_size[2]]);
-            dovetail_lid_cutout(
-              [
-                box_size[0],
-                remaining_width,
-                box_size[2],
-              ],
-              token_pocket_lid_height,
-              wall_thickness,
-              default_inner_wall_thickness
-            );
+        translate([0, natural_box_size[1] - wall_thickness, 0]) {
+          translate([
+            wall_thickness, 
+            (remaining_width - pocket_size[1]) / 2, 
+            wall_thickness
+          ]) {
+            cube(pocket_size + [0, 0, $bleed]);
           }
+          dovetail_lid_cutout(
+            dovetail_size,
+            token_pocket_lid_height,
+            wall_thickness,
+            default_inner_wall_thickness
+          );
         }
       }
 

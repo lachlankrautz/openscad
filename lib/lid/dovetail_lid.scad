@@ -57,7 +57,7 @@ module dovetail_lid(
   tolerant_dovetail_size = dovetail_size - dovetail_tolerance;
 
   difference() {
-    dovetail(tolerant_dovetail_size, honeycomb_diameter=honeycomb_diameter);
+    dovetail(tolerant_dovetail_size, wall_thickness, honeycomb_diameter=honeycomb_diameter);
 
     // Need to ensure the fit is as clean as possible
     if (elephant_foot_compensation) {
