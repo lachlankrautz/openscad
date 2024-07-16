@@ -11,7 +11,7 @@ include <./assert_helpers.scad>
 // 90 cards -> 29mm -> 0.32222 per card -> 0.323
 // taking the worst case since they are all so close
 card_thickness = 0.323; 
-card_stack_height = function(card_count) card_count * card_thickness;
+card_stack_height = function(card_count) card_count * card_thickness + 1;
 
 // 15 small cards -> 11mm -> 0.733r per card
 // 22 cards -> 15mm -> 0.68 per card

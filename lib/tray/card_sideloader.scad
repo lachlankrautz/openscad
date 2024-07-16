@@ -249,6 +249,8 @@ module card_sideloader_stacked(
   // base settings
   wall_thickness = default_wall_thickness,
   padding = default_card_padding,
+
+  debug = false,
 ) {
   assert(is_card_stack_list(card_stack_list), card_stack_list);
   assert(is_alignment(fit_width_alignment), fit_width_alignment);
@@ -295,6 +297,10 @@ module card_sideloader_stacked(
       box_size[2],
     ]
   ) {
+    if (debug) {
+      echo("box size: ", box_size);
+    }
+
     difference() {
       // box
       rounded_cube(box_size, $rounding=1);

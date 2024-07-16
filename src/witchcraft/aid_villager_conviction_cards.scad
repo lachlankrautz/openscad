@@ -24,5 +24,6 @@ card_sideloader_stacked(
   create_display_indent=true,
   create_access_cutout=true,
   wall_thickness=wall_thickness,
-  padding=card_padding
+  padding=card_padding,
+  debug=true
 );
