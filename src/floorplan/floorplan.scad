@@ -18,7 +18,6 @@ module placeFurniture(grid) {
           let(
             offset = j == 0 ? 0 : take_sum(pick_list(sizes, 0), j) + (gap * j)
           ) {
-            echo("offset: ", offset);
             translate([offset, 0, 0]) {
               cube(sizes[j]);
             }
@@ -37,6 +36,14 @@ kids_computer_desk = [1213, 600, 724];
 craft_desk = [1420, 500, 750];
 dtolf = [427, 370, 1625];
 printer_cabinet = [450, 800, 720];
+
+room = [3000, 5900];
+offsetToArch = 2510;
+arch = 1185;
+
+echo("room: ", room * scaleFactor);
+echo("offsetToArch: ", offsetToArch * scaleFactor);
+echo("arch: ", arch * scaleFactor);
 
 grid = [
   [
