@@ -86,6 +86,26 @@ standard_sleeved_card_size = [
 ];
 
 /**
+ * Tarot card size
+ */
+tarot_card_size = [
+  71,
+  121,
+  card_stack_height,
+];
+
+/**
+ * Tarot card size
+ * Sleeved with gamegenic tarot
+ */
+tarot_sleeved_card_size = [
+  74,
+  123,
+  sleeved_card_stack_height,
+];
+
+
+/**
  * Standard USA card size
  * - Bohnanza
  * - Food Chain Magnate
